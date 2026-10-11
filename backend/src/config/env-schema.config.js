@@ -20,5 +20,6 @@ export const envSchemaConfig = {
     CORS_ORIGIN: { type: 'string', default: 'http://localhost:3000' },
     RATE_LIMIT_MAX: { type: 'number', minimum: 1, default: 100 },
     RATE_LIMIT_WINDOW_MS: { type: 'number', minimum: 1000, default: 60000 },
+    SHUTDOWN_TIMEOUT_MS: { type: 'number', minimum: 1000, default: 10000 },
   },
 };
