@@ -1,0 +1,33 @@
+import createError from '@fastify/error';
+import { StatusCodes } from 'http-status-codes';
+import { ERROR_CODE } from '#src/constants/index.js';
+
+export const BadRequestError = createError(
+  ERROR_CODE.BAD_REQUEST,
+  '%s',
+  StatusCodes.BAD_REQUEST,
+);
+
+export const UnauthorizedError = createError(
+  ERROR_CODE.UNAUTHORIZED,
+  '%s',
+  StatusCodes.UNAUTHORIZED,
+);
+
+export const ForbiddenError = createError(
+  ERROR_CODE.FORBIDDEN,
+  '%s',
+  StatusCodes.FORBIDDEN,
+);
+
+export const NotFoundError = createError(
+  ERROR_CODE.NOT_FOUND,
+  '%s',
+  StatusCodes.NOT_FOUND,
+);
+
+export const ConflictError = createError(
+  ERROR_CODE.CONFLICT,
+  '%s',
+  StatusCodes.CONFLICT,
+);

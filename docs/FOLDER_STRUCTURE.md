@@ -99,5 +99,6 @@ client/
 | `.gitignore` | one per folder (`backend/`, `client/`) | **one at repo root** |
 | Plugin naming | `validate-env.plugin.js` / `validateEnvPlugin` (named after an action) | **`env.plugin.js` / `envPlugin`**: plugins are named after what they register, like `cors.plugin.js` |
 | Reply decorator | `decorators/reply/send-success.decorator.js` (`sendSuccessDecorator`) + `plugins/reply/success-reply.plugin.js` | **flat** `decorators/reply-success.decorator.js` (`replySuccessDecorator`) + `plugins/reply-success.plugin.js` (`replySuccessPlugin`): one name, `reply-success`, everywhere |
+| HTTP errors | `utils/errors/http-errors.util.js`, codes hard-coded as `'FST_NOT_FOUND'` (Fastify's own prefix) | **flat** `utils/http-errors.util.js`; codes come from `constants/error-code.constants.js` (`ERROR_CODE.NOT_FOUND`), one list the client can rely on and provider error categories get added to |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
 | Extra | — | Redis/BullMQ worker, storage service, credits |
