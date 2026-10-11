@@ -3,6 +3,7 @@ import { buildAppConfig, buildFastifyConfig } from './src/config/index.js';
 import {
   configPlugin,
   corsPlugin,
+  databasePlugin,
   errorHandlersPlugin,
   helmetPlugin,
   rateLimitPlugin,
@@ -15,6 +16,7 @@ export function buildApp() {
   const fastify = Fastify(buildFastifyConfig({ appConfig }));
 
   fastify.register(configPlugin, { appConfig });
+  fastify.register(databasePlugin);
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);
