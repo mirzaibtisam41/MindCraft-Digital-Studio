@@ -1,6 +1,9 @@
 # Folder Structure & Naming Conventions
 
 **Rule: follow the structure of the sibling project `D:\My Projects\business book`.** When unsure how something is organized, open the matching folder there and copy the pattern (structure only; the stack differences are listed at the bottom).
+**But fix its mistakes here:** where business book does something badly (needless nesting, duplication, etc.), improve it in this project and record the change in the "Differences" table at the bottom.
+
+**Flat infrastructure folders:** `bootstrap/`, `config/`, `constants/`, `plugins/`, `hooks/`, `handlers/`, `utils/`, `decorators/` keep their files directly inside (the kebab-case name + role suffix already says the area, e.g. `config/pino.config.js`, `plugins/cors.plugin.js`). Create an `<area>/` sub-folder only once one area has **3+ files**. `modules/<module>/features/<feature>/` stays nested.
 
 ## Repo root
 ```
@@ -24,17 +27,18 @@ backend/
 ├── bruno/<module>/          API request collections (Bruno) per module + environments/
 ├── test/<module>/*.test.js  node:test; test/helpers/ (test-app.js, test-env.js)
 └── src/
-    ├── bootstrap/           index.js + env/load-dotenv.bootstrap.js (runs first)
-    ├── config/<area>/       builders like buildCorsConfig({ appConfig }); config/index.js re-exports
-    │                        areas: ai, auth, cors, database, env, logger, rate-limit, server
-    ├── constants/<area>/    *.constants.js; constants/index.js re-exports
+    ├── bootstrap/           index.js + load-dotenv.bootstrap.js (runs first)
+    ├── config/              *.config.js builders like buildCorsConfig({ appConfig }); index.js re-exports
+    │                        (env-schema, pino, fastify, listen, cors, jwt, database, rate-limit…)
+    ├── constants/           *.constants.js; index.js re-exports
     ├── database/schema.js   re-exports every modules/<m>/<m>.table.js (for Drizzle)
-    ├── decorators/reply/    reply.success(...) decorator
-    ├── handlers/            error/ (handle-error, handle-not-found), process/ (graceful shutdown)
-    ├── hooks/<area>/        *.hook.js (auth check, ownership/access checks, rate limits)
-    ├── plugins/<area>/      *.plugin.js wrapped with fastify-plugin; plugins/index.js re-exports
+    ├── decorators/          reply.success(...) decorator
+    ├── handlers/            handle-error, handle-not-found, graceful-shutdown (*.handler.js)
+    ├── hooks/               *.hook.js (auth check, ownership/access checks, rate limits)
+    ├── plugins/             *.plugin.js wrapped with fastify-plugin; index.js re-exports
     ├── shared/schemas/      fields/, params/, query/ reusable request schemas
-    ├── utils/<area>/        *.util.js (errors, reply, password, pagination...); utils/index.js re-exports
+    ├── utils/               *.util.js (errors, reply, password, pagination...); index.js re-exports
+    │                        (all of the above: add an <area>/ sub-folder only at 3+ files for one area)
     └── modules/
         ├── index.js         registerRoutes(fastify): registers each <m>Routes with a prefix
         └── <module>/
@@ -91,5 +95,7 @@ client/
 | Request validation | JSON Schema (Ajv) in `*.schema.js` | **Zod** in `*.schema.js` (same file name/location) |
 | Styling | CSS Modules (`*.module.css`) | **Tailwind + shadcn/ui** (shadcn components go in `components/ui/`) |
 | Dev restart | nodemon | either works; `node --watch` needs no extra package |
+| Infrastructure folders | one sub-folder per area, often with a single file (`config/logger/pino.config.js`) | **flat** (`config/pino.config.js`); `<area>/` sub-folder only at 3+ files |
+| `.gitignore` | one per folder (`backend/`, `client/`) | **one at repo root** |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
 | Extra | — | Redis/BullMQ worker, storage service, credits |

@@ -1,1 +1,1 @@
-import './env/load-dotenv.bootstrap.js';
+import './load-dotenv.bootstrap.js';

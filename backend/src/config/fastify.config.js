@@ -1,4 +1,4 @@
-import { pinoLoggerConfig } from '#src/config/logger/pino.config.js';
+import { pinoLoggerConfig } from '#src/config/pino.config.js';
 
 export function buildFastifyConfig() {
   return {
