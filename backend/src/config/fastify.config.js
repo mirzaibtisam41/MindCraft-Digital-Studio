@@ -1,7 +1,9 @@
-import { pinoConfig } from './pino.config.js';
+import { randomUUID } from 'node:crypto';
+import { buildPinoConfig } from './pino.config.js';
 
 export function buildFastifyConfig() {
   return {
-    logger: pinoConfig,
+    logger: buildPinoConfig(),
+    genReqId: () => randomUUID(),
   };
 }

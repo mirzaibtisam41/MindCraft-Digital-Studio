@@ -1,16 +1,35 @@
-import { ENVIRONMENT } from '#src/constants/index.js';
+import { ENVIRONMENT, LOG_LEVEL } from '#src/constants/index.js';
 
-const isProduction = process.env.NODE_ENV === ENVIRONMENT.PRODUCTION;
+const REDACTED_PATHS = [
+  '*.authorization',
+  '*.cookie',
+  '*.headers.authorization',
+  '*.headers.cookie',
+  '*.headers["set-cookie"]',
+  '*.password',
+  '*.newPassword',
+  '*.token',
+  '*.accessToken',
+  '*.refreshToken',
+  '*.apiKey',
+];
 
-export const pinoConfig = {};
-
-if (!isProduction) {
-  pinoConfig.transport = {
-    target: 'pino-pretty',
-    options: {
-      translateTime: 'SYS:standard',
-      colorize: true,
-      ignore: 'pid,hostname',
-    },
+export function buildPinoConfig() {
+  const config = {
+    level: process.env.LOG_LEVEL ?? LOG_LEVEL.INFO,
+    redact: { paths: REDACTED_PATHS, censor: '[REDACTED]' },
   };
+
+  if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+    config.transport = {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'SYS:standard',
+        colorize: true,
+        ignore: 'pid,hostname',
+      },
+    };
+  }
+
+  return config;
 }
