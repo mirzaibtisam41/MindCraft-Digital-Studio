@@ -33,7 +33,7 @@ backend/
     ├── constants/           *.constants.js; index.js re-exports
     ├── database/schema.js   re-exports every modules/<m>/<m>.table.js (for Drizzle)
     ├── decorators/          reply.success(...) decorator
-    ├── handlers/            handle-error, handle-not-found, graceful-shutdown (*.handler.js)
+    ├── handlers/            error, not-found, graceful-shutdown (*.handler.js → errorHandler, notFoundHandler...)
     ├── hooks/               *.hook.js (auth check, ownership/access checks, rate limits)
     ├── plugins/             *.plugin.js wrapped with fastify-plugin; index.js re-exports
     ├── shared/schemas/      fields/, params/, query/ reusable request schemas
@@ -61,7 +61,7 @@ backend/
 ### Naming conventions
 - Files: **kebab-case** with a role suffix: `login.controller.js`, `find-business-by-id.repository.js`, `cors.plugin.js`, `hash-password.util.js`, `check-user-is-logged-in.hook.js`, `user.table.js`.
 - Feature folders: **camelCase** (`forgotPassword`, `listSessions`). Module folders: camelCase plural (`businessUsers`, `aiGenerations`).
-- Functions are named after the role too: `loginController`, `loginService`, `findBusinessByIdRepository`, `hashPasswordUtil`, `corsPlugin`, `checkUserIsLoggedInHook`.
+- Function name = file name in camelCase + role suffix: `login.controller.js` → `loginController`, `find-business-by-id.repository.js` → `findBusinessByIdRepository`, `pino.config.js` → `pinoConfig` (a builder function gets a `build` prefix: `listen.config.js` → `buildListenConfig`), `cors.plugin.js` → `corsPlugin`, `not-found.handler.js` → `notFoundHandler`.
 - Functions take **one object argument** (`{ db, id }`, `{ server, email }`).
 - Every folder of shared pieces has an **`index.js` barrel** that re-exports; imports use `#src/...` aliases, e.g. `import { hashPasswordUtil } from '#src/utils/index.js'`.
 - Layering: routes → controller → service → repository. Repositories only talk to the DB; controllers never query the DB.
@@ -100,5 +100,7 @@ client/
 | Plugin naming | `validate-env.plugin.js` / `validateEnvPlugin` (named after an action) | **`env.plugin.js` / `envPlugin`**: plugins are named after what they register, like `cors.plugin.js` |
 | Reply decorator | `decorators/reply/send-success.decorator.js` (`sendSuccessDecorator`) + `plugins/reply/success-reply.plugin.js` | **flat** `decorators/reply-success.decorator.js` (`replySuccessDecorator`) + `plugins/reply-success.plugin.js` (`replySuccessPlugin`): one name, `reply-success`, everywhere |
 | HTTP errors | `utils/errors/http-errors.util.js`, codes hard-coded as `'FST_NOT_FOUND'` (Fastify's own prefix) | **flat** `utils/http-errors.util.js`; codes come from `constants/error-code.constants.js` (`ERROR_CODE.NOT_FOUND`), one list the client can rely on and provider error categories get added to |
+| Error handler | `handlers/error/handle-error.handler.js`; body key `error: 'FST_...'`; 500 messages hidden except an `instanceof` allow-list | **flat** `handlers/error.handler.js`; body key `code` (from `ERROR_CODE`), validation errors add `details`; a private `resolveError()` decides the response; messages are shown only for our own `ERROR_CODE` errors (that list is the allow-list), every other 5xx is hidden |
+| Handler naming | `handle-error.handler.js` / `handleErrorHandler` (verb + role repeats itself) | **`error.handler.js` / `errorHandler`**, `not-found.handler.js` / `notFoundHandler`: named after what they handle, same rule as plugins |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
 | Extra | — | Redis/BullMQ worker, storage service, credits |

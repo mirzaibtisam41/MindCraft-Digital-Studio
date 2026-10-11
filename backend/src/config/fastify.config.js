@@ -1,7 +1,7 @@
-import { pinoLoggerConfig } from '#src/config/pino.config.js';
+import { pinoConfig } from './pino.config.js';
 
 export function buildFastifyConfig() {
   return {
-    logger: pinoLoggerConfig,
+    logger: pinoConfig,
   };
 }
