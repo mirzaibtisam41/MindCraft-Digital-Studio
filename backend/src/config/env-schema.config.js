@@ -18,5 +18,7 @@ export const envSchemaConfig = {
     PORT: { type: 'number', minimum: 1, maximum: 65535, default: 8000 },
     HOST: { type: 'string', default: '0.0.0.0' },
     CORS_ORIGIN: { type: 'string', default: 'http://localhost:3000' },
+    RATE_LIMIT_MAX: { type: 'number', minimum: 1, default: 100 },
+    RATE_LIMIT_WINDOW_MS: { type: 'number', minimum: 1000, default: 60000 },
   },
 };

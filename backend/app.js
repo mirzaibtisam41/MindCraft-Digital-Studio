@@ -5,6 +5,7 @@ import {
   envPlugin,
   errorHandlersPlugin,
   helmetPlugin,
+  rateLimitPlugin,
   replySuccessPlugin,
 } from './src/plugins/index.js';
 import { registerRoutes } from './src/modules/index.js';
@@ -15,6 +16,7 @@ export function buildApp() {
   fastify.register(envPlugin);
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
+  fastify.register(rateLimitPlugin);
   fastify.register(errorHandlersPlugin);
   fastify.register(replySuccessPlugin);
   fastify.register(registerRoutes);

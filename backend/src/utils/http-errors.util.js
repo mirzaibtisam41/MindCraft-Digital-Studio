@@ -31,3 +31,9 @@ export const ConflictError = createError(
   '%s',
   StatusCodes.CONFLICT,
 );
+
+export const TooManyRequestsError = createError(
+  ERROR_CODE.TOO_MANY_REQUESTS,
+  '%s',
+  StatusCodes.TOO_MANY_REQUESTS,
+);
