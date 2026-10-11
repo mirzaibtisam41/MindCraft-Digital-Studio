@@ -1,1 +1,1 @@
-export * from './validate-env.plugin.js';
+export * from './env.plugin.js';

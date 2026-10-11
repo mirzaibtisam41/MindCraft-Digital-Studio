@@ -97,5 +97,6 @@ client/
 | Dev restart | nodemon | either works; `node --watch` needs no extra package |
 | Infrastructure folders | one sub-folder per area, often with a single file (`config/logger/pino.config.js`) | **flat** (`config/pino.config.js`); `<area>/` sub-folder only at 3+ files |
 | `.gitignore` | one per folder (`backend/`, `client/`) | **one at repo root** |
+| Plugin naming | `validate-env.plugin.js` / `validateEnvPlugin` (named after an action) | **`env.plugin.js` / `envPlugin`**: plugins are named after what they register, like `cors.plugin.js` |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
 | Extra | — | Redis/BullMQ worker, storage service, credits |
