@@ -8,6 +8,7 @@ const REDACTED_PATHS = [
   '*.headers["set-cookie"]',
   '*.password',
   '*.newPassword',
+  '*.currentPassword',
   '*.token',
   '*.accessToken',
   '*.refreshToken',
