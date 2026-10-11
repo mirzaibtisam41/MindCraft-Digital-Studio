@@ -67,7 +67,7 @@ backend/
 - Layering: routes → controller → service → repository. Repositories only talk to the DB; controllers never query the DB.
 
 ### Planned modules for this project (mapped to the roadmap)
-`health`, `auth`, `users` (profile + settings), `sessions`, `mail`, `ai` (provider adapters: image provider + LangChain model), `generations`, `images`, `edits` (image-to-image, editing, history), `vision`, `prompts`, `projects` (+ collections), `credits`, `notifications`, `usage`, `billing`. Worker (2.7): a separate entry such as `backend/worker.js` that reuses the same `src/`.
+`health`, `auth`, `users` (profile, `/api/me`), `userSettings` (`/api/me/settings`), `sessions`, `passwordResetTokens`, `mail`, `ai` (provider adapters: image provider + LangChain model), `generations`, `images`, `edits` (image-to-image, editing, history), `vision`, `prompts`, `projects` (+ collections), `credits`, `notifications`, `usage`, `billing`. Worker (2.7): a separate entry such as `backend/worker.js` that reuses the same `src/`.
 
 ## client/
 ```
@@ -104,5 +104,12 @@ client/
 | Handler naming | `handle-error.handler.js` / `handleErrorHandler` (verb + role repeats itself) | **`error.handler.js` / `errorHandler`**, `not-found.handler.js` / `notFoundHandler`: named after what they handle, same rule as plugins |
 | Database plugin | `plugins/database/database.plugin.js`; no connection check, so a wrong `DATABASE_URL` only fails on the first query | **flat** `plugins/database.plugin.js`; runs `SELECT 1` at startup so a bad URL/password stops the server before it listens; pool size and connect timeout come from env (`DATABASE_POOL_MAX`, `DATABASE_CONNECTION_TIMEOUT_MS`) |
 | Sessions table | no refresh-token column (the refresh JWT only carries the session id), `started_at` + `created_at` duplicate each other, lengths in a `SESSION_LENGTHS` object | stores **`refresh_token_hash`** (SHA-256 of an opaque random token, unique) so rotation can detect a reused old token and revoke the session; `last_used_at` for the active-sessions list; flat `SESSION_*_LENGTH` constants like `USER_*` |
+| Refresh token | a signed JWT with `purpose: 'refresh'`, same secret as the access token; reuse detection relies on timing | **opaque random token** (`generateTokenUtil`), only its SHA-256 stored; rotation revokes the old row and inserts a new one in one transaction (`revoked_at IS NULL` guard stops concurrent double-rotation); a revoked token used again after a 10 s grace revokes all the user's sessions |
+| Refresh cookie helpers | `modules/auth/shared/cookies/refresh-cookie.js` (no role suffix, three exports in one file) | cookie options are a config builder `config/refresh-cookie.config.js` (`buildRefreshCookieConfig`, `REFRESH_COOKIE_NAME`); helpers are one function per file in `modules/auth/shared/utils/` (`set-`, `clear-`, `read-refresh-cookie.util.js`); the refresh endpoint clears the cookie only on `UNAUTHORIZED`, not on a 5xx |
+| Logout | needs a valid access token (`checkUserIsLoggedInHook`) | uses the **refresh cookie** and is idempotent, so a user with an expired access token can still log out |
+| Password reset token | a JWT signed with the app secret; "single use" inferred from `users.updated_at` | own module `passwordResetTokens` with a `password_reset_tokens` table: hashed token, 30 min expiry, consumed by one atomic `UPDATE … WHERE used_at IS NULL AND expires_at > now() RETURNING`; a new request invalidates older tokens |
+| Mail | one `send-email.service.js` hard-wired to Brevo | provider interface: `modules/mail/providers/<name>-mail.provider.js` (`console` for dev logs the email, `resend` for prod), `sendEmailService` picks one from `MAIL_PROVIDER`; env schema forbids `console` in production |
+| Password hashing | bcrypt (72-byte limit, `maxBytes` custom keyword) | **argon2id** (`argon2` package), max length 128, no custom Ajv keyword needed |
+| Profile / settings routes | `GET /auth/me` inside the auth module | `/api/me` lives in `users` (`users.routes.js`), `/api/me/settings` in `userSettings` (`user-settings.routes.js`); each routes plugin adds `checkUserIsLoggedInHook` with `addHook('onRequest')` once instead of per route |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
 | Extra | — | Redis/BullMQ worker, storage service, credits |
