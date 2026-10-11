@@ -1,4 +1,4 @@
-import { ENVIRONMENT, LOG_LEVEL } from '#src/constants/index.js';
+import { ENVIRONMENT } from '#src/constants/index.js';
 
 const REDACTED_PATHS = [
   '*.authorization',
@@ -14,13 +14,13 @@ const REDACTED_PATHS = [
   '*.apiKey',
 ];
 
-export function buildPinoConfig() {
+export function buildPinoConfig({ appConfig }) {
   const config = {
-    level: process.env.LOG_LEVEL ?? LOG_LEVEL.INFO,
+    level: appConfig.LOG_LEVEL,
     redact: { paths: REDACTED_PATHS, censor: '[REDACTED]' },
   };
 
-  if (process.env.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
+  if (appConfig.NODE_ENV !== ENVIRONMENT.PRODUCTION) {
     config.transport = {
       target: 'pino-pretty',
       options: {

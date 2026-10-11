@@ -1,8 +1,8 @@
 import Fastify from 'fastify';
-import { buildFastifyConfig } from './src/config/index.js';
+import { buildAppConfig, buildFastifyConfig } from './src/config/index.js';
 import {
+  configPlugin,
   corsPlugin,
-  envPlugin,
   errorHandlersPlugin,
   helmetPlugin,
   rateLimitPlugin,
@@ -11,9 +11,10 @@ import {
 import { registerRoutes } from './src/modules/index.js';
 
 export function buildApp() {
-  const fastify = Fastify(buildFastifyConfig());
+  const appConfig = buildAppConfig();
+  const fastify = Fastify(buildFastifyConfig({ appConfig }));
 
-  fastify.register(envPlugin);
+  fastify.register(configPlugin, { appConfig });
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);
