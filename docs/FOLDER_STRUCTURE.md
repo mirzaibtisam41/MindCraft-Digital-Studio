@@ -1,0 +1,95 @@
+# Folder Structure & Naming Conventions
+
+**Rule: follow the structure of the sibling project `D:\My Projects\business book`.** When unsure how something is organized, open the matching folder there and copy the pattern (structure only; the stack differences are listed at the bottom).
+
+## Repo root
+```
+Mindcraft Digital Studio/
+├── backend/          Fastify API (+ BullMQ worker entry from Phase 2.7)
+├── client/           Next.js frontend (named "client", not "frontend")
+├── docs/             ROADMAP.md, DESIGN.md, this file
+├── .github/workflows/ci.yml
+└── CLAUDE.md
+```
+
+## backend/
+```
+backend/
+├── index.js                 entry: imports bootstrap, buildApp(), listen, shutdown signals
+├── app.js                   export function buildApp(): creates Fastify, registers plugins, then registerRoutes
+├── drizzle.config.js
+├── eslint.config.js
+├── package.json             "type": "module", "imports": { "#src/*": "./src/*" }
+├── database/migrations/     drizzle-kit output
+├── bruno/<module>/          API request collections (Bruno) per module + environments/
+├── test/<module>/*.test.js  node:test; test/helpers/ (test-app.js, test-env.js)
+└── src/
+    ├── bootstrap/           index.js + env/load-dotenv.bootstrap.js (runs first)
+    ├── config/<area>/       builders like buildCorsConfig({ appConfig }); config/index.js re-exports
+    │                        areas: ai, auth, cors, database, env, logger, rate-limit, server
+    ├── constants/<area>/    *.constants.js; constants/index.js re-exports
+    ├── database/schema.js   re-exports every modules/<m>/<m>.table.js (for Drizzle)
+    ├── decorators/reply/    reply.success(...) decorator
+    ├── handlers/            error/ (handle-error, handle-not-found), process/ (graceful shutdown)
+    ├── hooks/<area>/        *.hook.js (auth check, ownership/access checks, rate limits)
+    ├── plugins/<area>/      *.plugin.js wrapped with fastify-plugin; plugins/index.js re-exports
+    ├── shared/schemas/      fields/, params/, query/ reusable request schemas
+    ├── utils/<area>/        *.util.js (errors, reply, password, pagination...); utils/index.js re-exports
+    └── modules/
+        ├── index.js         registerRoutes(fastify): registers each <m>Routes with a prefix
+        └── <module>/
+            ├── <module>.routes.js       export function <module>Routes(fastify) { fastify.post(...) }
+            ├── <entity>.table.js        Drizzle pgTable
+            ├── <entity>.constants.js    lengths, statuses, enums
+            ├── <entity>-columns.constants.js   selected columns for queries
+            ├── features/<featureName>/  one folder per endpoint/use-case (camelCase folder)
+            │   ├── <feature>.controller.js   reads request, calls service, returns reply.success({ data, message })
+            │   ├── <feature>.schema.js       request validation schema
+            │   └── <feature>.service.js      business logic
+            ├── shared/
+            │   ├── repositories/   one DB query per file: find-x-by-id.repository.js … + index.js
+            │   ├── services/       services reused by several features + index.js
+            │   └── utils/
+            ├── prompts/        (AI modules) prompt templates
+            └── providers/      (AI modules) provider adapters, e.g. providers/<name>/shared/*.util.js
+```
+
+### Naming conventions
+- Files: **kebab-case** with a role suffix: `login.controller.js`, `find-business-by-id.repository.js`, `cors.plugin.js`, `hash-password.util.js`, `check-user-is-logged-in.hook.js`, `user.table.js`.
+- Feature folders: **camelCase** (`forgotPassword`, `listSessions`). Module folders: camelCase plural (`businessUsers`, `aiGenerations`).
+- Functions are named after the role too: `loginController`, `loginService`, `findBusinessByIdRepository`, `hashPasswordUtil`, `corsPlugin`, `checkUserIsLoggedInHook`.
+- Functions take **one object argument** (`{ db, id }`, `{ server, email }`).
+- Every folder of shared pieces has an **`index.js` barrel** that re-exports; imports use `#src/...` aliases, e.g. `import { hashPasswordUtil } from '#src/utils/index.js'`.
+- Layering: routes → controller → service → repository. Repositories only talk to the DB; controllers never query the DB.
+
+### Planned modules for this project (mapped to the roadmap)
+`health`, `auth`, `users` (profile + settings), `sessions`, `mail`, `ai` (provider adapters: image provider + LangChain model), `generations`, `images`, `edits` (image-to-image, editing, history), `vision`, `prompts`, `projects` (+ collections), `credits`, `notifications`, `usage`, `billing`. Worker (2.7): a separate entry such as `backend/worker.js` that reuses the same `src/`.
+
+## client/
+```
+client/
+├── jsconfig.json             "paths": { "@/*": ["./src/*"] }
+└── src/
+    ├── app/                  Next.js App Router: login/, register/, forgot-password/, reset-password/,
+    │                         app/ (authenticated area: layout.js, page.js = dashboard, one folder per screen)
+    ├── components/
+    │   ├── layout/           navbar/, sidebar/
+    │   └── ui/               Button, Card, Input, Modal, Pill, Select, Skeleton, Spinner, ToastRegion…
+    ├── features/<feature>/   screen-specific components (auth/LoginForm.js, generator/, editor/…)
+    ├── constants/            per-feature constants + navigation.js
+    ├── context/              React contexts (Toast, MobileNav…)
+    ├── hooks/
+    ├── lib/                  API client, auth helpers
+    └── store/                Redux Toolkit store
+```
+- Components: **PascalCase** files (`LoginForm.js`, `Button.js`).
+- Pages are thin; UI lives in `features/` and `components/`.
+
+## Differences from business book (this project's stack wins)
+| Topic | business book | Mindcraft Digital Studio |
+|---|---|---|
+| Request validation | JSON Schema (Ajv) in `*.schema.js` | **Zod** in `*.schema.js` (same file name/location) |
+| Styling | CSS Modules (`*.module.css`) | **Tailwind + shadcn/ui** (shadcn components go in `components/ui/`) |
+| Dev restart | nodemon | either works; `node --watch` needs no extra package |
+| AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
+| Extra | — | Redis/BullMQ worker, storage service, credits |
