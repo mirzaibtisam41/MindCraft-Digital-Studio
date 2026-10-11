@@ -46,7 +46,7 @@ backend/
             ├── <entity>.table.js        Drizzle pgTable
             ├── <entity>.constants.js    lengths, statuses, enums
             ├── <entity>-columns.constants.js   selected columns for queries
-            ├── features/<featureName>/  one folder per endpoint/use-case (camelCase folder)
+            ├── features/<feature-name>/ one folder per endpoint/use-case (kebab-case folder)
             │   ├── <feature>.controller.js   reads request, calls service, returns reply.success({ data, message })
             │   ├── <feature>.schema.js       request validation schema
             │   └── <feature>.service.js      business logic
@@ -60,14 +60,14 @@ backend/
 
 ### Naming conventions
 - Files: **kebab-case** with a role suffix: `login.controller.js`, `find-business-by-id.repository.js`, `cors.plugin.js`, `hash-password.util.js`, `check-user-is-logged-in.hook.js`, `user.table.js`.
-- Feature folders: **camelCase** (`forgotPassword`, `listSessions`). Module folders: camelCase plural (`businessUsers`, `aiGenerations`).
+- Folders: **kebab-case** for every multiword name. Feature folders: `forgot-password`, `refresh-session`. Module folders: kebab-case plural (`user-settings`, `password-reset-tokens`). A module with a single small endpoint stays flat (`health/health.controller.js` + `health.routes.js`) instead of `features/<name>/`.
 - Function name = file name in camelCase + role suffix: `login.controller.js` → `loginController`, `find-business-by-id.repository.js` → `findBusinessByIdRepository`, `pino.config.js` → `pinoConfig` (a builder function gets a `build` prefix: `listen.config.js` → `buildListenConfig`), `cors.plugin.js` → `corsPlugin`, `not-found.handler.js` → `notFoundHandler`.
 - Functions take **one object argument** (`{ db, id }`, `{ server, email }`).
 - Every folder of shared pieces has an **`index.js` barrel** that re-exports; imports use `#src/...` aliases, e.g. `import { hashPasswordUtil } from '#src/utils/index.js'`.
 - Layering: routes → controller → service → repository. Repositories only talk to the DB; controllers never query the DB.
 
 ### Planned modules for this project (mapped to the roadmap)
-`health`, `auth`, `users` (profile, `/api/me`), `userSettings` (`/api/me/settings`), `sessions`, `passwordResetTokens`, `mail`, `ai` (provider adapters: image provider + LangChain model), `generations`, `images`, `edits` (image-to-image, editing, history), `vision`, `prompts`, `projects` (+ collections), `credits`, `notifications`, `usage`, `billing`. Worker (2.7): a separate entry such as `backend/worker.js` that reuses the same `src/`.
+`health`, `auth`, `users` (profile, `/api/me`), `user-settings` (`/api/me/settings`), `sessions`, `password-reset-tokens`, `mail`, `ai` (provider adapters: image provider + LangChain model), `generations`, `images`, `edits` (image-to-image, editing, history), `vision`, `prompts`, `projects` (+ collections), `credits`, `notifications`, `usage`, `billing`. Worker (2.7): a separate entry such as `backend/worker.js` that reuses the same `src/`.
 
 ## client/
 ```
@@ -111,10 +111,12 @@ client/
 | Refresh token | a signed JWT with `purpose: 'refresh'`, same secret as the access token; reuse detection relies on timing | **opaque random token** (`generateTokenUtil`), only its SHA-256 stored; rotation revokes the old row and inserts a new one in one transaction (`revoked_at IS NULL` guard stops concurrent double-rotation); a revoked token used again after a 10 s grace revokes all the user's sessions |
 | Refresh cookie helpers | `modules/auth/shared/cookies/refresh-cookie.js` (no role suffix, three exports in one file) | cookie options are a config builder `config/refresh-cookie.config.js` (`buildRefreshCookieConfig`, `REFRESH_COOKIE_NAME`); helpers are one function per file in `modules/auth/shared/utils/` (`set-`, `clear-`, `read-refresh-cookie.util.js`); the refresh endpoint clears the cookie only on `UNAUTHORIZED`, not on a 5xx |
 | Logout | needs a valid access token (`checkUserIsLoggedInHook`) | uses the **refresh cookie** and is idempotent, so a user with an expired access token can still log out |
-| Password reset token | a JWT signed with the app secret; "single use" inferred from `users.updated_at` | own module `passwordResetTokens` with a `password_reset_tokens` table: hashed token, 30 min expiry, consumed by one atomic `UPDATE … WHERE used_at IS NULL AND expires_at > now() RETURNING`; a new request invalidates older tokens |
+| Password reset token | a JWT signed with the app secret; "single use" inferred from `users.updated_at` | own module `password-reset-tokens` with a `password_reset_tokens` table: hashed token, 30 min expiry, consumed by one atomic `UPDATE … WHERE used_at IS NULL AND expires_at > now() RETURNING`; a new request invalidates older tokens |
 | Mail | one `send-email.service.js` hard-wired to Brevo | provider interface: `modules/mail/providers/<name>-mail.provider.js` (`console` for dev logs the email, `resend` for prod), `sendEmailService` picks one from `MAIL_PROVIDER`; env schema forbids `console` in production |
 | Password hashing | bcrypt (72-byte limit, `maxBytes` custom keyword) | **argon2id** (`argon2` package), max length 128, no custom Ajv keyword needed |
-| Profile / settings routes | `GET /auth/me` inside the auth module | `/api/me` lives in `users` (`users.routes.js`), `/api/me/settings` in `userSettings` (`user-settings.routes.js`); each routes plugin adds `checkUserIsLoggedInHook` with `addHook('onRequest')` once instead of per route |
+| Profile / settings routes | `GET /auth/me` inside the auth module | `/api/me` lives in `users` (`users.routes.js`), `/api/me/settings` in `user-settings` (`user-settings.routes.js`); each routes plugin adds `checkUserIsLoggedInHook` with `addHook('onRequest')` once instead of per route |
+| Folder naming | camelCase feature folders (`forgotPassword`) and camelCase module folders (`businessUsers`), while files are kebab-case: two styles in one path | **kebab-case everywhere** (`modules/user-settings/features/update-my-settings/update-my-settings.service.js`): folders and files use one style, and paths stay safe on case-sensitive Linux file systems. Exported function names stay camelCase |
+| Single-endpoint module | `health/features/checkHealth/check-health.controller.js` (two folders for one file) | **flat** `health/health.controller.js` + `health.routes.js`; `features/` appears only when a module has several use-cases |
 | Toasts | own `context/ToastContext.js` + `ToastRegion` | **sonner** via shadcn's `components/ui/sonner.jsx` (bottom-right, 3 visible, 6 s, pauses on hover as DESIGN.md asks); no `context/` folder needed yet |
 | Sign-out redirect | `AuthGuard` always adds `?next=` when the session ends, so a deliberate sign-out from a deep page sends the next login back there | `sessionEnded({ reason })`: a deliberate sign-out goes to plain `/login`; only an expired session keeps `?next=` |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |

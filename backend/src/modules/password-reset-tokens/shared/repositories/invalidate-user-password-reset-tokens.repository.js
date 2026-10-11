@@ -1,5 +1,5 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { passwordResetTokens } from '#src/modules/passwordResetTokens/password-reset-token.table.js';
+import { passwordResetTokens } from '#src/modules/password-reset-tokens/password-reset-token.table.js';
 
 export async function invalidateUserPasswordResetTokensRepository({
   db,

@@ -6,7 +6,7 @@ import {
 import { EMAIL_TAKEN_MESSAGE } from '#src/modules/auth/auth.constants.js';
 import * as authServices from '#src/modules/auth/shared/services/index.js';
 import * as userRepositories from '#src/modules/users/shared/repositories/index.js';
-import * as userSettingRepositories from '#src/modules/userSettings/shared/repositories/index.js';
+import * as userSettingRepositories from '#src/modules/user-settings/shared/repositories/index.js';
 
 async function checkEmailIsFree({ db, email }) {
   const existingUser = await userRepositories.findUserByEmailRepository({

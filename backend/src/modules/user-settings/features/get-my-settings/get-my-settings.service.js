@@ -1,5 +1,5 @@
 import { NotFoundError } from '#src/utils/index.js';
-import * as userSettingRepositories from '#src/modules/userSettings/shared/repositories/index.js';
+import * as userSettingRepositories from '#src/modules/user-settings/shared/repositories/index.js';
 
 export async function getMySettingsService({ db, userId }) {
   const settings =

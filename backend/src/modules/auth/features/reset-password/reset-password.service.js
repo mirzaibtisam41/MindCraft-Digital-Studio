@@ -4,7 +4,7 @@ import {
   hashTokenUtil,
 } from '#src/utils/index.js';
 import { RESET_LINK_INVALID_MESSAGE } from '#src/modules/auth/auth.constants.js';
-import * as passwordResetTokenRepositories from '#src/modules/passwordResetTokens/shared/repositories/index.js';
+import * as passwordResetTokenRepositories from '#src/modules/password-reset-tokens/shared/repositories/index.js';
 import * as sessionRepositories from '#src/modules/sessions/shared/repositories/index.js';
 import * as userRepositories from '#src/modules/users/shared/repositories/index.js';
 

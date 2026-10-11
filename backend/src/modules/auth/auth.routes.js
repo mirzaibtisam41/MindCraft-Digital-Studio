@@ -1,13 +1,13 @@
-import { forgotPasswordController } from './features/forgotPassword/forgot-password.controller.js';
-import { forgotPasswordBodySchema } from './features/forgotPassword/forgot-password.schema.js';
+import { forgotPasswordController } from './features/forgot-password/forgot-password.controller.js';
+import { forgotPasswordBodySchema } from './features/forgot-password/forgot-password.schema.js';
 import { loginController } from './features/login/login.controller.js';
 import { loginBodySchema } from './features/login/login.schema.js';
 import { logoutController } from './features/logout/logout.controller.js';
-import { refreshSessionController } from './features/refreshSession/refresh-session.controller.js';
+import { refreshSessionController } from './features/refresh-session/refresh-session.controller.js';
 import { registerController } from './features/register/register.controller.js';
 import { registerBodySchema } from './features/register/register.schema.js';
-import { resetPasswordController } from './features/resetPassword/reset-password.controller.js';
-import { resetPasswordBodySchema } from './features/resetPassword/reset-password.schema.js';
+import { resetPasswordController } from './features/reset-password/reset-password.controller.js';
+import { resetPasswordBodySchema } from './features/reset-password/reset-password.schema.js';
 
 export function authRoutes(fastify) {
   fastify.post(

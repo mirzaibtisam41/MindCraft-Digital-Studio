@@ -1,6 +1,6 @@
 import { authRoutes } from './auth/auth.routes.js';
 import { healthRoutes } from './health/health.routes.js';
-import { userSettingsRoutes } from './userSettings/user-settings.routes.js';
+import { userSettingsRoutes } from './user-settings/user-settings.routes.js';
 import { usersRoutes } from './users/users.routes.js';
 
 export async function registerRoutes(fastify) {

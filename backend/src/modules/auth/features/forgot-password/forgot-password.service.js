@@ -1,8 +1,8 @@
 import { generateTokenUtil, hashTokenUtil } from '#src/utils/index.js';
 import * as mailServices from '#src/modules/mail/shared/services/index.js';
 import { buildPasswordResetEmailTemplate } from '#src/modules/mail/templates/password-reset-email.template.js';
-import { PASSWORD_RESET_TOKEN_TTL_MINUTES } from '#src/modules/passwordResetTokens/password-reset-token.constants.js';
-import * as passwordResetTokenRepositories from '#src/modules/passwordResetTokens/shared/repositories/index.js';
+import { PASSWORD_RESET_TOKEN_TTL_MINUTES } from '#src/modules/password-reset-tokens/password-reset-token.constants.js';
+import * as passwordResetTokenRepositories from '#src/modules/password-reset-tokens/shared/repositories/index.js';
 import * as userRepositories from '#src/modules/users/shared/repositories/index.js';
 
 const MINUTE_MS = 60 * 1000;

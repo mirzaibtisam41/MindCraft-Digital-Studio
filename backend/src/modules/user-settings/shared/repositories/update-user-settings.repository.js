@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { userSettings } from '#src/modules/userSettings/user-setting.table.js';
+import { userSettings } from '#src/modules/user-settings/user-setting.table.js';
 
 export async function updateUserSettingsRepository({ db, userId, data }) {
   const [settings] = await db
