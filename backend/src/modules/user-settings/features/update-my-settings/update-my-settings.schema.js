@@ -3,7 +3,7 @@ import {
   THEMES,
   USER_SETTING_ASPECT_RATIO_MAX_LENGTH,
   USER_SETTING_DEFAULT_MODEL_MAX_LENGTH,
-} from '#src/modules/userSettings/user-setting.constants.js';
+} from '#src/modules/user-settings/user-setting.constants.js';
 
 export const updateMySettingsBodySchema = {
   type: 'object',
