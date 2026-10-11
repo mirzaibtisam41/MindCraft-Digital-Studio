@@ -73,21 +73,25 @@ backend/
 ```
 client/
 ├── jsconfig.json             "paths": { "@/*": ["./src/*"] }
+├── components.json           shadcn/ui config (JS, new-york style, aliases @/components, @/lib/utils)
+├── .env.example              NEXT_PUBLIC_API_URL=http://localhost:8000
 └── src/
     ├── app/                  Next.js App Router: login/, register/, forgot-password/, reset-password/,
-    │                         app/ (authenticated area: layout.js, page.js = dashboard, one folder per screen)
+    │                         app/ (authenticated area: layout.js = AuthGuard + AppShell, page.js = dashboard,
+    │                         settings/<section>/page.js, [...missing] → not-found)
     ├── components/
-    │   ├── layout/           navbar/, sidebar/
-    │   └── ui/               Button, Card, Input, Modal, Pill, Select, Skeleton, Spinner, ToastRegion…
-    ├── features/<feature>/   screen-specific components (auth/LoginForm.js, generator/, editor/…)
-    ├── constants/            per-feature constants + navigation.js
-    ├── context/              React contexts (Toast, MobileNav…)
-    ├── hooks/
-    ├── lib/                  API client, auth helpers
-    └── store/                Redux Toolkit store
+    │   ├── layout/           AppShell, AuthLayout, guards, skeletons, navbar/, sidebar/
+    │   └── ui/               shadcn components (button.jsx, switch.jsx…) + our own (Field.js, PasswordInput.js…)
+    ├── features/<feature>/   feature code: <feature>Api.js (RTK Query endpoints), slices, forms, sections
+    ├── constants/            navigation.js, settings.js, formLimits.js
+    ├── hooks/                useSignOut, useSettingsDraft, useFormState, useResolvedTheme
+    ├── lib/                  apiUrl, apiError, refreshLock, safeNextPath, validators, theme, utils (cn)
+    └── store/                store.js, baseApi.js (fetch + 401 → single refresh → retry), StoreProvider.js
 ```
-- Components: **PascalCase** files (`LoginForm.js`, `Button.js`).
-- Pages are thin; UI lives in `features/` and `components/`.
+- Components: **PascalCase** files (`LoginForm.js`), except shadcn-generated files in `components/ui/`, which keep the CLI's kebab-case `.jsx` names so `npx shadcn add` can update them.
+- Pages are thin server components (metadata only); UI lives in `features/` and `components/`.
+- Auth: access token only in Redux memory; on load `SessionBoot` calls `/api/auth/refresh` (httpOnly cookie) to restore it. Refresh calls are single-flight and wrapped in a Web Lock so tabs do not rotate the same token at once.
+- Theme: tokens from DESIGN.md live in `globals.css` (`:root` = dark, `[data-theme='light']` overrides). An inline script in `layout.js` applies the saved theme before paint. `ThemeSync` keeps it in step with the user's settings.
 
 ## Differences from business book (this project's stack wins)
 | Topic | business book | Mindcraft Digital Studio |
@@ -111,5 +115,7 @@ client/
 | Mail | one `send-email.service.js` hard-wired to Brevo | provider interface: `modules/mail/providers/<name>-mail.provider.js` (`console` for dev logs the email, `resend` for prod), `sendEmailService` picks one from `MAIL_PROVIDER`; env schema forbids `console` in production |
 | Password hashing | bcrypt (72-byte limit, `maxBytes` custom keyword) | **argon2id** (`argon2` package), max length 128, no custom Ajv keyword needed |
 | Profile / settings routes | `GET /auth/me` inside the auth module | `/api/me` lives in `users` (`users.routes.js`), `/api/me/settings` in `userSettings` (`user-settings.routes.js`); each routes plugin adds `checkUserIsLoggedInHook` with `addHook('onRequest')` once instead of per route |
+| Toasts | own `context/ToastContext.js` + `ToastRegion` | **sonner** via shadcn's `components/ui/sonner.jsx` (bottom-right, 3 visible, 6 s, pauses on hover as DESIGN.md asks); no `context/` folder needed yet |
+| Sign-out redirect | `AuthGuard` always adds `?next=` when the session ends, so a deliberate sign-out from a deep page sends the next login back there | `sessionEnded({ reason })`: a deliberate sign-out goes to plain `/login`; only an expired session keeps `?next=` |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
 | Extra | — | Redis/BullMQ worker, storage service, credits |
