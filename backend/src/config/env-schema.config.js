@@ -7,7 +7,7 @@ import {
 
 export const envSchemaConfig = {
   type: 'object',
-  required: ['NODE_ENV', 'PORT'],
+  required: ['NODE_ENV', 'PORT', 'DATABASE_URL'],
   properties: {
     NODE_ENV: {
       type: 'string',
@@ -21,5 +21,12 @@ export const envSchemaConfig = {
     RATE_LIMIT_MAX: { type: 'number', minimum: 1, default: 100 },
     RATE_LIMIT_WINDOW_MS: { type: 'number', minimum: 1000, default: 60000 },
     SHUTDOWN_TIMEOUT_MS: { type: 'number', minimum: 1000, default: 10000 },
+    DATABASE_URL: { type: 'string', minLength: 1 },
+    DATABASE_POOL_MAX: { type: 'number', minimum: 1, default: 10 },
+    DATABASE_CONNECTION_TIMEOUT_MS: {
+      type: 'number',
+      minimum: 1000,
+      default: 5000,
+    },
   },
 };
