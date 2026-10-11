@@ -1,3 +1,6 @@
 export async function checkHealthController(_request, reply) {
-  return reply.send({ status: 'ok', uptime: process.uptime() });
+  return reply.success({
+    data: { status: 'ok', uptime: process.uptime() },
+    message: 'Server is running',
+  });
 }
