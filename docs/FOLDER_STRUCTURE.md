@@ -92,12 +92,12 @@ client/
 ## Differences from business book (this project's stack wins)
 | Topic | business book | Mindcraft Digital Studio |
 |---|---|---|
-| Request validation | JSON Schema (Ajv) in `*.schema.js` | **Zod** in `*.schema.js` (same file name/location) |
 | Styling | CSS Modules (`*.module.css`) | **Tailwind + shadcn/ui** (shadcn components go in `components/ui/`) |
 | Dev restart | nodemon | either works; `node --watch` needs no extra package |
 | Infrastructure folders | one sub-folder per area, often with a single file (`config/logger/pino.config.js`) | **flat** (`config/pino.config.js`); `<area>/` sub-folder only at 3+ files |
 | `.gitignore` | one per folder (`backend/`, `client/`) | **one at repo root** |
-| Plugin naming | `validate-env.plugin.js` / `validateEnvPlugin` (named after an action) | **`env.plugin.js` / `envPlugin`**: plugins are named after what they register, like `cors.plugin.js` |
+| Plugin naming | `validate-env.plugin.js` / `validateEnvPlugin` (named after an action) | plugins are named after what they register, like `cors.plugin.js` / `corsPlugin` |
+| Env / config | `validate-env.plugin.js` reads `process.env` itself; other files (pino, fastify config) also read `process.env` | env is validated **once** in `buildApp()` with `env-schema` (`config/app.config.js` → `buildAppConfig()`); the same `appConfig` builds the logger and is decorated as `fastify.config` by `plugins/config.plugin.js`. **Only `fastify.config` / `appConfig` is used; nothing reads `process.env` directly** (except bootstrap loading `.env`) |
 | Reply decorator | `decorators/reply/send-success.decorator.js` (`sendSuccessDecorator`) + `plugins/reply/success-reply.plugin.js` | **flat** `decorators/reply-success.decorator.js` (`replySuccessDecorator`) + `plugins/reply-success.plugin.js` (`replySuccessPlugin`): one name, `reply-success`, everywhere |
 | HTTP errors | `utils/errors/http-errors.util.js`, codes hard-coded as `'FST_NOT_FOUND'` (Fastify's own prefix) | **flat** `utils/http-errors.util.js`; codes come from `constants/error-code.constants.js` (`ERROR_CODE.NOT_FOUND`), one list the client can rely on and provider error categories get added to |
 | Error handler | `handlers/error/handle-error.handler.js`; body key `error: 'FST_...'`; 500 messages hidden except an `instanceof` allow-list | **flat** `handlers/error.handler.js`; body key `code` (from `ERROR_CODE`), validation errors add `details`; a private `resolveError()` decides the response; messages are shown only for our own `ERROR_CODE` errors (that list is the allow-list), every other 5xx is hidden |

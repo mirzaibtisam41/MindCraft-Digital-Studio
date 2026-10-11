@@ -20,7 +20,7 @@ Estimated effort: PDF says 38–62 dev days; realistically **3–4 months** when
 | Backend | Node.js + Fastify + **JavaScript** (ES modules, not TypeScript) |
 | Frontend | Next.js + Tailwind + shadcn/ui |
 | AI | LangChain.js + compatible image provider SDK |
-| Database | PostgreSQL + Drizzle + Zod |
+| Database | PostgreSQL + Drizzle |
 | Async | Redis + BullMQ (separate worker process) |
 | Storage | Cloudflare R2 or Supabase Storage (private bucket, signed URLs) |
 | Realtime | SSE or Socket.IO (pick one in 2.7.6) |
@@ -29,9 +29,9 @@ Estimated effort: PDF says 38–62 dev days; realistically **3–4 months** when
 ## Recurring "how to do it" patterns (the PDF repeats these per substep)
 - **Feature:** define input/output + business rule → small working example → persist/connect data → verify happy path + edge cases.
 - **Config/integration:** add package/config, keep secrets in env, validate env at startup, verify with a health/smoke check.
-- **Validation:** Zod schemas with limits; test valid, missing, invalid and boundary inputs.
+- **Validation:** Fastify JSON Schemas (Ajv) with limits; test valid, missing, invalid and boundary inputs.
 - **DB table:** Drizzle schema with IDs, FKs, constraints, timestamps → migrate → insert/read a sample row. Note indexes.
-- **API route:** Fastify route + Zod validation + auth/ownership check + service call + predictable success/error response.
+- **API route:** Fastify route + JSON Schema validation + auth/ownership check + service call + predictable success/error response.
 - **Ownership:** verify identity; users only access their own resources; test unauthorized + cross-user access.
 - **Provider:** map app's internal options to provider-specific args per provider docs; identify supported capabilities.
 - **Errors:** map to categories, safe client message, structured logs; never expose provider internals.
@@ -52,7 +52,7 @@ Deliverable: authenticated Fastify backend, PostgreSQL/Drizzle, LangChain fundam
   - ➕ 2.1.1.6 **Local services without Docker (Windows):** install **PostgreSQL** with the official Windows installer (includes pgAdmin). **Redis** is only needed from 2.7: Redis has no official Windows build, so use **Memurai** (Redis-compatible Windows app, free dev edition) or a free hosted **Upstash Redis**. Decide at 2.7.1.2.
   - ➕ 2.1.1.7 **Repo structure:** follow `docs/FOLDER_STRUCTURE.md` (copied from the sibling `business book` project): `backend/` (API + worker as two entry points, 2.7.7.1) and `client/` (2.8).
 - **2.1.2 Application Architecture:** feature-based folders · app bootstrap · Fastify plugins · route/controller/service separation · shared utils & constants
-- **2.1.3 Fastify Core Config:** CORS · Helmet · rate limiting · Pino request logging · global error handler · Zod request validation · graceful shutdown · health endpoint
+- **2.1.3 Fastify Core Config:** CORS · Helmet · rate limiting · Pino request logging · global error handler · JSON Schema request validation (Fastify built-in, not Zod) · graceful shutdown · health endpoint
 - **2.1.4 Database Setup:** PostgreSQL connection · Drizzle config · migrations · `users` table · sessions/refresh-tokens table · repository pattern
   - ➕ 2.1.4.7 **User settings** (table or JSON column): default model, default aspect ratio, auto-enhance prompts, save originals with edits, notification toggles, theme, `onboarding_completed_at`
 - **2.1.5 Authentication:** register · login · password hashing · access + refresh tokens · protected routes · refresh-token rotation · logout · forgot/reset password
