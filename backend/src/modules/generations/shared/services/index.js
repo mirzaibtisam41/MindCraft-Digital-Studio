@@ -3,3 +3,7 @@ export * from './validate-model.service.js';
 export * from './validate-settings.service.js';
 export * from './normalize-options.service.js';
 export * from './validate-unsupported-params.service.js';
+export * from './build-provider-request.service.js';
+export * from './normalize-image-metadata.service.js';
+export * from './save-generated-images.service.js';
+export * from './generate-image.service.js';
