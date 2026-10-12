@@ -10,6 +10,11 @@ import {
 } from '#src/modules/ai-providers/shared/services/index.js';
 import * as userSettingsRepositories from '#src/modules/user-settings/shared/repositories/index.js';
 import * as generationRepositories from '#src/modules/generations/shared/repositories/index.js';
+import {
+  estimateGenerationCostService,
+  refundGenerationCreditsService,
+  reserveGenerationCreditsService,
+} from '#src/modules/credits/shared/services/index.js';
 import { mapGenerationErrorUtil } from '#src/modules/generations/shared/utils/index.js';
 import { validatePromptService } from './validate-prompt.service.js';
 import { validateModelService } from './validate-model.service.js';
@@ -70,19 +75,35 @@ export async function generateImagesService({ fastify, userId, input }) {
     capabilities,
   });
 
-  const generation = await generationRepositories.insertGenerationRepository({
-    db: fastify.db,
-    data: {
+  const creditCost = estimateGenerationCostService({
+    model: validModel,
+    options,
+  });
+
+  const generation = await fastify.db.transaction(async (tx) => {
+    const created = await generationRepositories.insertGenerationRepository({
+      db: tx,
+      data: {
+        userId,
+        type: GENERATION_TYPE.TEXT_TO_IMAGE,
+        status: GENERATION_STATUS.PROCESSING,
+        prompt: validPrompt,
+        provider: capabilities.provider,
+        model: validModel,
+        settings: options,
+        imageCount: options.n,
+        startedAt: new Date(),
+      },
+    });
+
+    await reserveGenerationCreditsService({
+      db: tx,
       userId,
-      type: GENERATION_TYPE.TEXT_TO_IMAGE,
-      status: GENERATION_STATUS.PROCESSING,
-      prompt: validPrompt,
-      provider: capabilities.provider,
-      model: validModel,
-      settings: options,
-      imageCount: options.n,
-      startedAt: new Date(),
-    },
+      generationId: created.id,
+      amount: creditCost,
+    });
+
+    return created;
   });
 
   try {
@@ -116,6 +137,12 @@ export async function generateImagesService({ fastify, userId, input }) {
 
     return { generation: completed, images };
   } catch (error) {
+    await refundGenerationCreditsService({
+      db: fastify.db,
+      userId,
+      generationId: generation.id,
+      amount: creditCost,
+    });
     await markGenerationFailed({ fastify, generationId: generation.id, error });
     throw error;
   }

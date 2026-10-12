@@ -44,6 +44,12 @@ export const ServiceUnavailableError = createError(
   StatusCodes.SERVICE_UNAVAILABLE,
 );
 
+export const InsufficientCreditsError = createError(
+  ERROR_CODE.INSUFFICIENT_CREDITS,
+  '%s',
+  StatusCodes.PAYMENT_REQUIRED,
+);
+
 export const ContentBlockedError = createError(
   ERROR_CODE.CONTENT_BLOCKED,
   '%s',

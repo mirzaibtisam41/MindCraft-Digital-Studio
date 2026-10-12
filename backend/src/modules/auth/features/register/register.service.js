@@ -5,6 +5,7 @@ import {
 } from '#src/utils/index.js';
 import { EMAIL_TAKEN_MESSAGE } from '#src/modules/auth/auth.constants.js';
 import * as authServices from '#src/modules/auth/shared/services/index.js';
+import * as creditServices from '#src/modules/credits/shared/services/index.js';
 import * as userRepositories from '#src/modules/users/shared/repositories/index.js';
 import * as userSettingRepositories from '#src/modules/user-settings/shared/repositories/index.js';
 
@@ -31,6 +32,11 @@ async function createUserWithSession({ server, newUser, client }) {
       userId: user.id,
     });
 
+    const creditBalance = await creditServices.grantSignupCreditsService({
+      db: tx,
+      userId: user.id,
+    });
+
     const tokens = await authServices.createSessionService({
       server,
       db: tx,
@@ -38,7 +44,7 @@ async function createUserWithSession({ server, newUser, client }) {
       client,
     });
 
-    return { ...tokens, user };
+    return { ...tokens, user: { ...user, creditBalance } };
   });
 }
 

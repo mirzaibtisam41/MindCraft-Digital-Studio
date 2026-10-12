@@ -4,6 +4,7 @@ export const USER_COLUMNS = {
   id: users.id,
   name: users.name,
   email: users.email,
+  creditBalance: users.creditBalance,
   createdAt: users.createdAt,
   updatedAt: users.updatedAt,
 };
