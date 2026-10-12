@@ -61,7 +61,7 @@ Deliverable: authenticated Fastify backend, PostgreSQL/Drizzle, LangChain fundam
 - **2.1.6 LangChain Fundamentals:** what LangChain.js is · models/providers · prompt templates · Runnable interface · Runnable sequences · output parsers · LangChain error handling · provider SDK vs LangChain responsibilities
 - **2.1.7 AI Provider Foundation:** select image provider · API credentials · image-generation provider adapter · LangChain model for prompt enhancement + vision · timeouts & retry policy · normalize provider responses · map provider errors
   - Note: pick the provider early and write down its **capability matrix** (img2img, inpainting, strength, seed, negative prompt, upscaling, progress reporting, pricing). Phases 2.2–2.4 depend on it.
-- ➕ **2.1.8 Testing Setup:** test runner (Vitest or `node:test`) · Fastify `app.inject()` route tests · separate test database · first tests for health + register/login/refresh
+- ➕ **2.1.8 Testing Setup (SKIPPED 2026-10-12, user decision; no test setup in the project for now):** test runner (Vitest or `node:test`) · Fastify `app.inject()` route tests · separate test database · first tests for health + register/login/refresh
 
 ## Phase 2.2 — Text-to-Image Generation
 Deliverable: working Text-to-Image API with validated options and persisted generation metadata.
@@ -69,7 +69,7 @@ Deliverable: working Text-to-Image API with validated options and persisted gene
 - **2.2.1 Fundamentals:** diffusion basics · text-to-image workflow · model capabilities/limitations · output formats · pricing
 - **2.2.2 Database:** `generations` table · generation types · prompt & settings fields · generation status · model/provider metadata · generated image records
   - Note: "generated image records" **is the `images` table**. Create it here with the minimum columns and extend it in 2.6.2 (no second table).
-  - ➕ 2.2.2.7 **Temporary storage:** a `StorageService` interface with a **local-disk driver** (`backend/storage/`, git-ignored). Download the provider image immediately (provider URLs expire) and store it. Serve it through an authenticated route. 2.6.1 swaps in the R2/Supabase driver without changing callers.
+  - ➕ 2.2.2.7 **Cloud storage (decided 2026-10-12: skip the local-disk driver, go straight to Cloudflare R2):** a `StorageService` interface (`save`, `read`, `delete`, `getSignedUrl`) with an **R2 driver** (S3-compatible, `@aws-sdk/client-s3`, private bucket). Download the provider image immediately (provider URLs expire) and upload it. Serve it through an authenticated route / short-lived signed URL. Absorbs the core of 2.6.1.
 - **2.2.3 Prompt Processing:** validate prompt · validate model · validate supported settings · normalize options · handle unsupported params
 - **2.2.4 Service:** build provider request · execute · handle URL/binary response · normalize image metadata · handle provider failures · save generation record
 - **2.2.5 API:** `POST /api/images/generate` · `GET /api/images/generations/:id` · request schema · response schema · auth + ownership checks
@@ -112,7 +112,7 @@ Deliverable: cloud storage, searchable gallery, project organization, generation
 - **2.6.3 My Creations:** paginated listing · search prompt/title · filter by type · filter by model/date · favorite toggle · image detail · bulk delete/download
 - **2.6.4 Projects:** `projects` table · project-image relations · create · update · delete · add/remove images · project gallery + cover image
   - ➕ 2.6.4.8 **Collections inside projects** (design: "Hero shots · 9", "+ New collection"): `project_collections` table; a project image can optionally belong to a collection
-  - Note 2.6.1: the R2/Supabase driver replaces the local-disk driver from 2.2.2.7; write a one-off script to move existing files.
+  - Note 2.6.1: the R2 driver already exists from 2.2.2.7; only thumbnails and secure deletion remain here.
 - **2.6.5 Generation History:** list · filter by status · details · reuse prompt/settings · link images · pagination + sorting
 - **2.6.6 Library APIs:** `GET/DELETE /api/images[/:id]` · `POST/GET /api/projects` · `GET/PATCH/DELETE /api/projects/:id` · project-image management endpoints
 
@@ -175,7 +175,7 @@ Core generation, editing, vision, prompt studio, gallery/projects, async queue a
 
 ## Review notes (2026-10-11)
 Why the ➕ items were added:
-1. **Storage came too late:** images are generated in 2.2, but storage only arrived in 2.6, and provider URLs expire → ➕ 2.2.2.7 local-disk storage driver.
+1. **Storage came too late:** images are generated in 2.2, but storage only arrived in 2.6, and provider URLs expire → ➕ 2.2.2.7 storage driver (originally local-disk, changed to Cloudflare R2 on 2026-10-12).
 2. **Credits came too late:** the queue and UI need held/refunded credits before 2.9 → ➕ 2.2.7 minimal ledger, ➕ 2.7.3.9 holds with jobs; 2.9.2 extends them.
 3. **Testing only at the end:** → ➕ 2.1.8 test setup + a test checkpoint at the end of every phase.
 4. **Design features missing from the plan:** settings/preferences, notifications, project collections, upscale (2× HD), 2FA/sessions, onboarding flag + signup credits → added in their phases.
