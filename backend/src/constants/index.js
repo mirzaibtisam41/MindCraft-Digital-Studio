@@ -4,4 +4,5 @@ export * from './error-code.constants.js';
 export * from './shutdown.constants.js';
 export * from './password.constants.js';
 export * from './mail-provider.constants.js';
+export * from './ai-image-provider.constants.js';
 export * from './cookie-same-site.constants.js';
