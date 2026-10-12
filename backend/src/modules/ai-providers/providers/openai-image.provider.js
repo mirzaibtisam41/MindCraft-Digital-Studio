@@ -12,6 +12,7 @@ async function generateImages({ fastify, model, request }) {
       size: request.size,
       quality: request.quality,
       n: request.n,
+      background: request.background,
       output_format: DEFAULT_IMAGE_OUTPUT_FORMAT,
     });
   } catch (error) {

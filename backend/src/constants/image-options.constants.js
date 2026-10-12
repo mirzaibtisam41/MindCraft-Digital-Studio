@@ -16,3 +16,13 @@ export const IMAGE_QUALITIES = Object.values(IMAGE_QUALITY);
 
 export const MAX_IMAGES_PER_REQUEST = 10;
 export const MAX_REFERENCE_IMAGES = 16;
+
+export const IMAGE_BACKGROUND = {
+  AUTO: 'auto',
+  OPAQUE: 'opaque',
+  TRANSPARENT: 'transparent',
+};
+
+export const IMAGE_BACKGROUNDS = Object.values(IMAGE_BACKGROUND);
+
+export const MIN_IMAGES_PER_REQUEST = 1;

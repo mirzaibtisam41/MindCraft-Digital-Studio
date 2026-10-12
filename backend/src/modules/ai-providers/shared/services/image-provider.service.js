@@ -6,9 +6,10 @@ export async function generateImageService({
   size,
   quality,
   n,
+  background,
 }) {
   return openaiImageProvider({
     fastify,
-    request: { prompt, size, quality, n },
+    request: { prompt, size, quality, n, background },
   });
 }

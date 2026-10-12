@@ -4,3 +4,8 @@ export * from './schemas/fields/password-field.schema.js';
 export * from './schemas/fields/current-password-field.schema.js';
 export * from './schemas/fields/prompt-field.schema.js';
 export * from './schemas/fields/model-field.schema.js';
+export * from './schemas/fields/image-size-field.schema.js';
+export * from './schemas/fields/image-quality-field.schema.js';
+export * from './schemas/fields/image-count-field.schema.js';
+export * from './schemas/fields/image-background-field.schema.js';
+export * from './schemas/fields/image-output-format-field.schema.js';
