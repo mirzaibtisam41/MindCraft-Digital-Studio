@@ -25,6 +25,10 @@ export const envSchemaConfig = {
     'DATABASE_URL',
     'JWT_ACCESS_SECRET',
     'OPENAI_API_KEY',
+    'STORAGE_R2_ACCOUNT_ID',
+    'STORAGE_R2_ACCESS_KEY_ID',
+    'STORAGE_R2_SECRET_ACCESS_KEY',
+    'STORAGE_R2_BUCKET',
   ],
   properties: {
     NODE_ENV: {
@@ -83,6 +87,16 @@ export const envSchemaConfig = {
     },
     OPENAI_TIMEOUT_MS: { type: 'number', minimum: 1000, default: 120000 },
     OPENAI_MAX_RETRIES: { type: 'number', minimum: 0, maximum: 5, default: 2 },
+    STORAGE_R2_ACCOUNT_ID: { type: 'string', minLength: 1 },
+    STORAGE_R2_ACCESS_KEY_ID: { type: 'string', minLength: 1 },
+    STORAGE_R2_SECRET_ACCESS_KEY: { type: 'string', minLength: 1 },
+    STORAGE_R2_BUCKET: { type: 'string', minLength: 1 },
+    STORAGE_SIGNED_URL_TTL_SECONDS: {
+      type: 'number',
+      minimum: 30,
+      maximum: 3600,
+      default: 300,
+    },
   },
   allOf: [
     {
