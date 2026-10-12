@@ -4,7 +4,9 @@ import {
 } from '#src/modules/generations/generation.constants.js';
 import {
   generateImageService as callImageProviderService,
+  getDefaultImageModelService,
   getImageCapabilitiesService,
+  listImageCapabilitiesService,
 } from '#src/modules/ai-providers/shared/services/index.js';
 import * as userSettingsRepositories from '#src/modules/user-settings/shared/repositories/index.js';
 import * as generationRepositories from '#src/modules/generations/shared/repositories/index.js';
@@ -35,23 +37,33 @@ async function markGenerationFailed({ fastify, generationId, error }) {
 export async function generateImagesService({ fastify, userId, input }) {
   const { prompt, model, seed, negativePrompt, strength, ...rawSettings } =
     input;
-  const capabilities = getImageCapabilitiesService({ fastify });
+  const userSettings =
+    await userSettingsRepositories.findUserSettingsByUserIdRepository({
+      db: fastify.db,
+      userId,
+    });
+  const validModel = validateModelService({
+    model,
+    userDefaultModel: userSettings?.defaultModel,
+    defaultModel: getDefaultImageModelService({ fastify }),
+    supportedModels: listImageCapabilitiesService().map(
+      (supported) => supported.model,
+    ),
+  });
+  const capabilities = getImageCapabilitiesService({
+    fastify,
+    model: validModel,
+  });
 
   validateUnsupportedParamsService({
     params: { seed, negativePrompt, strength },
     capabilities,
   });
   const validPrompt = validatePromptService({ prompt, capabilities });
-  const validModel = validateModelService({ model, capabilities });
   const settings = validateSettingsService({
     settings: rawSettings,
     capabilities,
   });
-  const userSettings =
-    await userSettingsRepositories.findUserSettingsByUserIdRepository({
-      db: fastify.db,
-      userId,
-    });
   const options = normalizeOptionsService({
     settings,
     userSettings,
@@ -76,7 +88,11 @@ export async function generateImagesService({ fastify, userId, input }) {
   try {
     const result = await callImageProviderService({
       fastify,
-      ...buildProviderRequestService({ prompt: validPrompt, options }),
+      ...buildProviderRequestService({
+        model: validModel,
+        prompt: validPrompt,
+        options,
+      }),
     });
 
     const images = await saveGeneratedImagesService({

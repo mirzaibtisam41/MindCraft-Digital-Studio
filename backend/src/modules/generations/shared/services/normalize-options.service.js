@@ -54,6 +54,8 @@ export function normalizeOptionsService({
     quality: settings.quality ?? defaults.quality,
     n: settings.n ?? defaults.n,
     background: settings.background ?? defaults.background,
+    moderation: settings.moderation ?? defaults.moderation,
     outputFormat: settings.outputFormat ?? defaults.outputFormat,
+    style: settings.style ?? null,
   };
 }

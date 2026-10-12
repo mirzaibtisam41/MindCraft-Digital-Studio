@@ -2,14 +2,16 @@ import { openaiImageProvider } from '#src/modules/ai-providers/providers/index.j
 
 export async function generateImageService({
   fastify,
+  model,
   prompt,
   size,
   quality,
   n,
   background,
+  moderation,
 }) {
   return openaiImageProvider({
     fastify,
-    request: { prompt, size, quality, n, background },
+    request: { model, prompt, size, quality, n, background, moderation },
   });
 }

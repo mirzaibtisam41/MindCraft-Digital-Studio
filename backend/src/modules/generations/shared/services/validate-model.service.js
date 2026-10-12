@@ -1,13 +1,26 @@
 import { BadRequestError } from '#src/utils/index.js';
 
-export function validateModelService({ model, capabilities }) {
-  if (model === undefined || model === null) {
-    return capabilities.model;
+export function validateModelService({
+  model,
+  userDefaultModel,
+  defaultModel,
+  supportedModels,
+}) {
+  if (model !== undefined && model !== null) {
+    const requestedModel = typeof model === 'string' ? model.trim() : model;
+
+    if (!supportedModels.includes(requestedModel)) {
+      throw new BadRequestError(
+        `Unsupported image model. Supported: ${supportedModels.join(', ')}`,
+      );
+    }
+
+    return requestedModel;
   }
 
-  if (typeof model !== 'string' || model.trim() !== capabilities.model) {
-    throw new BadRequestError('Unsupported image model');
+  if (supportedModels.includes(userDefaultModel)) {
+    return userDefaultModel;
   }
 
-  return capabilities.model;
+  return defaultModel;
 }

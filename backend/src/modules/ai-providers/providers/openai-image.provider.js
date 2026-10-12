@@ -6,15 +6,16 @@ import {
 import { ServiceUnavailableError } from '#src/utils/index.js';
 import { mapOpenaiErrorUtil } from '#src/modules/ai-providers/shared/utils/index.js';
 
-async function generateImages({ fastify, model, request }) {
+async function generateImages({ fastify, request }) {
   try {
     return await fastify.openai.images.generate({
-      model,
+      model: request.model,
       prompt: request.prompt,
       size: request.size,
       quality: request.quality,
       n: request.n,
       background: request.background,
+      moderation: request.moderation,
       output_format: DEFAULT_IMAGE_OUTPUT_FORMAT,
     });
   } catch (error) {
@@ -56,8 +57,8 @@ async function readImageBinary({ fastify, image }) {
 }
 
 export async function openaiImageProvider({ fastify, request }) {
-  const model = fastify.config.OPENAI_IMAGE_MODEL;
-  const result = await generateImages({ fastify, model, request });
+  const { model } = request;
+  const result = await generateImages({ fastify, request });
 
   const images = await Promise.all(
     result.data.map(async (image) => ({

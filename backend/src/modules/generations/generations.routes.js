@@ -1,11 +1,14 @@
 import { checkUserIsLoggedInHook } from '#src/hooks/index.js';
 import { generateImagesController } from './features/generate-images/generate-images.controller.js';
 import { generateImagesBodySchema } from './features/generate-images/generate-images.schema.js';
+import { getImageOptionsController } from './features/get-image-options/get-image-options.controller.js';
 import { getGenerationController } from './features/get-generation/get-generation.controller.js';
 import { getGenerationParamsSchema } from './features/get-generation/get-generation.schema.js';
 
 export function generationsRoutes(fastify) {
   fastify.addHook('onRequest', checkUserIsLoggedInHook);
+
+  fastify.get('/options', getImageOptionsController);
 
   fastify.post(
     '/generate',

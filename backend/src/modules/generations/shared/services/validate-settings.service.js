@@ -1,4 +1,5 @@
 import { BadRequestError } from '#src/utils/index.js';
+import { GENERATION_STYLE_PRESET_IDS } from '#src/modules/generations/generation-style-preset.constants.js';
 
 function assertSupportedChoice({ value, supportedValues, label }) {
   if (value === undefined) {
@@ -13,7 +14,8 @@ function assertSupportedChoice({ value, supportedValues, label }) {
 }
 
 export function validateSettingsService({ settings, capabilities }) {
-  const { size, quality, n, background, outputFormat } = settings;
+  const { size, quality, n, background, moderation, outputFormat, style } =
+    settings;
 
   assertSupportedChoice({
     value: size,
@@ -34,6 +36,18 @@ export function validateSettingsService({ settings, capabilities }) {
   });
 
   assertSupportedChoice({
+    value: moderation,
+    supportedValues: capabilities.moderations,
+    label: 'moderation level',
+  });
+
+  assertSupportedChoice({
+    value: style,
+    supportedValues: GENERATION_STYLE_PRESET_IDS,
+    label: 'style preset',
+  });
+
+  assertSupportedChoice({
     value: outputFormat,
     supportedValues: capabilities.outputFormats,
     label: 'output format',
@@ -50,5 +64,5 @@ export function validateSettingsService({ settings, capabilities }) {
     }
   }
 
-  return { size, quality, n, background, outputFormat };
+  return { size, quality, n, background, moderation, outputFormat, style };
 }

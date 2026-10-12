@@ -1,4 +1,5 @@
 import { GENERATION_PROMPT_MAX_LENGTH } from '#src/modules/generations/generation.constants.js';
+import { GENERATION_STYLE_MAX_LENGTH } from '#src/modules/generations/generation-style-preset.constants.js';
 import { ASPECT_RATIO_PATTERN } from '#src/modules/user-settings/user-setting.constants.js';
 
 export const generateImagesBodySchema = {
@@ -20,7 +21,13 @@ export const generateImagesBodySchema = {
     quality: { type: 'string', minLength: 1, maxLength: 20 },
     n: { type: 'integer', minimum: 1 },
     background: { type: 'string', minLength: 1, maxLength: 20 },
+    moderation: { type: 'string', minLength: 1, maxLength: 20 },
     outputFormat: { type: 'string', minLength: 1, maxLength: 20 },
+    style: {
+      type: 'string',
+      minLength: 1,
+      maxLength: GENERATION_STYLE_MAX_LENGTH,
+    },
     seed: { type: 'integer' },
     negativePrompt: { type: 'string', maxLength: GENERATION_PROMPT_MAX_LENGTH },
     strength: { type: 'number' },
