@@ -4,3 +4,6 @@ export * from './find-user-by-email.repository.js';
 export * from './find-user-with-password-by-email.repository.js';
 export * from './find-user-with-password-by-id.repository.js';
 export * from './update-user.repository.js';
+export * from './list-users-for-admin.repository.js';
+export * from './find-user-for-admin.repository.js';
+export * from './update-user-for-admin.repository.js';

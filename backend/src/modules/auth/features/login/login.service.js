@@ -1,9 +1,13 @@
 import {
+  ForbiddenError,
   UnauthorizedError,
   hashPasswordUtil,
   verifyPasswordUtil,
 } from '#src/utils/index.js';
-import { INVALID_CREDENTIALS_MESSAGE } from '#src/modules/auth/auth.constants.js';
+import {
+  ACCOUNT_SUSPENDED_MESSAGE,
+  INVALID_CREDENTIALS_MESSAGE,
+} from '#src/modules/auth/auth.constants.js';
 import * as authServices from '#src/modules/auth/shared/services/index.js';
 import * as userRepositories from '#src/modules/users/shared/repositories/index.js';
 
@@ -24,6 +28,10 @@ async function verifyCredentials({ db, email, password }) {
 
   if (!user || !isPasswordValid) {
     throw new UnauthorizedError(INVALID_CREDENTIALS_MESSAGE);
+  }
+
+  if (user.suspendedAt) {
+    throw new ForbiddenError(ACCOUNT_SUSPENDED_MESSAGE);
   }
 
   const { passwordHash: _passwordHash, ...safeUser } = user;

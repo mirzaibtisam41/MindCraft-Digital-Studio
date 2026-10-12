@@ -1,0 +1,15 @@
+meta {
+  name: Get overview
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/admin/overview
+  body: none
+  auth: inherit
+}
+
+docs {
+  Super admin only. Log in as a user promoted with: npm run admin:promote -- <email>
+}

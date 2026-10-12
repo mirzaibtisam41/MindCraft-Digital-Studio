@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm';
 import {
   check,
   integer,
+  pgEnum,
   pgTable,
   timestamp,
   uuid,
@@ -11,7 +12,11 @@ import {
   USER_EMAIL_MAX_LENGTH,
   USER_NAME_MAX_LENGTH,
   USER_PASSWORD_HASH_MAX_LENGTH,
+  USER_ROLE,
+  USER_ROLES,
 } from './user.constants.js';
+
+export const userRoleEnum = pgEnum('user_role', USER_ROLES);
 
 export const users = pgTable(
   'users',
@@ -24,6 +29,8 @@ export const users = pgTable(
     passwordHash: varchar('password_hash', {
       length: USER_PASSWORD_HASH_MAX_LENGTH,
     }).notNull(),
+    role: userRoleEnum('role').notNull().default(USER_ROLE.USER),
+    suspendedAt: timestamp('suspended_at', { withTimezone: true }),
     creditBalance: integer('credit_balance').notNull().default(0),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()

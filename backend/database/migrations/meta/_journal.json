@@ -50,6 +50,13 @@
       "when": 1791809085939,
       "tag": "0006_create_image_models",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791809476676,
+      "tag": "0007_add_admin_foundation",
+      "breakpoints": true
     }
   ]
 }

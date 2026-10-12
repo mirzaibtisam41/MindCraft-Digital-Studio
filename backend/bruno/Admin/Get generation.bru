@@ -1,0 +1,11 @@
+meta {
+  name: Get generation
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/admin/generations/{{generationId}}
+  body: none
+  auth: inherit
+}

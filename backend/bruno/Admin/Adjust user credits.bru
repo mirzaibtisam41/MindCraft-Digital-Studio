@@ -1,0 +1,22 @@
+meta {
+  name: Adjust user credits
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/admin/users/{{userId}}/credits
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "amount": 25,
+    "reason": "Goodwill bonus"
+  }
+}
+
+docs {
+  Positive amounts add credits, negative amounts remove them. The balance can never go below zero.
+}

@@ -11,6 +11,7 @@ import { users } from '#src/modules/users/user.table.js';
 import { generations } from '#src/modules/generations/generation.table.js';
 import {
   CREDIT_IDEMPOTENCY_KEY_MAX_LENGTH,
+  CREDIT_NOTE_MAX_LENGTH,
   CREDIT_TRANSACTION_TYPES,
 } from './credit.constants.js';
 
@@ -31,6 +32,7 @@ export const creditTransactions = pgTable(
     generationId: uuid('generation_id').references(() => generations.id, {
       onDelete: 'set null',
     }),
+    note: varchar('note', { length: CREDIT_NOTE_MAX_LENGTH }),
     idempotencyKey: varchar('idempotency_key', {
       length: CREDIT_IDEMPOTENCY_KEY_MAX_LENGTH,
     })

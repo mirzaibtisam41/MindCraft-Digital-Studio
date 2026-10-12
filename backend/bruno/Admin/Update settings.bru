@@ -1,0 +1,17 @@
+meta {
+  name: Update settings
+  type: http
+  seq: 13
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/settings
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "signupCredits": 60
+  }
+}

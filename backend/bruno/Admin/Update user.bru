@@ -1,0 +1,21 @@
+meta {
+  name: Update user
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/users/{{userId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "suspended": true
+  }
+}
+
+docs {
+  Body accepts suspended (boolean) and/or role (user or super_admin). You cannot change your own role or suspension. Suspending revokes all sessions of the user.
+}

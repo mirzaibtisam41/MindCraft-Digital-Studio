@@ -9,3 +9,6 @@ export const RESET_LINK_INVALID_MESSAGE =
   'This password reset link is invalid or has expired';
 
 export const REFRESH_TOKEN_REUSE_GRACE_MS = 10000;
+
+export const ACCOUNT_SUSPENDED_MESSAGE =
+  'This account has been suspended, please contact support';

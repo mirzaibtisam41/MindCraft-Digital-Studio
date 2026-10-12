@@ -1,0 +1,15 @@
+meta {
+  name: List image models
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/admin/models
+  body: none
+  auth: inherit
+}
+
+docs {
+  Returns all models (including disabled) and the editable limits.
+}

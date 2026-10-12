@@ -1,4 +1,5 @@
-import { UnauthorizedError } from '#src/utils/index.js';
+import { ForbiddenError, UnauthorizedError } from '#src/utils/index.js';
+import { ACCOUNT_SUSPENDED_MESSAGE } from '#src/modules/auth/auth.constants.js';
 import * as sessionRepositories from '#src/modules/sessions/shared/repositories/index.js';
 
 const AUTH_REQUIRED_MESSAGE = 'Authentication required';
@@ -31,6 +32,10 @@ export async function checkUserIsLoggedInHook(request) {
 
   if (!activeSession) {
     throw new UnauthorizedError(AUTH_REQUIRED_MESSAGE);
+  }
+
+  if (activeSession.user.suspendedAt) {
+    throw new ForbiddenError(ACCOUNT_SUSPENDED_MESSAGE);
   }
 
   request.user = activeSession.user;
