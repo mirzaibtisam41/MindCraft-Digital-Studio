@@ -9,6 +9,8 @@ import {
   LOG_LEVELS,
   MAIL_PROVIDER,
   MAIL_PROVIDERS,
+  OPENAI_IMAGE_MODEL,
+  OPENAI_IMAGE_MODELS,
 } from '#src/constants/index.js';
 
 const JWT_SECRET_MIN_LENGTH = 32;
@@ -67,7 +69,11 @@ export const envSchemaConfig = {
       default: AI_IMAGE_PROVIDER.OPENAI,
     },
     OPENAI_API_KEY: { type: 'string', minLength: 1 },
-    OPENAI_IMAGE_MODEL: { type: 'string', default: 'gpt-image-1-mini' },
+    OPENAI_IMAGE_MODEL: {
+      type: 'string',
+      enum: OPENAI_IMAGE_MODELS,
+      default: OPENAI_IMAGE_MODEL.GPT_IMAGE_1_MINI,
+    },
     OPENAI_TIMEOUT_MS: { type: 'number', minimum: 1000, default: 120000 },
     OPENAI_MAX_RETRIES: { type: 'number', minimum: 0, maximum: 5, default: 2 },
   },

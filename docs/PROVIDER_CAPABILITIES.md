@@ -9,43 +9,48 @@ Rule: a capability marked ❌ or "unverified" is **rejected by the API and disab
 
 ## Models
 
-| Model | Model ID | Role |
-|---|---|---|
-| GPT Image 2.5 Flare | `gpt-image-2.5-flare` | **Default.** Fast, everyday generation |
-| GPT Image 2.5 Sunburst | `gpt-image-2.5-sunburst` | Editing precision |
+| Model | Model ID | Sizes | Quality | Price per image (1024x1024 / 1024x1536 or 1536x1024) | Role |
+|---|---|---|---|---|---|
+| GPT Image 1 Mini | `gpt-image-1-mini` | 1024x1024, 1024x1536, 1536x1024 | low, medium, high | low $0.005 / $0.006, medium $0.011 / $0.015, high $0.036 / $0.052 | **Current default** (cheapest, used for development) |
+| GPT Image 1 | `gpt-image-1` | same | low, medium, high | low $0.011 / $0.016, medium $0.042 / $0.063, high $0.167 / $0.25 | Higher quality, `input_fidelity` high supported |
+| GPT Image 2.5 Flare | `gpt-image-2.5-flare` | any `WIDTHxHEIGHT` (multiples of 16, ratio 1:3 to 3:1, up to 3840x2160) | low, medium, high, xhigh, max | not listed (token pricing) | Newer, fast generation, transparent background |
+| GPT Image 2.5 Sunburst | `gpt-image-2.5-sunburst` | same as Flare | same as Flare | not listed (token pricing) | Newer, editing precision |
 
-The docs say API Organization Verification may be required before using GPT Image models.
-Per-image price is **not listed** on the pricing page, only token rates (gpt-image-2: $8.00 input / $30.00 output per 1M tokens, Standard). Measure real cost per image with a test and the usage dashboard before building the credit costs (2.2.7).
-Development: use `quality: low` and `1024x1024` to keep the prepaid credit.
+Prices for `gpt-image-1-mini` and `gpt-image-1` are from the OpenAI pricing table (checked 2026-10-12). Text and image input tokens are charged on top. Default rate limits for `gpt-image-1-mini`: Build tier 20 images per minute, Launch 150, Grow 250.
+OpenAI says API Organization Verification may be required before using GPT Image models.
+Development: use `gpt-image-1-mini`, `quality: low`, `1024x1024` (about $0.005 per image).
+The capability object in code must be built **per model** (sizes, qualities and `input_fidelity` differ between the families).
 
-## Capability matrix
+## Capability matrix (applies to `gpt-image-1-mini` unless a model is named)
 
 | Capability | Supported | Notes |
 |---|---|---|
 | Text-to-image | ✅ | Image API `images.generate` |
-| Image-to-image / editing | ✅ | Image API `images.edit`. Responses API image tool supports multi-turn editing |
-| Reference images | ✅ | Several input images per edit. Maximum count not stated in the docs |
-| Inpainting (mask image) | ✅ | Mask must have an alpha channel, same format and size as the image, under 50MB. The model treats the mask as guidance, not an exact shape. With several input images the mask applies to the first |
+| Image-to-image / editing | ✅ | Image API `images.edit` |
+| Reference images | ✅ | Up to 16 input images per edit, each png, webp or jpg under 50MB |
+| Inpainting (mask image) | ⚠️ | Mask must be a PNG under 4MB with the same dimensions as the image, transparent areas mark the edit region, applied to the first image. OpenAI says masking is prompt-based, so the exact shape is not guaranteed and community reports say the whole image can be changed. Treat as unreliable until tested |
 | Background replacement / object removal / replacement | ✅ | Via edit prompt (with or without a mask) |
-| Images per request (n) | ✅ | `n` parameter, default 1 |
-| Sizes | ✅ | `1024x1024`, `1536x1024`, `1024x1536`, or custom `WIDTHxHEIGHT` (multiples of 16, ratio between 1:3 and 3:1, edge at most 3840, total pixels 655,360 to 8,294,400, above `2560x1440` experimental) |
-| Quality | ✅ | `low`, `medium`, `high`, `xhigh`, `max`, `auto` (default `auto`) |
-| Output | ✅ | Base64 (`b64_json`), `png` (default), `jpeg`, `webp`, `output_compression` 0-100 for jpeg/webp |
-| Transparent background | ✅ | `background: "transparent"` with `png` or `webp` |
-| Streaming partial images | ✅ | `partial_images` 0-3. Not real progress, only partial previews |
-| Moderation | ✅ | `moderation` `auto` (default) or `low`. Blocked requests can include `moderation_details` (stage and categories) |
+| Images per request (n) | ✅ | 1 to 10 (SDK documentation) |
+| Sizes | ✅ | `1024x1024`, `1024x1536`, `1536x1024` for the 1 and 1-mini models. Custom sizes only on the 2.5 models |
+| Quality | ✅ | `low`, `medium`, `high` (`auto` also accepted). `xhigh` and `max` only on the 2.5 models |
+| Output | ✅ | Base64 (`b64_json`), `png`, `jpeg`, `webp`, `output_compression` 0-100 for jpeg and webp |
+| Transparent background | ✅ | `background: "transparent"` with `png` or `webp`. Verify on `gpt-image-1-mini` |
+| Input fidelity (edits) | ⚠️ | `low` only on `gpt-image-1-mini`, `high` or `low` on `gpt-image-1` |
+| Prompt length | ✅ | Up to 32000 characters |
+| Streaming partial images | ✅ | `partial_images` 0-3. Not real progress, only previews |
+| Moderation | ✅ | `moderation` `auto` (default) or `low`. Blocked requests can include `moderation_details` |
 | Seed | ❌ | Not documented |
 | Negative prompt | ❌ | Not documented |
 | Strength (img2img) | ❌ | Not documented |
-| Upscaling | ❌ | Not documented. Larger custom sizes are native generation, not upscaling |
+| Upscaling | ❌ | Not documented |
 | Progress reporting | ❌ | No real percentage. Show status only (queued / running / done / failed) |
 
 ## Effect on the roadmap
 
-- **2.2.6 Options:** model, size / aspect ratio (as a size list), quality, number of images (`n`), style presets, output format. Hide seed and negative prompt.
-- **2.2.7 Credits:** cost depends on model, quality, size and `n`. Measure first, then set credit prices.
+- **2.2.6 Options:** model, size (a fixed list of three for the default model), quality (low, medium, high), number of images (`n`, 1 to 10), style presets, output format. Hide seed and negative prompt. The options list comes from the capabilities object of the selected model.
+- **2.2.7 Credits:** cost depends on model, quality, size and `n`. Per-image prices for `gpt-image-1-mini` are in the Models table (low $0.005 to high $0.052), so credit prices can be set now. Re-measure after the first real tests.
 - **2.3.2 Image-to-image:** no strength slider. Variations through `n` or repeated calls.
-- **2.3.3 AI Editor:** natural-language editing and **brush-mask inpainting are both possible**. Upscale (2.3.3.7) is not available, so "Download 2× HD" is disabled. Crop/resize stays local with `sharp` (2.3.3.8).
+- **2.3.3 AI Editor:** natural-language editing works. Brush-mask inpainting is possible in the API but unreliable (prompt-based), so build it only after a real test shows acceptable results. Upscale (2.3.3.7) is not available, so "Download 2× HD" is disabled. Crop/resize stays local with `sharp` (2.3.3.8).
 - **2.7 Jobs:** status-only progress. Optional partial-image previews are possible but are not a percentage.
 
 ## Text and vision models (LangChain)
@@ -61,8 +66,8 @@ The pricing page does not say which of these accept image input. Verify vision s
 
 ## Open questions to verify with a real key
 
-1. Is Organization Verification required for this account?
-2. Real cost per image for `low` / `medium` / `high` at 1024x1024.
-3. Maximum number of input images for edits.
-4. Behaviour of a moderation-blocked response in the Node SDK.
-5. Which text models accept image input.
+1. Is Organization Verification required for this account? (Image generation already works with `gpt-image-1-mini`, so it is not blocking the default model.)
+2. Does a mask edit with `gpt-image-1-mini` really change only the masked area?
+3. Does `gpt-image-1-mini` support `background: "transparent"`?
+4. What error code does a moderation-blocked request return in the Node SDK? (The mapper currently handles `moderation_blocked` and `content_policy_violation`.)
+5. Which text models accept image input (vision)?
