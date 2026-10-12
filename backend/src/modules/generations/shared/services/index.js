@@ -7,3 +7,4 @@ export * from './build-provider-request.service.js';
 export * from './normalize-image-metadata.service.js';
 export * from './save-generated-images.service.js';
 export * from './generate-image.service.js';
+export * from './present-generation.service.js';
