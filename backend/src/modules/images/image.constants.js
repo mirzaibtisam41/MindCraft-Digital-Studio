@@ -1,0 +1,3 @@
+export const IMAGE_STORAGE_KEY_MAX_LENGTH = 512;
+
+export const IMAGE_CONTENT_TYPE_MAX_LENGTH = 100;

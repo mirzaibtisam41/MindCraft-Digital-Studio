@@ -4,3 +4,4 @@ node_modules
 !.env.example
 CLAUDE.md
 .claude/
+fox.png

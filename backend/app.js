@@ -6,10 +6,13 @@ import {
   corsPlugin,
   databasePlugin,
   errorHandlersPlugin,
+  chatModelPlugin,
   helmetPlugin,
   jwtPlugin,
+  openaiPlugin,
   rateLimitPlugin,
   replySuccessPlugin,
+  storagePlugin,
 } from './src/plugins/index.js';
 import { registerRoutes } from './src/modules/index.js';
 
@@ -19,6 +22,9 @@ export function buildApp() {
 
   fastify.register(configPlugin, { appConfig });
   fastify.register(databasePlugin);
+  fastify.register(openaiPlugin);
+  fastify.register(chatModelPlugin);
+  fastify.register(storagePlugin);
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);

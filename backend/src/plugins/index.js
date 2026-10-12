@@ -7,3 +7,6 @@ export * from './cors.plugin.js';
 export * from './rate-limit.plugin.js';
 export * from './cookie.plugin.js';
 export * from './jwt.plugin.js';
+export * from './openai.plugin.js';
+export * from './chat-model.plugin.js';
+export * from './storage.plugin.js';

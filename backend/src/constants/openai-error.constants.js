@@ -1,0 +1,10 @@
+export const OPENAI_ERROR_CODE = {
+  MODERATION_BLOCKED: 'moderation_blocked',
+  CONTENT_POLICY_VIOLATION: 'content_policy_violation',
+  INSUFFICIENT_QUOTA: 'insufficient_quota',
+};
+
+export const OPENAI_CONTENT_BLOCKED_CODES = [
+  OPENAI_ERROR_CODE.MODERATION_BLOCKED,
+  OPENAI_ERROR_CODE.CONTENT_POLICY_VIOLATION,
+];
