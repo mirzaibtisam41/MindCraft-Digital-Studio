@@ -2,6 +2,7 @@ import {
   AI_IMAGE_PROVIDER,
   CAPABILITY_STATUS,
   DEFAULT_IMAGE_OUTPUT_FORMAT,
+  IMAGE_PROVIDER_PROMPT_MAX_LENGTH,
   IMAGE_QUALITIES,
   IMAGE_SIZES,
   MAX_IMAGES_PER_REQUEST,
@@ -15,6 +16,7 @@ export function buildOpenaiImageCapabilities({ appConfig }) {
     sizes: IMAGE_SIZES,
     qualities: IMAGE_QUALITIES,
     outputFormats: [DEFAULT_IMAGE_OUTPUT_FORMAT],
+    maxPromptLength: IMAGE_PROVIDER_PROMPT_MAX_LENGTH,
     maxImagesPerRequest: MAX_IMAGES_PER_REQUEST,
     maxReferenceImages: MAX_REFERENCE_IMAGES,
     features: {
