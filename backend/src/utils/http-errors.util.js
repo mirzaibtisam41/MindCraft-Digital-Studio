@@ -43,3 +43,9 @@ export const ServiceUnavailableError = createError(
   '%s',
   StatusCodes.SERVICE_UNAVAILABLE,
 );
+
+export const ContentBlockedError = createError(
+  ERROR_CODE.CONTENT_BLOCKED,
+  '%s',
+  StatusCodes.UNPROCESSABLE_ENTITY,
+);

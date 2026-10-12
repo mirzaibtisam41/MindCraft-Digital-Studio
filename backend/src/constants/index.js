@@ -7,3 +7,5 @@ export * from './mail-provider.constants.js';
 export * from './ai-image-provider.constants.js';
 export * from './cookie-same-site.constants.js';
 export * from './image-output.constants.js';
+export * from './openai-error.constants.js';
+export * from './image-error-message.constants.js';
