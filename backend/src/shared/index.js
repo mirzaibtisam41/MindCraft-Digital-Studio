@@ -10,3 +10,4 @@ export * from './schemas/fields/image-count-field.schema.js';
 export * from './schemas/fields/image-background-field.schema.js';
 export * from './schemas/fields/image-output-format-field.schema.js';
 export * from './schemas/fields/aspect-ratio-field.schema.js';
+export * from './schemas/gated-generation-params.schema.js';
