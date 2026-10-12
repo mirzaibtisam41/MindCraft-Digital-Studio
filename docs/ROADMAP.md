@@ -168,6 +168,17 @@ Note: most unit/integration tests should already exist from each phase's checkpo
 - **2.10.6 Deployment:** prod env config · Postgres prod · Redis prod · backend · worker · frontend · storage · migrations · prod smoke tests
   - ➕ 2.10.6.10 **CI** (GitHub Actions): lint + tests on every push
 
+## Phase 2.A — Admin Console (added 2026-10-12, built before Phase 2.3)
+Deliverable: a `super_admin` role and an admin console to manage what the user side depends on.
+
+- **2.A.1 Foundation:** `users.role` (user / super_admin) · `users.suspended_at` (login + existing sessions blocked) · `requireSuperAdminHook` · `npm run admin:promote -- <email>`
+- **2.A.2 Models & pricing:** `image_models` table (enable/disable, label, sort order, credits per quality, allowed sizes/qualities/backgrounds/moderations, max images, defaults); features stay adapter-owned; the last enabled model cannot be disabled
+- **2.A.3 Users:** list/search/filter · detail · suspend/unsuspend · role change (not on yourself)
+- **2.A.4 Credits:** adjust a balance (±, reason, never below zero) · per-user transactions · signup credits stored in `system_settings`
+- **2.A.5 Generations:** list with status/model/user filters · detail with credit hold/refund
+- **2.A.6 Audit log:** every admin change (who, what, from → to), read-only
+- **2.A.7 Later, with their phases:** plans/limits (2.9.3), billing (2.9.4), queue/worker monitoring (2.7), usage analytics, prompt templates
+
 ## Completion criteria
 Core generation, editing, vision, prompt studio, gallery/projects, async queue and V2 UI main flows work; authenticated ownership checks and automated tests pass; production secrets secure; deployment smoke tests pass. Stripe subscriptions optional.
 
