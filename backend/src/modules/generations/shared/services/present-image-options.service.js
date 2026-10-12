@@ -1,4 +1,3 @@
-import { CREDITS_PER_IMAGE } from '#src/modules/credits/credit.constants.js';
 import { GENERATION_STYLE_PRESETS } from '#src/modules/generations/generation-style-preset.constants.js';
 import { listSupportedAspectRatiosUtil } from '#src/modules/generations/shared/utils/index.js';
 
@@ -15,7 +14,7 @@ function presentModel(capabilities) {
     outputFormats: capabilities.outputFormats,
     maxImagesPerRequest: capabilities.maxImagesPerRequest,
     maxPromptLength: capabilities.maxPromptLength,
-    creditsPerImage: CREDITS_PER_IMAGE[capabilities.model],
+    creditsPerImage: capabilities.creditsPerImage,
     defaults: capabilities.defaults,
     features: capabilities.features,
   };

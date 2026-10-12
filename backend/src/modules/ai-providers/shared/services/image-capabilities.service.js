@@ -1,20 +1,23 @@
-import {
-  buildOpenaiImageCapabilities,
-  listOpenaiImageModels,
-} from '#src/modules/ai-providers/providers/index.js';
+import { findEnabledImageModelsRepository } from '#src/modules/image-models/shared/repositories/index.js';
+
+function toCapabilities(imageModel) {
+  return {
+    provider: imageModel.provider,
+    model: imageModel.id,
+    label: imageModel.label,
+    ...imageModel.capabilities,
+    creditsPerImage: imageModel.creditsPerImage,
+  };
+}
 
 export function getDefaultImageModelService({ fastify }) {
   return fastify.config.OPENAI_IMAGE_MODEL;
 }
 
-export function getImageCapabilitiesService({ fastify, model }) {
-  return buildOpenaiImageCapabilities({
-    model: model ?? getDefaultImageModelService({ fastify }),
+export async function listImageCapabilitiesService({ fastify }) {
+  const imageModels = await findEnabledImageModelsRepository({
+    db: fastify.db,
   });
-}
 
-export function listImageCapabilitiesService() {
-  return listOpenaiImageModels().map((model) =>
-    buildOpenaiImageCapabilities({ model }),
-  );
+  return imageModels.map(toCapabilities);
 }

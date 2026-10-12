@@ -1,0 +1,5 @@
+export const IMAGE_MODEL_ID_MAX_LENGTH = 100;
+
+export const IMAGE_MODEL_PROVIDER_MAX_LENGTH = 50;
+
+export const IMAGE_MODEL_LABEL_MAX_LENGTH = 100;

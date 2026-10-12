@@ -5,7 +5,6 @@ import {
 import {
   generateImageService as callImageProviderService,
   getDefaultImageModelService,
-  getImageCapabilitiesService,
   listImageCapabilitiesService,
 } from '#src/modules/ai-providers/shared/services/index.js';
 import * as userSettingsRepositories from '#src/modules/user-settings/shared/repositories/index.js';
@@ -47,18 +46,16 @@ export async function generateImagesService({ fastify, userId, input }) {
       db: fastify.db,
       userId,
     });
+  const availableModels = await listImageCapabilitiesService({ fastify });
   const validModel = validateModelService({
     model,
     userDefaultModel: userSettings?.defaultModel,
     defaultModel: getDefaultImageModelService({ fastify }),
-    supportedModels: listImageCapabilitiesService().map(
-      (supported) => supported.model,
-    ),
+    supportedModels: availableModels.map(({ model: id }) => id),
   });
-  const capabilities = getImageCapabilitiesService({
-    fastify,
-    model: validModel,
-  });
+  const capabilities = availableModels.find(
+    ({ model: id }) => id === validModel,
+  );
 
   validateUnsupportedParamsService({
     params: { seed, negativePrompt, strength },
@@ -76,7 +73,7 @@ export async function generateImagesService({ fastify, userId, input }) {
   });
 
   const creditCost = estimateGenerationCostService({
-    model: validModel,
+    capabilities,
     options,
   });
 

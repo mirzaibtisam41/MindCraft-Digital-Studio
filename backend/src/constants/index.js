@@ -15,4 +15,3 @@ export * from './capability-status.constants.js';
 export * from './openai-text-model.constants.js';
 export * from './image-prompt.constants.js';
 export * from './image-moderation.constants.js';
-export * from './openai-image-model-profile.constants.js';

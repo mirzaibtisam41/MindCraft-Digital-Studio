@@ -43,6 +43,13 @@
       "when": 1791805307659,
       "tag": "0005_create_credit_ledger",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791809085939,
+      "tag": "0006_create_image_models",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { BadRequestError } from '#src/utils/index.js';
+import { BadRequestError, ServiceUnavailableError } from '#src/utils/index.js';
 
 export function validateModelService({
   model,
@@ -6,6 +6,10 @@ export function validateModelService({
   defaultModel,
   supportedModels,
 }) {
+  if (supportedModels.length === 0) {
+    throw new ServiceUnavailableError('No image models are available');
+  }
+
   if (model !== undefined && model !== null) {
     const requestedModel = typeof model === 'string' ? model.trim() : model;
 
@@ -22,5 +26,9 @@ export function validateModelService({
     return userDefaultModel;
   }
 
-  return defaultModel;
+  if (supportedModels.includes(defaultModel)) {
+    return defaultModel;
+  }
+
+  return supportedModels[0];
 }

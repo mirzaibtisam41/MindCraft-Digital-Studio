@@ -10,7 +10,6 @@ import {
   MAIL_PROVIDER,
   MAIL_PROVIDERS,
   OPENAI_IMAGE_MODEL,
-  OPENAI_IMAGE_MODELS,
   OPENAI_TEXT_MODEL,
   OPENAI_TEXT_MODELS,
 } from '#src/constants/index.js';
@@ -77,7 +76,6 @@ export const envSchemaConfig = {
     OPENAI_API_KEY: { type: 'string', minLength: 1 },
     OPENAI_IMAGE_MODEL: {
       type: 'string',
-      enum: OPENAI_IMAGE_MODELS,
       default: OPENAI_IMAGE_MODEL.GPT_IMAGE_1_MINI,
     },
     OPENAI_TEXT_MODEL: {

@@ -5,3 +5,4 @@ export * from '#src/modules/password-reset-tokens/password-reset-token.table.js'
 export * from '#src/modules/generations/generation.table.js';
 export * from '#src/modules/images/image.table.js';
 export * from '#src/modules/credits/credit-transaction.table.js';
+export * from '#src/modules/image-models/image-model.table.js';
