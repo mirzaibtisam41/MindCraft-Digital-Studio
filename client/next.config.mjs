@@ -15,7 +15,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src ${scriptSources}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://*.r2.cloudflarestorage.com",
   "font-src 'self' data:",
   "frame-ancestors 'none'",
   "base-uri 'self'",

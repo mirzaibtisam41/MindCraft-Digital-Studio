@@ -36,6 +36,9 @@ export function AccountCard() {
             <p className="font-mono text-xs text-ink-3">
               Member since {formatDate(user.createdAt)}
             </p>
+            <p className="font-mono text-xs text-ink-3">
+              {user.creditBalance} credits
+            </p>
           </div>
         </div>
       ) : (

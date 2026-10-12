@@ -1,11 +1,6 @@
-import { ImagePlus, PenTool, ScanEye, Sparkles } from 'lucide-react';
+import { ImagePlus, PenTool, ScanEye } from 'lucide-react';
 
 const TOOLS = [
-  {
-    title: 'Image Generator',
-    description: 'Turn a prompt into images with the model of your choice.',
-    icon: Sparkles,
-  },
   {
     title: 'Image Editor',
     description: 'Mask a region and edit it with a plain instruction.',

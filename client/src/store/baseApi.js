@@ -92,6 +92,6 @@ export const baseApi = createApi({
   baseQuery: baseQueryWithReauth,
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  tagTypes: ['Profile', 'Settings'],
+  tagTypes: ['Profile', 'Settings', 'ImageOptions'],
   endpoints: () => ({}),
 });

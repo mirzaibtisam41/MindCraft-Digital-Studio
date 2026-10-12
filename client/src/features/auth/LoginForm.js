@@ -52,6 +52,7 @@ export function LoginForm() {
         <Input
           id="email"
           name="email"
+          placeholder="you@example.com"
           type="email"
           autoComplete="email"
           autoFocus
@@ -79,6 +80,7 @@ export function LoginForm() {
         <PasswordInput
           id="password"
           name="password"
+          placeholder="Enter your password"
           autoComplete="current-password"
           value={form.values.password}
           onChange={form.handleChange}

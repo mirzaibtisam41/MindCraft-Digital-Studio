@@ -24,7 +24,7 @@ export const NAV_GROUPS = [
         label: 'Image Generator',
         href: '/app/generate',
         icon: Sparkles,
-        ready: false,
+        ready: true,
       },
       {
         label: 'Image Editor',
@@ -102,7 +102,7 @@ export const NAV_GROUPS = [
 
 export const MOBILE_TABS = [
   { label: 'Home', href: '/app', icon: House, ready: true },
-  { label: 'Create', href: '/app/generate', icon: Sparkles, ready: false },
+  { label: 'Create', href: '/app/generate', icon: Sparkles, ready: true },
   { label: 'Library', href: '/app/creations', icon: Images, ready: false },
   { label: 'Account', href: '/app/settings', icon: UserRound, ready: true },
 ];

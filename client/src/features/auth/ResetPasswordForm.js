@@ -98,6 +98,7 @@ export function ResetPasswordForm() {
         <PasswordInput
           id="password"
           name="password"
+          placeholder="Enter a new password"
           autoComplete="new-password"
           autoFocus
           value={form.values.password}
@@ -116,6 +117,7 @@ export function ResetPasswordForm() {
         <PasswordInput
           id="confirmation"
           name="confirmation"
+          placeholder="Repeat the new password"
           autoComplete="new-password"
           value={form.values.confirmation}
           onChange={form.handleChange}

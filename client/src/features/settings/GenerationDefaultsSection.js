@@ -1,15 +1,28 @@
 'use client';
 
+import { Field } from '@/components/ui/Field';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ASPECT_RATIOS } from '@/constants/settings';
 import { useSettingsDraft } from '@/hooks/useSettingsDraft';
+import { useGetImageOptionsQuery } from '@/features/generator/generatorApi';
 import { SettingToggle } from '@/features/settings/SettingToggle';
 import { SettingsCard } from '@/features/settings/SettingsCard';
 import { SettingsGate } from '@/features/settings/SettingsGate';
 import { SettingsSaveBar } from '@/features/settings/SettingsSaveBar';
 
+const WORKSPACE_DEFAULT = 'workspace-default';
+
 export function GenerationDefaultsSection() {
   const draft = useSettingsDraft();
+  const { data: options } = useGetImageOptionsQuery();
+  const models = options?.models;
 
   return (
     <SettingsGate draft={draft}>
@@ -19,17 +32,36 @@ export function GenerationDefaultsSection() {
           title="Generation defaults"
           description="Starting values for every new generation. You can still change them per run."
         >
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex flex-col gap-0.5">
-              <p className="font-medium">Default model</p>
-              <p className="text-[12.5px] text-muted-foreground">
-                You can pick a default once image models are connected.
-              </p>
-            </div>
-            <span className="rounded-full border px-2 text-[11px] leading-5 text-ink-3">
-              Soon
-            </span>
-          </div>
+          <Field
+            id="default-model"
+            label="Default model"
+            hint="Used when you do not pick a model for a run."
+          >
+            <Select
+              value={draft.settings?.defaultModel ?? WORKSPACE_DEFAULT}
+              disabled={!models}
+              onValueChange={(value) =>
+                draft.change(
+                  'defaultModel',
+                  value === WORKSPACE_DEFAULT ? null : value,
+                )
+              }
+            >
+              <SelectTrigger id="default-model">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={WORKSPACE_DEFAULT}>
+                  Workspace default
+                </SelectItem>
+                {models?.map(({ id, label }) => (
+                  <SelectItem key={id} value={id}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
 
           <div className="flex flex-col gap-2">
             <p id="aspect-ratio-label" className="font-medium">

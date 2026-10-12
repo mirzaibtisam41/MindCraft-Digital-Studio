@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { BrandMark } from '@/components/layout/BrandMark';
+import { CreditPill } from '@/components/layout/navbar/CreditPill';
 import { UserMenu } from '@/components/layout/navbar/UserMenu';
 import { findBreadcrumb } from '@/constants/navigation';
 
@@ -25,7 +26,10 @@ export function Navbar() {
           </ol>
         </nav>
       </div>
-      <UserMenu />
+      <div className="flex items-center gap-3">
+        <CreditPill />
+        <UserMenu />
+      </div>
     </header>
   );
 }

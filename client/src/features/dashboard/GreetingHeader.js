@@ -24,7 +24,7 @@ export function GreetingHeader() {
         {getGreeting()}, {firstName}
       </h1>
       <p className="text-muted-foreground">
-        Your workspace is ready. Image tools will appear here as they launch.
+        You have {user.creditBalance} credits. Describe an image to get started.
       </p>
     </div>
   );

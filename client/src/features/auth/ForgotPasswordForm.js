@@ -55,6 +55,7 @@ export function ForgotPasswordForm() {
         <Input
           id="email"
           name="email"
+          placeholder="you@example.com"
           type="email"
           autoComplete="email"
           autoFocus

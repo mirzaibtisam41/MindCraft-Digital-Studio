@@ -63,6 +63,7 @@ export function RegisterForm() {
         <Input
           id="name"
           name="name"
+          placeholder="Your full name"
           autoComplete="name"
           autoFocus
           className="h-10"
@@ -77,6 +78,7 @@ export function RegisterForm() {
         <Input
           id="email"
           name="email"
+          placeholder="you@example.com"
           type="email"
           autoComplete="email"
           className="h-10"
@@ -91,6 +93,7 @@ export function RegisterForm() {
         <PasswordInput
           id="password"
           name="password"
+          placeholder="Create a password"
           autoComplete="new-password"
           value={form.values.password}
           onChange={form.handleChange}

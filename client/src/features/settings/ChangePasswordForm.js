@@ -90,6 +90,7 @@ export function ChangePasswordForm() {
           <PasswordInput
             id="currentPassword"
             name="currentPassword"
+            placeholder="Enter your current password"
             autoComplete="current-password"
             value={form.values.currentPassword}
             onChange={form.handleChange}
@@ -108,6 +109,7 @@ export function ChangePasswordForm() {
           <PasswordInput
             id="newPassword"
             name="newPassword"
+            placeholder="Enter a new password"
             autoComplete="new-password"
             value={form.values.newPassword}
             onChange={form.handleChange}
@@ -127,6 +129,7 @@ export function ChangePasswordForm() {
           <PasswordInput
             id="confirmation"
             name="confirmation"
+            placeholder="Repeat the new password"
             autoComplete="new-password"
             value={form.values.confirmation}
             onChange={form.handleChange}

@@ -80,6 +80,7 @@ function ProfileForm({ user }) {
           <Input
             id="profile-name"
             name="name"
+            placeholder="Your full name"
             autoComplete="name"
             maxLength={NAME_MAX_LENGTH}
             className="h-10"
