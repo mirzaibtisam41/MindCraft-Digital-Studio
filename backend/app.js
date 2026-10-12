@@ -8,6 +8,7 @@ import {
   errorHandlersPlugin,
   helmetPlugin,
   jwtPlugin,
+  openaiPlugin,
   rateLimitPlugin,
   replySuccessPlugin,
 } from './src/plugins/index.js';
@@ -19,6 +20,7 @@ export function buildApp() {
 
   fastify.register(configPlugin, { appConfig });
   fastify.register(databasePlugin);
+  fastify.register(openaiPlugin);
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);

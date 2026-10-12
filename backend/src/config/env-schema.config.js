@@ -15,7 +15,13 @@ const JWT_SECRET_MIN_LENGTH = 32;
 
 export const envSchemaConfig = {
   type: 'object',
-  required: ['NODE_ENV', 'PORT', 'DATABASE_URL', 'JWT_ACCESS_SECRET'],
+  required: [
+    'NODE_ENV',
+    'PORT',
+    'DATABASE_URL',
+    'JWT_ACCESS_SECRET',
+    'OPENAI_API_KEY',
+  ],
   properties: {
     NODE_ENV: {
       type: 'string',
@@ -58,24 +64,14 @@ export const envSchemaConfig = {
     AI_IMAGE_PROVIDER: {
       type: 'string',
       enum: AI_IMAGE_PROVIDERS,
-      default: AI_IMAGE_PROVIDER.MOCK,
+      default: AI_IMAGE_PROVIDER.OPENAI,
     },
-    GEMINI_API_KEY: { type: 'string' },
-    GEMINI_IMAGE_MODEL: { type: 'string', default: 'gemini-nano-banana-2.1' },
+    OPENAI_API_KEY: { type: 'string', minLength: 1 },
+    OPENAI_IMAGE_MODEL: { type: 'string', default: 'gpt-image-1-mini' },
+    OPENAI_TIMEOUT_MS: { type: 'number', minimum: 1000, default: 120000 },
+    OPENAI_MAX_RETRIES: { type: 'number', minimum: 0, maximum: 5, default: 2 },
   },
   allOf: [
-    {
-      if: {
-        properties: {
-          AI_IMAGE_PROVIDER: { const: AI_IMAGE_PROVIDER.GEMINI },
-        },
-        required: ['AI_IMAGE_PROVIDER'],
-      },
-      then: {
-        required: ['GEMINI_API_KEY'],
-        properties: { GEMINI_API_KEY: { type: 'string', minLength: 1 } },
-      },
-    },
     {
       if: { properties: { MAIL_PROVIDER: { const: MAIL_PROVIDER.RESEND } } },
       then: {
