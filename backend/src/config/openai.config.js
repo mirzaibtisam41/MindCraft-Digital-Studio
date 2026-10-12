@@ -5,3 +5,10 @@ export function buildOpenaiConfig({ appConfig }) {
     maxRetries: appConfig.OPENAI_MAX_RETRIES,
   };
 }
+
+export function buildOpenaiChatModelConfig({ appConfig }) {
+  return {
+    ...buildOpenaiConfig({ appConfig }),
+    model: appConfig.OPENAI_TEXT_MODEL,
+  };
+}

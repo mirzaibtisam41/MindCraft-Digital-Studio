@@ -6,6 +6,7 @@ import {
   corsPlugin,
   databasePlugin,
   errorHandlersPlugin,
+  chatModelPlugin,
   helmetPlugin,
   jwtPlugin,
   openaiPlugin,
@@ -21,6 +22,7 @@ export function buildApp() {
   fastify.register(configPlugin, { appConfig });
   fastify.register(databasePlugin);
   fastify.register(openaiPlugin);
+  fastify.register(chatModelPlugin);
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);

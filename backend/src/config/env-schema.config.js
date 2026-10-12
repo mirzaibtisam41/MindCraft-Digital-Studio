@@ -11,6 +11,8 @@ import {
   MAIL_PROVIDERS,
   OPENAI_IMAGE_MODEL,
   OPENAI_IMAGE_MODELS,
+  OPENAI_TEXT_MODEL,
+  OPENAI_TEXT_MODELS,
 } from '#src/constants/index.js';
 
 const JWT_SECRET_MIN_LENGTH = 32;
@@ -73,6 +75,11 @@ export const envSchemaConfig = {
       type: 'string',
       enum: OPENAI_IMAGE_MODELS,
       default: OPENAI_IMAGE_MODEL.GPT_IMAGE_1_MINI,
+    },
+    OPENAI_TEXT_MODEL: {
+      type: 'string',
+      enum: OPENAI_TEXT_MODELS,
+      default: OPENAI_TEXT_MODEL.GPT_5_NANO,
     },
     OPENAI_TIMEOUT_MS: { type: 'number', minimum: 1000, default: 120000 },
     OPENAI_MAX_RETRIES: { type: 'number', minimum: 0, maximum: 5, default: 2 },

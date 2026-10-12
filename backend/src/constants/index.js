@@ -12,3 +12,4 @@ export * from './image-error-message.constants.js';
 export * from './openai-image-model.constants.js';
 export * from './image-options.constants.js';
 export * from './capability-status.constants.js';
+export * from './openai-text-model.constants.js';

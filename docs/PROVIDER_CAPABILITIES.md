@@ -57,12 +57,12 @@ The capability object in code must be built **per model** (sizes, qualities and 
 
 | Model | Use | Price (1M tokens, in / out) |
 |---|---|---|
-| `gpt-5-nano` | Prompt enhancement | $0.05 / $0.40 |
-| `gpt-5-mini` | Prompt enhancement, vision (verify image input support) | $0.25 / $2.00 |
+| `gpt-5-nano` | **Default** for prompt enhancement and vision (text and image input verified 2026-10-12) | $0.05 / $0.40 |
+| `gpt-5-mini` | Same, stronger. Text and image input supported | $0.25 / $2.00 |
 | `gpt-4.1-nano` | Alternative | $0.10 / $0.40 |
 | `gpt-4.1-mini` | Alternative | $0.40 / $1.60 |
 
-The pricing page does not say which of these accept image input. Verify vision support before choosing the vision model (2.1.7 LangChain step).
+`gpt-5-nano` and `gpt-5-mini` both accept text and image input and return text only, with Structured Outputs. Selected with `OPENAI_TEXT_MODEL`. Real test: enhancement returned a detailed prompt and vision identified a red image as "red".
 
 ## Open questions to verify with a real key
 
@@ -70,4 +70,4 @@ The pricing page does not say which of these accept image input. Verify vision s
 2. Does a mask edit with `gpt-image-1-mini` really change only the masked area?
 3. Does `gpt-image-1-mini` support `background: "transparent"`?
 4. What error code does a moderation-blocked request return in the Node SDK? (The mapper currently handles `moderation_blocked` and `content_policy_violation`.)
-5. Which text models accept image input (vision)?
+5. (Resolved) `gpt-5-nano` and `gpt-5-mini` accept image input.
