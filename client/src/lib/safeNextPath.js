@@ -1,4 +1,4 @@
-const ALLOWED_PREFIXES = ['/app'];
+const ALLOWED_PREFIXES = ['/app', '/admin'];
 
 export function getSafeNextPath(value, fallback = '/app') {
   if (typeof value !== 'string') return fallback;

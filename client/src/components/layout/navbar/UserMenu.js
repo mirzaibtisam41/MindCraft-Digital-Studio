@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, Settings } from 'lucide-react';
+import { LogOut, Settings, ShieldCheck } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SUPER_ADMIN_ROLE } from '@/constants/admin';
 import { useGetProfileQuery } from '@/features/auth/authApi';
 import { useSignOut } from '@/hooks/useSignOut';
 import { getInitials } from '@/lib/getInitials';
@@ -51,6 +52,14 @@ export function UserMenu() {
             Settings
           </Link>
         </DropdownMenuItem>
+        {user.role === SUPER_ADMIN_ROLE ? (
+          <DropdownMenuItem asChild>
+            <Link href="/admin">
+              <ShieldCheck />
+              Admin console
+            </Link>
+          </DropdownMenuItem>
+        ) : null}
         <DropdownMenuItem variant="destructive" onSelect={signOut}>
           <LogOut />
           Sign out
