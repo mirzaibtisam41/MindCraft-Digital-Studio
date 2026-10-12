@@ -23,3 +23,6 @@ export const GENERATION_MODEL_MAX_LENGTH = 100;
 export const GENERATION_ERROR_CATEGORY_MAX_LENGTH = 50;
 
 export const GENERATION_ERROR_MESSAGE_MAX_LENGTH = 500;
+
+export const GENERATION_FALLBACK_ERROR_MESSAGE =
+  'Image generation failed, please try again';
