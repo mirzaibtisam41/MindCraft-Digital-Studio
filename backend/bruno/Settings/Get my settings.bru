@@ -1,0 +1,11 @@
+meta {
+  name: Get my settings
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/me/settings
+  body: none
+  auth: inherit
+}

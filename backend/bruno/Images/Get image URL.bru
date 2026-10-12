@@ -1,0 +1,15 @@
+meta {
+  name: Get image URL
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/images/{{imageId}}/url
+  body: none
+  auth: inherit
+}
+
+docs {
+  Returns a short-lived signed URL (about 5 minutes). Run Generate images first so imageId is filled in.
+}

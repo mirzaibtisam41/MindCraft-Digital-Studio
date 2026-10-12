@@ -1,0 +1,29 @@
+meta {
+  name: Register
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{name}}",
+    "email": "{{email}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("accessToken", res.body.data.accessToken);
+  }
+}
+
+docs {
+  Creates an account, grants 60 signup credits, stores the access token in the environment and sets the mds_refresh cookie.
+}

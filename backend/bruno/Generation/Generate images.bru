@@ -1,0 +1,33 @@
+meta {
+  name: Generate images
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/images/generate
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "prompt": "a red cube on a wooden table",
+    "model": "gpt-image-1-mini",
+    "aspectRatio": "1:1",
+    "quality": "low",
+    "n": 1,
+    "style": "photorealistic"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("generationId", res.body.data.id);
+    bru.setEnvVar("imageId", res.body.data.images[0].id);
+  }
+}
+
+docs {
+  Holds credits before the provider call (402 INSUFFICIENT_CREDITS if the balance is too low) and refunds them on failure. Optional fields: size, background, moderation, outputFormat. seed, negativePrompt and strength are rejected for models that do not support them.
+}

@@ -1,0 +1,30 @@
+meta {
+  name: Update my settings
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/api/me/settings
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "defaultModel": "gpt-image-1-mini",
+    "defaultAspectRatio": "1:1",
+    "autoEnhancePrompts": false,
+    "saveOriginalsWithEdits": true,
+    "notifyGenerationComplete": true,
+    "notifyGenerationFailed": true,
+    "notifyLowCredits": true,
+    "notifyProductUpdates": false,
+    "theme": "dark",
+    "reduceMotion": false
+  }
+}
+
+docs {
+  Send only the fields you want to change (at least one). defaultModel accepts null to fall back to the workspace default.
+}

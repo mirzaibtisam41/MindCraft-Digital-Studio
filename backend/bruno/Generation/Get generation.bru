@@ -1,0 +1,15 @@
+meta {
+  name: Get generation
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/images/generations/{{generationId}}
+  body: none
+  auth: inherit
+}
+
+docs {
+  Run Generate images first so generationId is filled in.
+}
