@@ -4,6 +4,73 @@ Source: `AI_Image_Studio_Phase_2_Detailed_Development_Plan.pdf` (35 pages). Numb
 **➕ = added after review (2026-10-11)** to fix gaps between the PDF plan and the V2 design. See "Review notes" at the bottom.
 Estimated effort: PDF says 38–62 dev days; realistically **3–4 months** when learning and coding manually.
 
+---
+
+# New module plan (in progress, started 2026-10-13)
+After the reset, the project is rebuilt module by module. Each module is vertical: table → repository → service → API → UI. Admin-side config modules come before the user-side modules that use them. This section replaces the phase plan below once it is complete; until then the old plan stays for reference only.
+
+Conventions for all tables:
+- Primary keys are UUID.
+- JS uses camelCase, DB uses snake_case via `drizzle({ casing: 'snake_case' })`.
+- Every table has `createdAt`. Column names are not written by hand (`uuid()`, not `uuid('id')`); index and unique constraint names are, because drizzle-kit otherwise names unique constraints in camelCase. Mutable tables also have `updatedAt` with `.$onUpdate(() => new Date())`.
+- Fixed value sets are `pgEnum`, not free VARCHAR.
+- Tokens are never stored raw, only their hash.
+
+## Module 1 — Identity & Access (schema decided 2026-10-13; tables + migration 0000 done)
+3 tables: `users`, `auth_sessions`, `auth_tokens`. There is **no `roles` table**: a user has exactly one role and roles carry no permissions, so it is an enum. If permissions are ever needed, a `roles` + `role_permissions` design replaces the enum then.
+
+Enums:
+- `user_role`: `admin` · `user`
+- `user_status`: `active` · `suspended`
+- `auth_token_type`: `email_verify` · `password_reset`
+
+**`users`**
+| Field | Type | Constraint |
+|---|---|---|
+| id | UUID | PK |
+| name | VARCHAR(150) | NOT NULL |
+| email | VARCHAR(255) | NOT NULL, unique on `lower(email)`; stored lowercased |
+| passwordHash | TEXT | NOT NULL |
+| role | `user_role` | NOT NULL, default `user` |
+| status | `user_status` | NOT NULL, default `active` |
+| emailVerifiedAt | TIMESTAMPTZ | nullable |
+| lastLoginAt | TIMESTAMPTZ | nullable |
+| createdAt / updatedAt | TIMESTAMPTZ | NOT NULL |
+
+**`auth_sessions`** (one row per refresh token; rotation creates a new row)
+| Field | Type | Constraint |
+|---|---|---|
+| id | UUID | PK |
+| userId | UUID | FK → users.id, on delete cascade, indexed |
+| familyId | UUID | NOT NULL, indexed; shared by all tokens rotated from one login |
+| refreshTokenHash | TEXT | NOT NULL, UNIQUE |
+| replacedById | UUID | nullable, FK → auth_sessions.id |
+| userAgent | TEXT | nullable |
+| ipAddress | VARCHAR(45) | nullable |
+| expiresAt | TIMESTAMPTZ | NOT NULL |
+| lastUsedAt | TIMESTAMPTZ | nullable |
+| revokedAt | TIMESTAMPTZ | nullable |
+| createdAt | TIMESTAMPTZ | NOT NULL |
+
+Reuse detection: if a refresh token that already has `replacedById` (or `revokedAt`) is presented again, revoke every session in its `familyId`.
+
+**`auth_tokens`** (email verification + password reset)
+| Field | Type | Constraint |
+|---|---|---|
+| id | UUID | PK |
+| userId | UUID | FK → users.id, on delete cascade, indexed |
+| type | `auth_token_type` | NOT NULL |
+| tokenHash | TEXT | NOT NULL, UNIQUE |
+| expiresAt | TIMESTAMPTZ | NOT NULL |
+| usedAt | TIMESTAMPTZ | nullable; single use |
+| createdAt | TIMESTAMPTZ | NOT NULL |
+
+Relationships: one user → many sessions · one user → many auth tokens.
+
+---
+
+# Old phase plan (reference only, superseded by the module plan above)
+
 ## Working rules
 - **The user writes the code manually** — this is a learning project. Explain, guide, review; don't dump full implementations unless asked.
 - Complete each substep, **test it**, then move to the next.

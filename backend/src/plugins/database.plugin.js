@@ -17,7 +17,7 @@ async function registerDatabase(fastify) {
   await fastify.pg.query('SELECT 1');
   fastify.log.info('Database connected');
 
-  const db = drizzle(fastify.pg.pool, { schema });
+  const db = drizzle(fastify.pg.pool, { schema, casing: 'snake_case' });
 
   fastify.decorate('db', db);
 }

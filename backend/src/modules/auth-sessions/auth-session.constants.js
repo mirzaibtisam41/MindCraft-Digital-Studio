@@ -1,0 +1,1 @@
+export const AUTH_SESSION_IP_ADDRESS_MAX_LENGTH = 45;
