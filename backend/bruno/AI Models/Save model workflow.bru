@@ -1,0 +1,33 @@
+meta {
+  name: Save model workflow
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/api/admin/models/{{modelId}}/generation-types/{{generationTypeId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "isEnabled": true,
+    "enabledOptions": {
+      "sizes": ["1024x1024", "1024x1536"],
+      "qualities": ["medium", "high"],
+      "outputFormats": ["png", "webp"],
+      "maxImagesPerRequest": 2
+    },
+    "defaultOptions": {
+      "size": "1024x1024",
+      "quality": "medium",
+      "outputFormat": "png",
+      "n": 1
+    }
+  }
+}

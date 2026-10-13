@@ -1,0 +1,15 @@
+meta {
+  name: List generation types
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/admin/generation-types
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

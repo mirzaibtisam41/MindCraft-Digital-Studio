@@ -1,0 +1,15 @@
+meta {
+  name: List model workflows
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/admin/models/{{modelId}}/generation-types
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

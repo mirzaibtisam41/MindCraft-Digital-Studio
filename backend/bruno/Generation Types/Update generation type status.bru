@@ -1,0 +1,21 @@
+meta {
+  name: Update generation type status
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/generation-types/{{generationTypeId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "isActive": true
+  }
+}
