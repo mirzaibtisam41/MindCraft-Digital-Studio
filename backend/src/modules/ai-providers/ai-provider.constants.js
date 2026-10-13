@@ -1,0 +1,3 @@
+export const AI_PROVIDER_NAME_MAX_LENGTH = 100;
+
+export const AI_PROVIDER_CODE_MAX_LENGTH = 50;

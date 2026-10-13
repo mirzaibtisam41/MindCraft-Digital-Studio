@@ -67,6 +67,9 @@ Reuse detection: if a refresh token that already has `replacedById` (or `revoked
 
 Relationships: one user → many sessions · one user → many auth tokens.
 
+## Module 2 — AI Providers (in progress: `ai_providers` table + migration 0001 done)
+Table `ai_providers`: `id` UUID PK · `code` VARCHAR(50) UNIQUE (equals the adapter name in code) · `name` VARCHAR(100) · `isActive` BOOLEAN default false · `createdAt` · `updatedAt`. Rows come from a code-side adapter registry; admins only rename and toggle. API keys stay in `.env`.
+
 ---
 
 # Old phase plan (reference only, superseded by the module plan above)
