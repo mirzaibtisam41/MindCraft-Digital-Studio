@@ -1,5 +1,7 @@
 import { loginController } from './features/login/login.controller.js';
 import { loginBodySchema } from './features/login/login.schema.js';
+import { logoutController } from './features/logout/logout.controller.js';
+import { refreshSessionController } from './features/refresh-session/refresh-session.controller.js';
 import { registerController } from './features/register/register.controller.js';
 import { registerBodySchema } from './features/register/register.schema.js';
 
@@ -21,4 +23,12 @@ export function authRoutes(fastify) {
     },
     loginController,
   );
+
+  fastify.post(
+    '/refresh',
+    { config: { rateLimit: { max: 60, timeWindow: '15 minutes' } } },
+    refreshSessionController,
+  );
+
+  fastify.post('/logout', logoutController);
 }

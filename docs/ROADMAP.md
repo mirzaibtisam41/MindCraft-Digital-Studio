@@ -16,7 +16,7 @@ Conventions for all tables:
 - Fixed value sets are `pgEnum`, not free VARCHAR.
 - Tokens are never stored raw, only their hash.
 
-## Module 1 — Identity & Access (schema decided 2026-10-13; tables + migration 0000 done; `POST /api/auth/register` + `POST /api/auth/login` done)
+## Module 1 — Identity & Access (schema decided 2026-10-13; tables + migration 0000 done; `POST /api/auth/register` + `POST /api/auth/login` + `POST /api/auth/refresh` + `POST /api/auth/logout` done)
 3 tables: `users`, `auth_sessions`, `auth_tokens`. There is **no `roles` table**: a user has exactly one role and roles carry no permissions, so it is an enum. If permissions are ever needed, a `roles` + `role_permissions` design replaces the enum then.
 
 Enums:

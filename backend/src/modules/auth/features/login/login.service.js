@@ -2,9 +2,7 @@ import { randomUUID } from 'node:crypto';
 import {
   ForbiddenError,
   UnauthorizedError,
-  generateTokenUtil,
   hashPasswordUtil,
-  hashTokenUtil,
   verifyPasswordUtil,
 } from '#src/utils/index.js';
 import {
@@ -16,9 +14,7 @@ import {
   findUserWithPasswordByEmailRepository,
   updateUserLastLoginAtRepository,
 } from '#src/modules/users/shared/repositories/index.js';
-import { createAuthSessionRepository } from '#src/modules/auth-sessions/shared/repositories/index.js';
-
-const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
+import { startAuthSessionService } from '#src/modules/auth/shared/services/index.js';
 
 const PASSWORD_HASH_FOR_UNKNOWN_EMAIL = await hashPasswordUtil({
   password: 'password-for-unknown-email',
@@ -45,24 +41,12 @@ export async function loginService({ server, data, client }) {
     throw new ForbiddenError(ACCOUNT_SUSPENDED_MESSAGE);
   }
 
-  const refreshToken = generateTokenUtil();
-
-  const session = await createAuthSessionRepository({
-    db: server.db,
-    data: {
-      userId: user.id,
-      familyId: randomUUID(),
-      refreshTokenHash: hashTokenUtil({ token: refreshToken }),
-      userAgent: client.userAgent,
-      ipAddress: client.ipAddress,
-      expiresAt: new Date(
-        Date.now() +
-          server.config.REFRESH_TOKEN_TTL_DAYS * MILLISECONDS_IN_A_DAY,
-      ),
-    },
+  const { accessToken, refreshToken } = await startAuthSessionService({
+    server,
+    userId: user.id,
+    familyId: randomUUID(),
+    client,
   });
-
-  const accessToken = server.jwt.sign({ sub: user.id, sid: session.id });
 
   await updateUserLastLoginAtRepository({ db: server.db, userId: user.id });
 
