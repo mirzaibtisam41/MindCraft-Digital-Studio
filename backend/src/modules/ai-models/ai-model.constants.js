@@ -12,3 +12,20 @@ export const AI_MODEL_STATUS = {
 };
 
 export const AI_MODEL_STATUSES = Object.values(AI_MODEL_STATUS);
+
+export const AI_MODEL_DESCRIPTION_MAX_LENGTH = 1000;
+
+export const AI_MODEL_PROVIDER_NOT_FOUND_MESSAGE =
+  'The selected provider does not exist';
+
+export const AI_MODEL_SLUG_TAKEN_MESSAGE =
+  'A model with this slug already exists';
+
+export const AI_MODEL_PROVIDER_MODEL_TAKEN_MESSAGE =
+  'This provider already has a model with this provider model ID';
+
+export const AI_MODEL_LIST_DEFAULT_LIMIT = 20;
+
+export const AI_MODEL_LIST_MAX_LIMIT = 100;
+
+export const AI_MODEL_NOT_FOUND_MESSAGE = 'Model not found';

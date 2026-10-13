@@ -1,0 +1,26 @@
+meta {
+  name: Create model
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/admin/models
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "providerId": "{{providerId}}",
+    "name": "GPT Image 1",
+    "slug": "gpt-image-1",
+    "providerModelId": "gpt-image-1",
+    "description": "AI image generation model",
+    "sortOrder": 1
+  }
+}

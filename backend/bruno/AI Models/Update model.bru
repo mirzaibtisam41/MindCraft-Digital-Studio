@@ -1,0 +1,23 @@
+meta {
+  name: Update model
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/models/{{modelId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "GPT Image 1",
+    "description": "Updated description",
+    "sortOrder": 2
+  }
+}
