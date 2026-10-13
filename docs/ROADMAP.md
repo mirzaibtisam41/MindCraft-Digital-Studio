@@ -67,8 +67,8 @@ Reuse detection: if a refresh token that already has `replacedById` (or `revoked
 
 Relationships: one user → many sessions · one user → many auth tokens.
 
-## Module 2 — AI Providers (in progress: `ai_providers` table + migration 0001 done)
-Table `ai_providers`: `id` UUID PK · `code` VARCHAR(50) UNIQUE (equals the adapter name in code) · `name` VARCHAR(100) · `isActive` BOOLEAN default false · `createdAt` · `updatedAt`. Rows come from a code-side adapter registry; admins only rename and toggle. API keys stay in `.env`.
+## Module 2 — AI Providers (in progress: `ai_providers` table + migration 0001, admin CRUD `POST /api/admin/providers`, `GET /api/admin/providers`, `GET /:id`, `PATCH /:id` (name, code), `PATCH /:id/status`, `DELETE /:id` + tests done; admin UI next)
+Table `ai_providers`: `id` UUID PK · `code` VARCHAR(50) UNIQUE (stored lowercase) · `name` VARCHAR(100) · `isActive` BOOLEAN default false · `createdAt` · `updatedAt`. Kept as a plain admin CRUD for now (user decision 2026-10-13); the adapter registry idea was dropped until real provider integrations are built.
 
 ---
 

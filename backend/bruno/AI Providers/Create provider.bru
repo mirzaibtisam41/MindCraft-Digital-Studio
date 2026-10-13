@@ -1,0 +1,23 @@
+meta {
+  name: Create provider
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/admin/providers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "code": "openai",
+    "name": "OpenAI",
+    "isActive": false
+  }
+}

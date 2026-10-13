@@ -18,9 +18,10 @@ function readRefreshCookie(response) {
   return setCookie.match(/mds_refresh=([^;]*)/)?.[1];
 }
 
-export async function buildTestApp() {
+export async function buildTestApp({ env = {} } = {}) {
   process.env.NODE_ENV = 'test';
   process.env.LOG_LEVEL = 'silent';
+  Object.assign(process.env, env);
 
   const app = buildApp();
   const createdEmails = [];
@@ -101,6 +102,15 @@ export async function buildTestApp() {
     return { email, ...(await loginUser({ email })) };
   }
 
+  async function registerAndLoginAsAdmin() {
+    const email = await registerUser();
+    await app.pg.query("UPDATE users SET role = 'admin' WHERE email = $1", [
+      email,
+    ]);
+
+    return { email, ...(await loginUser({ email })) };
+  }
+
   async function runSql(text, values = []) {
     const result = await app.pg.query(text, values);
 
@@ -122,6 +132,7 @@ export async function buildTestApp() {
     registerUser,
     loginUser,
     registerAndLogin,
+    registerAndLoginAsAdmin,
     runSql,
     close,
   };

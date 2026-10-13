@@ -1,0 +1,11 @@
+import { NotFoundError } from '#src/utils/index.js';
+import { AI_PROVIDER_NOT_FOUND_MESSAGE } from '#src/modules/ai-providers/ai-provider.constants.js';
+import { deleteAiProviderRepository } from '#src/modules/ai-providers/shared/repositories/index.js';
+
+export async function deleteAiProviderService({ db, id }) {
+  const deletedProvider = await deleteAiProviderRepository({ db, id });
+
+  if (!deletedProvider) {
+    throw new NotFoundError(AI_PROVIDER_NOT_FOUND_MESSAGE);
+  }
+}

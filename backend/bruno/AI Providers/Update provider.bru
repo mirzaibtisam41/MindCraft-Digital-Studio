@@ -1,0 +1,21 @@
+meta {
+  name: Update provider
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/providers/{{providerId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "OpenAI Images"
+  }
+}

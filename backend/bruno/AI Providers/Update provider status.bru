@@ -1,0 +1,21 @@
+meta {
+  name: Update provider status
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/providers/{{providerId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "isActive": true
+  }
+}
