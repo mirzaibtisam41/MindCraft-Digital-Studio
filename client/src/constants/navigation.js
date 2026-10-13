@@ -1,4 +1,5 @@
 import {
+  Boxes,
   Coins,
   FolderKanban,
   History,
@@ -70,6 +71,7 @@ const ADMIN_GROUP = {
       icon: Server,
       ready: true,
     },
+    { label: 'AI Models', href: '/admin/models', icon: Boxes, ready: true },
   ],
 };
 

@@ -31,15 +31,12 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      <body suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
-            __html: REMOVE_EXTENSION_ATTRIBUTES_SCRIPT,
+            __html: THEME_INIT_SCRIPT + REMOVE_EXTENSION_ATTRIBUTES_SCRIPT,
           }}
         />
-      </head>
-      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

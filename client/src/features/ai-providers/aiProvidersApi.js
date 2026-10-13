@@ -19,7 +19,7 @@ export const aiProvidersApi = baseApi.injectEndpoints({
         body: { name },
       }),
       transformResponse: (response) => response.data.provider,
-      invalidatesTags: ['AiProviders'],
+      invalidatesTags: ['AiProviders', 'AiModels'],
     }),
     updateAiProviderStatus: builder.mutation({
       query: ({ id, isActive }) => ({
@@ -28,7 +28,7 @@ export const aiProvidersApi = baseApi.injectEndpoints({
         body: { isActive },
       }),
       transformResponse: (response) => response.data.provider,
-      invalidatesTags: ['AiProviders'],
+      invalidatesTags: ['AiProviders', 'AiModels'],
     }),
     deleteAiProvider: builder.mutation({
       query: (id) => ({ url: `/api/admin/providers/${id}`, method: 'DELETE' }),

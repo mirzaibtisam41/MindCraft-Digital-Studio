@@ -92,6 +92,6 @@ export const baseApi = createApi({
   baseQuery: baseQueryWithRefresh,
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  tagTypes: ['Sessions', 'AiProviders'],
+  tagTypes: ['Sessions', 'AiProviders', 'AiModels'],
   endpoints: () => ({}),
 });
