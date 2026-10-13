@@ -20,6 +20,11 @@ export const adminApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ['AdminModels'],
     }),
+    getAdminModel: builder.query({
+      query: (id) => `/api/admin/models/${encodeURIComponent(id)}`,
+      transformResponse: (response) => response.data,
+      providesTags: (_result, _error, id) => [{ type: 'AdminModel', id }],
+    }),
     createAdminModel: builder.mutation({
       query: (body) => ({ url: '/api/admin/models', method: 'POST', body }),
       transformResponse: (response) => response.data,
@@ -27,12 +32,17 @@ export const adminApi = baseApi.injectEndpoints({
     }),
     updateAdminModel: builder.mutation({
       query: ({ id, body }) => ({
-        url: `/api/admin/models/${id}`,
+        url: `/api/admin/models/${encodeURIComponent(id)}`,
         method: 'PATCH',
         body,
       }),
       transformResponse: (response) => response.data,
-      invalidatesTags: ['AdminModels', 'ImageOptions', ...SIDE_EFFECT_TAGS],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'AdminModel', id },
+        'AdminModels',
+        'ImageOptions',
+        ...SIDE_EFFECT_TAGS,
+      ],
     }),
 
     getAdminUsers: builder.query({
@@ -113,6 +123,7 @@ export const adminApi = baseApi.injectEndpoints({
 export const {
   useGetAdminOverviewQuery,
   useGetAdminModelsQuery,
+  useGetAdminModelQuery,
   useCreateAdminModelMutation,
   useUpdateAdminModelMutation,
   useGetAdminUsersQuery,

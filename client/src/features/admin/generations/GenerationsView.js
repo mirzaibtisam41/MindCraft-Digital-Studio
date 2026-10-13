@@ -28,9 +28,9 @@ import {
 import { GenerationStatusBadge } from '@/features/admin/generations/GenerationStatusBadge';
 import { formatDateTime } from '@/lib/formatDate';
 
-export function GenerationsView({ initialUserId }) {
+export function GenerationsView({ initialUserId, initialModel }) {
   const [status, setStatus] = useState('');
-  const [model, setModel] = useState('');
+  const [model, setModel] = useState(initialModel);
   const [userId, setUserId] = useState(initialUserId);
   const [page, setPage] = useState(1);
   const { data: modelsData } = useGetAdminModelsQuery();

@@ -7,7 +7,9 @@ import { adjustUserCreditsController } from './features/adjust-user-credits/adju
 import { adjustUserCreditsBodySchema } from './features/adjust-user-credits/adjust-user-credits.schema.js';
 import { createImageModelController } from './features/create-image-model/create-image-model.controller.js';
 import { createImageModelBodySchema } from './features/create-image-model/create-image-model.schema.js';
+import { modelIdParamsSchema } from '#src/modules/admin/shared/schemas/model-id-params.schema.js';
 import { getGenerationController } from './features/get-generation/get-generation.controller.js';
+import { getImageModelController } from './features/get-image-model/get-image-model.controller.js';
 import { getOverviewController } from './features/get-overview/get-overview.controller.js';
 import { getOverviewQuerySchema } from './features/get-overview/get-overview.schema.js';
 import { getSettingsController } from './features/get-settings/get-settings.controller.js';
@@ -22,10 +24,7 @@ import { listUserCreditTransactionsQuerySchema } from './features/list-user-cred
 import { listUsersController } from './features/list-users/list-users.controller.js';
 import { listUsersQuerySchema } from './features/list-users/list-users.schema.js';
 import { updateImageModelController } from './features/update-image-model/update-image-model.controller.js';
-import {
-  updateImageModelBodySchema,
-  updateImageModelParamsSchema,
-} from './features/update-image-model/update-image-model.schema.js';
+import { updateImageModelBodySchema } from './features/update-image-model/update-image-model.schema.js';
 import { updateSettingsController } from './features/update-settings/update-settings.controller.js';
 import { updateSettingsBodySchema } from './features/update-settings/update-settings.schema.js';
 import { updateUserController } from './features/update-user/update-user.controller.js';
@@ -49,11 +48,17 @@ export function adminRoutes(fastify) {
     createImageModelController,
   );
 
+  fastify.get(
+    '/models/:id',
+    { schema: { params: modelIdParamsSchema } },
+    getImageModelController,
+  );
+
   fastify.patch(
     '/models/:id',
     {
       schema: {
-        params: updateImageModelParamsSchema,
+        params: modelIdParamsSchema,
         body: updateImageModelBodySchema,
       },
     },

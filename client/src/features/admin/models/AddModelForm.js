@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/Field';
@@ -63,7 +65,8 @@ function validate({ values, editable }) {
   return errors;
 }
 
-export function AddModelForm({ editable, onClose }) {
+export function AddModelForm({ editable }) {
+  const router = useRouter();
   const [createModel, { isLoading }] = useCreateAdminModelMutation();
   const [values, setValues] = useState(() =>
     buildInitialState(editable.qualities),
@@ -96,7 +99,7 @@ export function AddModelForm({ editable, onClose }) {
       }).unwrap();
 
       toast.success(`${created.label} added`);
-      onClose();
+      router.push(`/admin/models/${encodeURIComponent(created.id)}`);
     } catch (error) {
       setFormError(getErrorMessage(error));
     }
@@ -107,17 +110,8 @@ export function AddModelForm({ editable, onClose }) {
       onSubmit={handleSubmit}
       noValidate
       aria-label="Add image model"
-      className="rounded-xl border border-brand/30 bg-card"
+      className="rounded-xl border bg-card"
     >
-      <div className="flex flex-col gap-1 border-b px-5 py-4">
-        <h2 className="text-[15px] font-semibold">Add image model</h2>
-        <p className="text-[12.5px] text-muted-foreground">
-          The id must match the provider&apos;s model id exactly. New models
-          start with the standard image options and can be fine-tuned right
-          after. If the provider rejects the id, the user is not charged.
-        </p>
-      </div>
-
       <div className="flex flex-col gap-5 px-5 py-5">
         <FormAlert>{formError}</FormAlert>
 
@@ -226,13 +220,8 @@ export function AddModelForm({ editable, onClose }) {
       </div>
 
       <div className="flex justify-end gap-2 border-t px-5 py-3">
-        <Button
-          type="button"
-          variant="ghost"
-          disabled={isLoading}
-          onClick={onClose}
-        >
-          Cancel
+        <Button asChild variant="ghost">
+          <Link href="/admin/models">Cancel</Link>
         </Button>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? <Spinner /> : null}

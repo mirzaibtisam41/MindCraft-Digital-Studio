@@ -1,0 +1,15 @@
+meta {
+  name: Get image model
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/admin/models/gpt-image-1-mini
+  body: none
+  auth: inherit
+}
+
+docs {
+  Returns the model, the editable limits and its usage stats (all time and last 30 days).
+}

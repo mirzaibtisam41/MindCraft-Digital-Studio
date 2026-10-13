@@ -23,7 +23,6 @@ import {
   buildModelPayload,
 } from '@/features/admin/models/modelDraft';
 import { getErrorMessage } from '@/lib/apiError';
-import { formatDateTime } from '@/lib/formatDate';
 
 const TOGGLE_ITEM_CLASS =
   'font-mono text-xs data-[state=on]:border-brand/40 data-[state=on]:bg-brand-tint data-[state=on]:text-foreground';
@@ -154,10 +153,9 @@ export function ModelEditor({ model, editable }) {
     <section className="rounded-xl border bg-card">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-4">
         <div className="flex min-w-0 flex-col gap-1">
-          <h2 className="text-[15px] font-semibold">{model.label}</h2>
-          <p className="font-mono text-xs text-ink-3">
-            {model.id} · {model.provider} · updated{' '}
-            {formatDateTime(model.updatedAt)}
+          <h2 className="text-[15px] font-semibold">Configuration</h2>
+          <p className="text-[12.5px] text-muted-foreground">
+            Pricing, allowed options and defaults users see in the generator.
           </p>
         </div>
         <label

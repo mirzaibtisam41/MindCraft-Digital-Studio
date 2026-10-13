@@ -98,6 +98,7 @@ export const baseApi = createApi({
     'ImageOptions',
     'AdminOverview',
     'AdminModels',
+    'AdminModel',
     'AdminUsers',
     'AdminUser',
     'AdminTransactions',

@@ -5,11 +5,17 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/admin/overview
+  url: {{baseUrl}}/api/admin/overview?range=30d&timezone=Asia/Karachi
   body: none
   auth: inherit
 }
 
+params:query {
+  range: 30d
+  timezone: Asia/Karachi
+}
+
 docs {
   Super admin only. Log in as a user promoted with: npm run admin:promote -- <email>
+  range: 7d, 30d or 90d. timezone: IANA name used to group days (falls back to UTC).
 }
