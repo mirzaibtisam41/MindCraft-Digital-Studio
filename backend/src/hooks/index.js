@@ -1,1 +1,2 @@
 export * from './check-user-is-logged-in.hook.js';
+export * from './check-user-is-admin.hook.js';
