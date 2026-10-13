@@ -27,7 +27,11 @@ export async function startAuthSessionService({
     },
   });
 
-  const accessToken = server.jwt.sign({ sub: userId, sid: session.id });
+  const accessToken = server.jwt.sign({
+    sub: userId,
+    sid: session.id,
+    fid: familyId,
+  });
 
   return { session, accessToken, refreshToken };
 }
