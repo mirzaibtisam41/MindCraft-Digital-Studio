@@ -97,33 +97,35 @@ describe('admin AI providers CRUD', () => {
     assert.equal(missing.statusCode, 404);
   });
 
-  it('updates the name and the code', async () => {
+  it('updates the name but never the code', async () => {
     const provider = await createProvider();
-    const newCode = makeCode();
 
     const response = await send(
       'PATCH',
       `/api/admin/providers/${provider.id}`,
       {
-        name: 'Renamed',
-        code: newCode,
+        name: '  Renamed  ',
+        code: makeCode(),
       },
     );
 
     assert.equal(response.statusCode, 200);
     assert.equal(response.body.data.provider.name, 'Renamed');
-    assert.equal(response.body.data.provider.code, newCode);
+    assert.equal(response.body.data.provider.code, provider.code);
   });
 
-  it('rejects an update to a code another provider uses', async () => {
-    const first = await createProvider();
-    const second = await createProvider();
+  it('rejects an update without a name', async () => {
+    const provider = await createProvider();
 
-    const response = await send('PATCH', `/api/admin/providers/${second.id}`, {
-      code: first.code,
-    });
+    const response = await send(
+      'PATCH',
+      `/api/admin/providers/${provider.id}`,
+      {
+        code: makeCode(),
+      },
+    );
 
-    assert.equal(response.statusCode, 409);
+    assert.equal(response.statusCode, 400);
   });
 
   it('rejects an empty update and returns 404 for an unknown id', async () => {
