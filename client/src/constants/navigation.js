@@ -1,0 +1,80 @@
+import {
+  Coins,
+  FolderKanban,
+  History,
+  ImageIcon,
+  ImagePlus,
+  Images,
+  LayoutDashboard,
+  NotebookPen,
+  ScanEye,
+  Settings,
+  ShieldCheck,
+  Wand2,
+} from 'lucide-react';
+
+const WORKSPACE_GROUP = {
+  label: 'Workspace',
+  items: [
+    { label: 'Dashboard', href: '/app', icon: LayoutDashboard, ready: true },
+    { label: 'Image Generator', icon: ImagePlus },
+    { label: 'Image Editor', icon: Wand2 },
+    { label: 'Image to Image', icon: ImageIcon },
+    { label: 'AI Vision', icon: ScanEye },
+  ],
+};
+
+const LIBRARY_GROUP = {
+  label: 'Library',
+  items: [
+    { label: 'My Creations', icon: Images },
+    { label: 'Projects', icon: FolderKanban },
+    { label: 'Generation History', icon: History },
+    { label: 'Prompt Studio', icon: NotebookPen },
+  ],
+};
+
+const ACCOUNT_GROUP = {
+  label: 'Account',
+  items: [
+    { label: 'Usage & Credits', icon: Coins },
+    {
+      label: 'Settings',
+      href: '/app/settings/security',
+      icon: Settings,
+      ready: true,
+    },
+  ],
+};
+
+const ADMIN_GROUP = {
+  label: 'Admin',
+  items: [
+    { label: 'Admin console', href: '/admin', icon: ShieldCheck, ready: true },
+  ],
+};
+
+export function getNavGroups({ isAdmin }) {
+  const groups = [WORKSPACE_GROUP, LIBRARY_GROUP, ACCOUNT_GROUP];
+
+  return isAdmin ? [...groups, ADMIN_GROUP] : groups;
+}
+
+export function isNavItemActive(item, pathname) {
+  if (!item.href) return false;
+  if (item.href === '/app') return pathname === '/app';
+
+  return pathname.startsWith(item.href);
+}
+
+export function findActiveNavItem(groups, pathname) {
+  for (const group of groups) {
+    const item = group.items.find((navItem) =>
+      isNavItemActive(navItem, pathname),
+    );
+
+    if (item) return { group, item };
+  }
+
+  return null;
+}
