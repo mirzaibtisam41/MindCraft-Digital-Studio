@@ -20,6 +20,7 @@ export async function logoutService({ db, refreshToken }) {
 
   await revokeAuthSessionFamilyRepository({
     db,
+    userId: found.user.id,
     familyId: found.session.familyId,
   });
 }

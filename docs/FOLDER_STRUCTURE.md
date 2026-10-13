@@ -67,7 +67,7 @@ backend/
 - Layering: routes → controller → service → repository. Repositories only talk to the DB; controllers never query the DB.
 
 ### Planned modules for this project (mapped to the roadmap)
-`health`, `auth`, `users` (profile, `/api/me`), `user-settings` (`/api/me/settings`), `auth-sessions` (refresh tokens), `auth-tokens` (email verify + password reset), `mail`, `ai` (provider adapters: image provider + LangChain model), `generations`, `images`, `edits` (image-to-image, editing, history), `vision`, `prompts`, `projects` (+ collections), `credits`, `notifications`, `usage`, `billing`. Worker (2.7): a separate entry such as `backend/worker.js` that reuses the same `src/`.
+`health`, `auth`, `users` (profile updates; the logged-in user itself is `GET /api/auth/me`), `user-settings` (`/api/me/settings`), `auth-sessions` (refresh tokens), `auth-tokens` (email verify + password reset), `mail`, `ai` (provider adapters: image provider + LangChain model), `generations`, `images`, `edits` (image-to-image, editing, history), `vision`, `prompts`, `projects` (+ collections), `credits`, `notifications`, `usage`, `billing`. Worker (2.7): a separate entry such as `backend/worker.js` that reuses the same `src/`.
 
 ## client/
 ```

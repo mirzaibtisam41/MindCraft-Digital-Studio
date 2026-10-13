@@ -45,6 +45,7 @@ export async function refreshSessionService({ server, refreshToken, client }) {
     if (session.replacedById && !wasReplacedJustNow({ session })) {
       await revokeAuthSessionFamilyRepository({
         db: server.db,
+        userId: user.id,
         familyId: session.familyId,
       });
     }
@@ -59,6 +60,7 @@ export async function refreshSessionService({ server, refreshToken, client }) {
   if (user.status === USER_STATUS.SUSPENDED) {
     await revokeAuthSessionFamilyRepository({
       db: server.db,
+      userId: user.id,
       familyId: session.familyId,
     });
 

@@ -1,0 +1,15 @@
+meta {
+  name: Logout other sessions
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/auth/logout-others
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

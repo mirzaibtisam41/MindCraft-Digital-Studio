@@ -18,3 +18,5 @@ export const REFRESH_TOKEN_REUSE_GRACE_MS = 10000;
 export const NOT_LOGGED_IN_MESSAGE = 'Please log in to continue';
 
 export const ADMIN_ACCESS_REQUIRED_MESSAGE = 'Admin access required';
+
+export const SESSION_NOT_FOUND_MESSAGE = 'Session not found';

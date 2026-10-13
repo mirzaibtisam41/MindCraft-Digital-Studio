@@ -30,4 +30,5 @@ export async function checkUserIsLoggedInHook(request) {
   }
 
   request.user = user;
+  request.sessionFamilyId = tokenPayload.fid;
 }
