@@ -11,6 +11,7 @@ import {
   ScanEye,
   Server,
   Settings,
+  SlidersHorizontal,
   Workflow,
   ShieldCheck,
   Wand2,
@@ -46,7 +47,12 @@ const LIBRARY_GROUP = {
 const ACCOUNT_GROUP = {
   label: 'Account',
   items: [
-    { label: 'Usage & Credits', icon: Coins },
+    {
+      label: 'Usage & Credits',
+      href: '/app/credits',
+      icon: Coins,
+      ready: true,
+    },
     {
       label: 'Settings',
       href: '/app/settings/security',
@@ -77,6 +83,12 @@ const ADMIN_GROUP = {
       label: 'Generation Types',
       href: '/admin/generation-types',
       icon: Workflow,
+      ready: true,
+    },
+    {
+      label: 'Platform settings',
+      href: '/admin/settings',
+      icon: SlidersHorizontal,
       ready: true,
     },
   ],

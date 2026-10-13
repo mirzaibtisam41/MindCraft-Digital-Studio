@@ -53,7 +53,7 @@ export const generationTypesApi = baseApi.injectEndpoints({
         body,
       }),
       transformResponse: (response) => response.data.workflow,
-      invalidatesTags: ['ModelWorkflows'],
+      invalidatesTags: ['ModelWorkflows', 'ModelPrices'],
     }),
   }),
 });

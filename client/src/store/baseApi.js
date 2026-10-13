@@ -98,6 +98,9 @@ export const baseApi = createApi({
     'AiModels',
     'GenerationTypes',
     'ModelWorkflows',
+    'ModelPrices',
+    'PlatformSettings',
+    'Wallet',
   ],
   endpoints: () => ({}),
 });

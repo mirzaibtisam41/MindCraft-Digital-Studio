@@ -9,6 +9,7 @@ import { useGetAiModelQuery } from '@/features/ai-models/aiModelsApi';
 import { findAiModelStatus } from '@/features/ai-models/aiModelStatuses';
 import { WorkflowCard } from '@/features/ai-models/WorkflowCard';
 import { useGetModelWorkflowsQuery } from '@/features/generation-types/generationTypesApi';
+import { useGetModelPricesQuery } from '@/features/ai-models/modelPricesApi';
 import { getErrorMessage } from '@/lib/apiError';
 
 function ModelHeader({ model }) {
@@ -41,7 +42,8 @@ function ModelHeader({ model }) {
 export function AiModelDetailView({ modelId }) {
   const model = useGetAiModelQuery(modelId);
   const workflows = useGetModelWorkflowsQuery(modelId);
-  const error = model.error ?? workflows.error;
+  const prices = useGetModelPricesQuery(modelId);
+  const error = model.error ?? workflows.error ?? prices.error;
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,8 +63,9 @@ export function AiModelDetailView({ modelId }) {
       <div className="flex flex-col gap-1">
         <h2 className="text-[16px] font-semibold">Workflows</h2>
         <p className="text-sm text-muted-foreground">
-          Choose which workflows this model offers and the options users can
-          pick. A workflow needs its options before it can be turned on.
+          Choose which workflows this model offers, the options users can pick
+          and the credits each image costs. The model can be activated once a
+          workflow is on and every enabled quality has a price.
         </p>
       </div>
 
@@ -80,6 +83,9 @@ export function AiModelDetailView({ modelId }) {
           modelId={modelId}
           workflow={workflow}
           availableOptions={workflows.data.availableOptions}
+          prices={(prices.data ?? []).filter(
+            (price) => price.generationTypeId === workflow.generationType.id,
+          )}
         />
       ))}
     </div>

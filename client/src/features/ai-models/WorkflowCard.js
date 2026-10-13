@@ -24,6 +24,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { Switch } from '@/components/ui/switch';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useSaveModelWorkflowMutation } from '@/features/generation-types/generationTypesApi';
+import { WorkflowPricesForm } from '@/features/ai-models/WorkflowPricesForm';
 import { getErrorMessage } from '@/lib/apiError';
 
 const OPTION_GROUPS = [
@@ -104,7 +105,7 @@ function DefaultSelect({ label, value, values, onChange }) {
   );
 }
 
-export function WorkflowCard({ modelId, workflow, availableOptions }) {
+export function WorkflowCard({ modelId, workflow, availableOptions, prices }) {
   const [state, setState] = useState(() => buildInitialState(workflow));
   const [errorMessage, setErrorMessage] = useState('');
   const [saveModelWorkflow, { isLoading }] = useSaveModelWorkflowMutation();
@@ -261,6 +262,24 @@ export function WorkflowCard({ modelId, workflow, availableOptions }) {
           Save workflow
         </Button>
       </CardFooter>
+
+      <CardContent className="border-t pt-6">
+        {workflow.enabledOptions ? (
+          <WorkflowPricesForm
+            key={prices
+              .map((price) => `${price.quality}:${price.creditsPerImage}`)
+              .join(',')}
+            modelId={modelId}
+            typeId={generationType.id}
+            qualities={workflow.enabledOptions.qualities}
+            prices={prices}
+          />
+        ) : (
+          <p className="text-sm text-ink-3">
+            Save this workflow with its options to set credit prices.
+          </p>
+        )}
+      </CardContent>
     </Card>
   );
 }
