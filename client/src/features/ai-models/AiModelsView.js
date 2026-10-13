@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import {
   Boxes,
   ChevronLeft,
@@ -252,7 +253,12 @@ export function AiModelsView() {
               {models.map((model) => (
                 <TableRow key={model.id}>
                   <TableCell>
-                    <p className="font-medium">{model.name}</p>
+                    <Link
+                      href={`/admin/models/${model.id}`}
+                      className="font-medium hover:text-brand hover:underline"
+                    >
+                      {model.name}
+                    </Link>
                     <p className="font-mono text-xs text-ink-3">{model.slug}</p>
                   </TableCell>
                   <TableCell>

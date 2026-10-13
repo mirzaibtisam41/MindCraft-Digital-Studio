@@ -67,8 +67,28 @@ describe('generation types and model workflows', () => {
     await testApp.runSql('DELETE FROM ai_providers WHERE id = $1', [
       providerId,
     ]);
+    await testApp.runSql('DELETE FROM generation_types WHERE code = ANY($1)', [
+      createdTypeCodes,
+    ]);
     await testApp.close();
   });
+
+  const createdTypeCodes = [];
+
+  function makeTypeCode() {
+    const code = `test_${randomUUID().slice(0, 8)}`;
+    createdTypeCodes.push(code);
+
+    return code;
+  }
+
+  function createType(payload) {
+    return send('POST', '/api/admin/generation-types', {
+      code: makeTypeCode(),
+      name: 'Test Type',
+      ...payload,
+    });
+  }
 
   function send(method, url, payload, accessToken = admin.accessToken) {
     return testApp.sendRequest({ method, url, accessToken, payload });
@@ -124,6 +144,59 @@ describe('generation types and model workflows', () => {
       );
 
       assert.equal(response.statusCode, 404);
+    });
+
+    it('creates a generation type, on by default, with a lowercase code', async () => {
+      const code = makeTypeCode();
+
+      const response = await send('POST', '/api/admin/generation-types', {
+        code: code.toUpperCase(),
+        name: '  Upscaling  ',
+        description: '  Make images larger  ',
+      });
+      const created = response.body.data.generationType;
+
+      assert.equal(response.statusCode, 201);
+      assert.equal(created.code, code);
+      assert.equal(created.name, 'Upscaling');
+      assert.equal(created.description, 'Make images larger');
+      assert.equal(created.isActive, true);
+    });
+
+    it('rejects a duplicate code and invalid input', async () => {
+      const duplicate = await createType({ code: 'text_to_image' });
+      const invalid = await send('POST', '/api/admin/generation-types', {
+        code: 'has spaces!',
+      });
+
+      assert.equal(duplicate.statusCode, 409);
+      assert.equal(invalid.statusCode, 400);
+    });
+
+    it('deletes a generation type that no model uses', async () => {
+      const created = await createType({ isActive: false });
+      const id = created.body.data.generationType.id;
+
+      const deleted = await send('DELETE', `/api/admin/generation-types/${id}`);
+      const again = await send('DELETE', `/api/admin/generation-types/${id}`);
+
+      assert.equal(created.body.data.generationType.isActive, false);
+      assert.equal(deleted.statusCode, 200);
+      assert.equal(again.statusCode, 404);
+    });
+
+    it('refuses to delete a generation type used by a model', async () => {
+      const created = await createType();
+      const id = created.body.data.generationType.id;
+      await saveWorkflow(id, { isEnabled: false });
+
+      const response = await send(
+        'DELETE',
+        `/api/admin/generation-types/${id}`,
+      );
+
+      assert.equal(response.statusCode, 409);
+      assert.match(response.body.message, /used by models/);
     });
   });
 
@@ -283,6 +356,18 @@ describe('generation types and model workflows', () => {
     const responses = await Promise.all([
       send('GET', '/api/admin/generation-types', undefined, user.accessToken),
       send(
+        'POST',
+        '/api/admin/generation-types',
+        { code: makeTypeCode(), name: 'X' },
+        user.accessToken,
+      ),
+      send(
+        'DELETE',
+        `/api/admin/generation-types/${imageEdit.id}`,
+        undefined,
+        user.accessToken,
+      ),
+      send(
         'PATCH',
         `/api/admin/generation-types/${imageEdit.id}/status`,
         { isActive: false },
@@ -304,7 +389,7 @@ describe('generation types and model workflows', () => {
 
     assert.deepEqual(
       responses.map((response) => response.statusCode),
-      [403, 403, 403, 403],
+      [403, 403, 403, 403, 403, 403],
     );
   });
 });

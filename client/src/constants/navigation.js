@@ -11,6 +11,7 @@ import {
   ScanEye,
   Server,
   Settings,
+  Workflow,
   ShieldCheck,
   Wand2,
 } from 'lucide-react';
@@ -72,6 +73,12 @@ const ADMIN_GROUP = {
       ready: true,
     },
     { label: 'AI Models', href: '/admin/models', icon: Boxes, ready: true },
+    {
+      label: 'Generation Types',
+      href: '/admin/generation-types',
+      icon: Workflow,
+      ready: true,
+    },
   ],
 };
 

@@ -1,0 +1,24 @@
+meta {
+  name: Create generation type
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/admin/generation-types
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "code": "upscaling",
+    "name": "Image Upscaling",
+    "description": "Make an image larger and sharper.",
+    "isActive": false
+  }
+}

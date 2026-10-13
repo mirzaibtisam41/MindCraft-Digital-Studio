@@ -10,6 +10,11 @@ export const aiModelsApi = baseApi.injectEndpoints({
       }),
       providesTags: ['AiModels'],
     }),
+    getAiModel: builder.query({
+      query: (id) => `/api/admin/models/${id}`,
+      transformResponse: (response) => response.data.model,
+      providesTags: ['AiModels'],
+    }),
     createAiModel: builder.mutation({
       query: (body) => ({ url: '/api/admin/models', method: 'POST', body }),
       transformResponse: (response) => response.data.model,
@@ -38,6 +43,7 @@ export const aiModelsApi = baseApi.injectEndpoints({
 
 export const {
   useGetAiModelsQuery,
+  useGetAiModelQuery,
   useCreateAiModelMutation,
   useUpdateAiModelMutation,
   useUpdateAiModelStatusMutation,

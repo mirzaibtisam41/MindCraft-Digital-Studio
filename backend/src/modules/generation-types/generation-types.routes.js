@@ -3,6 +3,9 @@ import {
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
 import { generationTypeIdParamsSchema } from './generation-type-id-params.schema.js';
+import { createGenerationTypeController } from './features/create-generation-type/create-generation-type.controller.js';
+import { createGenerationTypeBodySchema } from './features/create-generation-type/create-generation-type.schema.js';
+import { deleteGenerationTypeController } from './features/delete-generation-type/delete-generation-type.controller.js';
 import { listGenerationTypesController } from './features/list-generation-types/list-generation-types.controller.js';
 import { updateGenerationTypeController } from './features/update-generation-type/update-generation-type.controller.js';
 import { updateGenerationTypeBodySchema } from './features/update-generation-type/update-generation-type.schema.js';
@@ -12,6 +15,12 @@ import { updateGenerationTypeStatusBodySchema } from './features/update-generati
 export function generationTypesRoutes(fastify) {
   fastify.addHook('onRequest', checkUserIsLoggedInHook);
   fastify.addHook('onRequest', checkUserIsAdminHook);
+
+  fastify.post(
+    '/',
+    { schema: { body: createGenerationTypeBodySchema } },
+    createGenerationTypeController,
+  );
 
   fastify.get('/', listGenerationTypesController);
 
@@ -35,5 +44,11 @@ export function generationTypesRoutes(fastify) {
       },
     },
     updateGenerationTypeStatusController,
+  );
+
+  fastify.delete(
+    '/:id',
+    { schema: { params: generationTypeIdParamsSchema } },
+    deleteGenerationTypeController,
   );
 }
