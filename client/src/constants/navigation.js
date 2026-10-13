@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   NotebookPen,
   ScanEye,
+  Server,
   Settings,
   ShieldCheck,
   Wand2,
@@ -16,7 +17,13 @@ import {
 const WORKSPACE_GROUP = {
   label: 'Workspace',
   items: [
-    { label: 'Dashboard', href: '/app', icon: LayoutDashboard, ready: true },
+    {
+      label: 'Dashboard',
+      href: '/app',
+      icon: LayoutDashboard,
+      ready: true,
+      exact: true,
+    },
     { label: 'Image Generator', icon: ImagePlus },
     { label: 'Image Editor', icon: Wand2 },
     { label: 'Image to Image', icon: ImageIcon },
@@ -50,7 +57,19 @@ const ACCOUNT_GROUP = {
 const ADMIN_GROUP = {
   label: 'Admin',
   items: [
-    { label: 'Admin console', href: '/admin', icon: ShieldCheck, ready: true },
+    {
+      label: 'Admin console',
+      href: '/admin',
+      icon: ShieldCheck,
+      ready: true,
+      exact: true,
+    },
+    {
+      label: 'AI Providers',
+      href: '/admin/providers',
+      icon: Server,
+      ready: true,
+    },
   ],
 };
 
@@ -62,7 +81,7 @@ export function getNavGroups({ isAdmin }) {
 
 export function isNavItemActive(item, pathname) {
   if (!item.href) return false;
-  if (item.href === '/app') return pathname === '/app';
+  if (item.exact) return pathname === item.href;
 
   return pathname.startsWith(item.href);
 }

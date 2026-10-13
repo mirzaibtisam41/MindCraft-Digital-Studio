@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Providers } from '@/app/providers';
+import { REMOVE_EXTENSION_ATTRIBUTES_SCRIPT } from '@/lib/extensionAttributes';
 import { THEME_INIT_SCRIPT } from '@/lib/theme';
 import './globals.css';
 
@@ -32,6 +33,11 @@ export default function RootLayout({ children }) {
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: REMOVE_EXTENSION_ATTRIBUTES_SCRIPT,
+          }}
+        />
       </head>
       <body suppressHydrationWarning>
         <Providers>{children}</Providers>
