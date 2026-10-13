@@ -70,6 +70,9 @@ Relationships: one user → many sessions · one user → many auth tokens.
 ## Module 2 — AI Providers (in progress: `ai_providers` table + migration 0001, admin CRUD `POST /api/admin/providers`, `GET /api/admin/providers`, `GET /:id`, `PATCH /:id` (name only; code is immutable), `PATCH /:id/status`, `DELETE /:id` + tests done; admin UI next)
 Table `ai_providers`: `id` UUID PK · `code` VARCHAR(50) UNIQUE (stored lowercase) · `name` VARCHAR(100) · `isActive` BOOLEAN default false · `createdAt` · `updatedAt`. Kept as a plain admin CRUD for now (user decision 2026-10-13); the adapter registry idea was dropped until real provider integrations are built.
 
+## Module 3 — AI Models (in progress: `ai_models` table + migration 0002 done)
+Table `ai_models`: `id` UUID PK · `providerId` FK → ai_providers (on delete restrict) · `name` VARCHAR(150) · `slug` VARCHAR(150) UNIQUE · `providerModelId` VARCHAR(150) · `description` TEXT null · `status` enum draft/active/disabled/deprecated default draft · `sortOrder` INT default 0 · `createdBy` / `updatedBy` FK → users (on delete set null) · `createdAt` · `updatedAt`. UNIQUE (providerId, providerModelId). Decisions: no adapter checks yet; all statuses allowed until pricing exists (Module 5 adds the activation check); providerId, providerModelId and slug are immutable; no model delete; provider delete returns 409 while it has models; admin UI at /admin/models.
+
 ---
 
 # Old phase plan (reference only, superseded by the module plan above)
