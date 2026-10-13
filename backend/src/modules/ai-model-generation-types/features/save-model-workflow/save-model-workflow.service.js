@@ -9,6 +9,7 @@ import {
 import { findAiModelByIdRepository } from '#src/modules/ai-models/shared/repositories/index.js';
 import { findGenerationTypeByIdRepository } from '#src/modules/generation-types/shared/repositories/index.js';
 import { saveModelGenerationTypeRepository } from '#src/modules/ai-model-generation-types/shared/repositories/index.js';
+import { deleteWorkflowCreditPricesExceptRepository } from '#src/modules/ai-model-credit-prices/shared/repositories/index.js';
 
 function findDefaultOutsideEnabledOptions({ enabledOptions, defaultOptions }) {
   if (!enabledOptions.sizes.includes(defaultOptions.size)) {
@@ -70,14 +71,24 @@ export async function saveModelWorkflowService({ db, modelId, typeId, data }) {
     throw new BadRequestError(GENERATION_TYPE_INACTIVE_MESSAGE);
   }
 
-  return saveModelGenerationTypeRepository({
-    db,
-    data: {
-      modelId,
-      generationTypeId: typeId,
-      isEnabled: data.isEnabled,
-      enabledOptions,
-      defaultOptions,
-    },
+  return db.transaction(async (tx) => {
+    const workflow = await saveModelGenerationTypeRepository({
+      db: tx,
+      data: {
+        modelId,
+        generationTypeId: typeId,
+        isEnabled: data.isEnabled,
+        enabledOptions,
+        defaultOptions,
+      },
+    });
+
+    await deleteWorkflowCreditPricesExceptRepository({
+      db: tx,
+      modelGenerationTypeId: workflow.id,
+      qualitiesToKeep: enabledOptions?.qualities ?? [],
+    });
+
+    return workflow;
   });
 }

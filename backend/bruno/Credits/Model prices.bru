@@ -1,0 +1,15 @@
+meta {
+  name: Model prices
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/admin/models/{{modelId}}/prices
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

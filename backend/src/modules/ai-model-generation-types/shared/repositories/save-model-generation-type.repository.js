@@ -19,6 +19,7 @@ export async function saveModelGenerationTypeRepository({ db, data }) {
       set: changes,
     })
     .returning({
+      id: aiModelGenerationTypes.id,
       modelId: aiModelGenerationTypes.modelId,
       generationTypeId: aiModelGenerationTypes.generationTypeId,
       isEnabled: aiModelGenerationTypes.isEnabled,

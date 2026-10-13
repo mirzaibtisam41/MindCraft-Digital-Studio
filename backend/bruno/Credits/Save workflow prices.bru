@@ -1,0 +1,24 @@
+meta {
+  name: Save workflow prices
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/api/admin/models/{{modelId}}/generation-types/{{generationTypeId}}/prices
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "prices": {
+      "medium": 4,
+      "high": 8
+    }
+  }
+}

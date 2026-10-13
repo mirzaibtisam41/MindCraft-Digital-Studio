@@ -29,3 +29,9 @@ export const AI_MODEL_LIST_DEFAULT_LIMIT = 20;
 export const AI_MODEL_LIST_MAX_LIMIT = 100;
 
 export const AI_MODEL_NOT_FOUND_MESSAGE = 'Model not found';
+
+export const AI_MODEL_NEEDS_ENABLED_WORKFLOW_MESSAGE =
+  'Turn on at least one workflow before activating this model';
+
+export const AI_MODEL_NEEDS_PRICES_MESSAGE =
+  'Set a price for every enabled quality before activating this model';

@@ -219,10 +219,10 @@ describe('admin AI models list, detail, update and status', () => {
   });
 
   describe('PATCH /api/admin/models/:id/status', () => {
-    it('moves a model through every status', async () => {
+    it('moves a model between draft, disabled and deprecated', async () => {
       const model = await createModel();
 
-      for (const status of ['active', 'disabled', 'deprecated', 'draft']) {
+      for (const status of ['disabled', 'deprecated', 'draft']) {
         const response = await send(
           'PATCH',
           `/api/admin/models/${model.id}/status`,
