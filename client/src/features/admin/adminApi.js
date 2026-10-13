@@ -10,7 +10,7 @@ const SIDE_EFFECT_TAGS = ['AdminOverview', 'AdminAudit'];
 export const adminApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAdminOverview: builder.query({
-      query: () => '/api/admin/overview',
+      query: (params) => `/api/admin/overview${buildQueryString(params)}`,
       transformResponse: (response) => response.data,
       providesTags: ['AdminOverview'],
     }),

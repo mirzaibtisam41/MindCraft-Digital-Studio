@@ -48,3 +48,21 @@ export const LAST_ENABLED_MODEL_MESSAGE =
 
 export const NEGATIVE_BALANCE_MESSAGE =
   'This adjustment would take the balance below zero';
+
+export const OVERVIEW_RANGE_DAYS = {
+  '7d': 7,
+  '30d': 30,
+  '90d': 90,
+};
+
+export const OVERVIEW_RANGES = Object.keys(OVERVIEW_RANGE_DAYS);
+
+export const OVERVIEW_RANGE_DEFAULT = '30d';
+
+export const OVERVIEW_TIMEZONE_DEFAULT = 'UTC';
+
+export const OVERVIEW_TIMEZONE_MAX_LENGTH = 64;
+
+export const OVERVIEW_LIST_LIMIT = 6;
+
+export const OVERVIEW_TOP_SPENDERS_LIMIT = 5;

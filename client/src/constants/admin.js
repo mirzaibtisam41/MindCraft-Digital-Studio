@@ -91,3 +91,11 @@ export const GENERATION_STATUS_TONES = {
 };
 
 export const PAGE_SIZE = 15;
+
+export const OVERVIEW_RANGE_OPTIONS = [
+  { value: '7d', label: '7 days' },
+  { value: '30d', label: '30 days' },
+  { value: '90d', label: '90 days' },
+];
+
+export const OVERVIEW_RANGE_DEFAULT = '30d';

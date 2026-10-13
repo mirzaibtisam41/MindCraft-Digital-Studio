@@ -9,6 +9,7 @@ import { createImageModelController } from './features/create-image-model/create
 import { createImageModelBodySchema } from './features/create-image-model/create-image-model.schema.js';
 import { getGenerationController } from './features/get-generation/get-generation.controller.js';
 import { getOverviewController } from './features/get-overview/get-overview.controller.js';
+import { getOverviewQuerySchema } from './features/get-overview/get-overview.schema.js';
 import { getSettingsController } from './features/get-settings/get-settings.controller.js';
 import { getUserController } from './features/get-user/get-user.controller.js';
 import { listAuditLogsController } from './features/list-audit-logs/list-audit-logs.controller.js';
@@ -34,7 +35,11 @@ export function adminRoutes(fastify) {
   fastify.addHook('onRequest', checkUserIsLoggedInHook);
   fastify.addHook('onRequest', requireSuperAdminHook);
 
-  fastify.get('/overview', getOverviewController);
+  fastify.get(
+    '/overview',
+    { schema: { querystring: getOverviewQuerySchema } },
+    getOverviewController,
+  );
 
   fastify.get('/models', listImageModelsController);
 
