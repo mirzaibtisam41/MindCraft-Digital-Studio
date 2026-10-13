@@ -1,13 +1,17 @@
 import {
+  COOKIE_SAME_SITE,
+  COOKIE_SAME_SITES,
   ENVIRONMENT,
   ENVIRONMENTS,
   LOG_LEVEL,
   LOG_LEVELS,
 } from '#src/constants/index.js';
 
+const JWT_SECRET_MIN_LENGTH = 32;
+
 export const envSchemaConfig = {
   type: 'object',
-  required: ['NODE_ENV', 'PORT', 'DATABASE_URL'],
+  required: ['NODE_ENV', 'PORT', 'DATABASE_URL', 'JWT_ACCESS_SECRET'],
   properties: {
     NODE_ENV: {
       type: 'string',
@@ -27,6 +31,14 @@ export const envSchemaConfig = {
       type: 'number',
       minimum: 1000,
       default: 5000,
+    },
+    JWT_ACCESS_SECRET: { type: 'string', minLength: JWT_SECRET_MIN_LENGTH },
+    JWT_ACCESS_EXPIRES_IN: { type: 'string', default: '15m' },
+    REFRESH_TOKEN_TTL_DAYS: { type: 'number', minimum: 1, default: 30 },
+    COOKIE_SAME_SITE: {
+      type: 'string',
+      enum: COOKIE_SAME_SITES,
+      default: COOKIE_SAME_SITE.LAX,
     },
   },
 };

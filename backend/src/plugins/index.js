@@ -5,3 +5,5 @@ export * from './error-handlers.plugin.js';
 export * from './helmet.plugin.js';
 export * from './cors.plugin.js';
 export * from './rate-limit.plugin.js';
+export * from './jwt.plugin.js';
+export * from './cookie.plugin.js';
