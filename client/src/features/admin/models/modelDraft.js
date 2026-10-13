@@ -1,21 +1,53 @@
-const DEFAULT_FIELDS = ['size', 'quality', 'background', 'moderation'];
-const LIST_FIELDS = ['sizes', 'qualities', 'backgrounds', 'moderations'];
+import { NO_BADGE_VALUE } from '@/constants/admin';
+
+const DEFAULT_FIELDS = [
+  'size',
+  'quality',
+  'background',
+  'moderation',
+  'outputFormat',
+];
+const LIST_FIELDS = [
+  'sizes',
+  'qualities',
+  'backgrounds',
+  'moderations',
+  'outputFormats',
+];
+const LIST_BY_DEFAULT_FIELD = {
+  size: 'sizes',
+  quality: 'qualities',
+  background: 'backgrounds',
+  moderation: 'moderations',
+  outputFormat: 'outputFormats',
+};
+
+function stringifyPerQuality(qualities, values) {
+  return Object.fromEntries(
+    qualities.map((quality) => [
+      quality,
+      values?.[quality] === undefined ? '' : String(values[quality]),
+    ]),
+  );
+}
 
 export function buildModelDraft(model) {
   const { capabilities } = model;
 
   return {
     label: model.label,
+    description: model.description ?? '',
+    badge: model.badge ?? NO_BADGE_VALUE,
     enabled: model.enabled,
     sortOrder: String(model.sortOrder),
-    credits: Object.fromEntries(
-      capabilities.qualities.map((quality) => [
-        quality,
-        String(model.creditsPerImage[quality] ?? ''),
-      ]),
+    tools: [...model.tools],
+    credits: stringifyPerQuality(capabilities.qualities, model.creditsPerImage),
+    providerCost: stringifyPerQuality(
+      capabilities.qualities,
+      model.providerCostPerImage,
     ),
     lists: Object.fromEntries(
-      LIST_FIELDS.map((field) => [field, [...capabilities[field]]]),
+      LIST_FIELDS.map((field) => [field, [...(capabilities[field] ?? [])]]),
     ),
     maxImagesPerRequest: String(capabilities.maxImagesPerRequest),
     defaults: {
@@ -24,6 +56,7 @@ export function buildModelDraft(model) {
       n: String(capabilities.defaults.n),
       background: capabilities.defaults.background,
       moderation: capabilities.defaults.moderation,
+      outputFormat: capabilities.defaults.outputFormat,
     },
   };
 }
@@ -34,6 +67,17 @@ function isWholeNumber(value, min, max) {
   return (
     String(value).trim() !== '' &&
     Number.isInteger(parsed) &&
+    parsed >= min &&
+    parsed <= max
+  );
+}
+
+function isAmount(value, min, max) {
+  const parsed = Number(value);
+
+  return (
+    String(value).trim() !== '' &&
+    Number.isFinite(parsed) &&
     parsed >= min &&
     parsed <= max
   );
@@ -52,11 +96,19 @@ function orderLike(selected, allowed) {
 function validateDraft({ draft, editable }) {
   const errors = [];
 
-  if (!draft.label.trim()) errors.push('Label cannot be empty.');
+  if (!draft.label.trim()) errors.push('Display name cannot be empty.');
+
+  if (draft.description.trim().length > editable.descriptionMaxLength) {
+    errors.push(
+      `Description must be at most ${editable.descriptionMaxLength} characters.`,
+    );
+  }
 
   if (!isWholeNumber(draft.sortOrder, 0, editable.sortOrderMax)) {
     errors.push(`Sort order must be between 0 and ${editable.sortOrderMax}.`);
   }
+
+  if (draft.tools.length === 0) errors.push('Select at least one tool.');
 
   for (const field of LIST_FIELDS) {
     if (draft.lists[field].length === 0) {
@@ -64,12 +116,21 @@ function validateDraft({ draft, editable }) {
     }
   }
 
-  const { min, max } = editable.creditsPerImage;
+  const credits = editable.creditsPerImage;
+  const cost = editable.providerCostPerImage;
 
   for (const quality of draft.lists.qualities) {
-    if (!isWholeNumber(draft.credits[quality], min, max)) {
+    if (!isWholeNumber(draft.credits[quality], credits.min, credits.max)) {
       errors.push(
-        `Credit price for ${quality} must be between ${min} and ${max}.`,
+        `Credit price for ${quality} must be between ${credits.min} and ${credits.max}.`,
+      );
+    }
+
+    const costValue = draft.providerCost[quality] ?? '';
+
+    if (costValue.trim() !== '' && !isAmount(costValue, cost.min, cost.max)) {
+      errors.push(
+        `Provider cost for ${quality} must be between $${cost.min} and $${cost.max}.`,
       );
     }
   }
@@ -90,15 +151,10 @@ function validateDraft({ draft, editable }) {
     );
   }
 
-  const defaultsByList = {
-    size: 'sizes',
-    quality: 'qualities',
-    background: 'backgrounds',
-    moderation: 'moderations',
-  };
-
   for (const field of DEFAULT_FIELDS) {
-    if (!draft.lists[defaultsByList[field]].includes(draft.defaults[field])) {
+    if (
+      !draft.lists[LIST_BY_DEFAULT_FIELD[field]].includes(draft.defaults[field])
+    ) {
       errors.push(`Default ${field} must be one of the allowed options.`);
     }
   }
@@ -113,7 +169,7 @@ function buildCapabilityChanges({ model, draft, editable }) {
   for (const field of LIST_FIELDS) {
     const next = orderLike(draft.lists[field], editable[field]);
 
-    if (!sameSet(next, current[field])) changes[field] = next;
+    if (!sameSet(next, current[field] ?? [])) changes[field] = next;
   }
 
   const maxImages = Number(draft.maxImagesPerRequest);
@@ -139,29 +195,64 @@ function buildCapabilityChanges({ model, draft, editable }) {
   return changes;
 }
 
+function buildPerQualityChanges({ qualities, draftValues, currentValues }) {
+  const changes = {};
+
+  for (const quality of qualities) {
+    const raw = draftValues[quality] ?? '';
+
+    if (raw.trim() === '') continue;
+
+    const next = Number(raw);
+
+    if (next !== currentValues?.[quality]) changes[quality] = next;
+  }
+
+  return changes;
+}
+
 export function buildModelPayload({ model, draft, editable }) {
   const errors = validateDraft({ draft, editable });
 
   if (errors.length > 0) return { errors, payload: {} };
 
   const payload = {};
+  const badge = draft.badge === NO_BADGE_VALUE ? null : draft.badge;
 
   if (draft.label.trim() !== model.label) payload.label = draft.label.trim();
+
+  if (draft.description.trim() !== (model.description ?? '')) {
+    payload.description = draft.description.trim();
+  }
+
+  if (badge !== model.badge) payload.badge = badge;
   if (draft.enabled !== model.enabled) payload.enabled = draft.enabled;
 
   if (Number(draft.sortOrder) !== model.sortOrder) {
     payload.sortOrder = Number(draft.sortOrder);
   }
 
-  const credits = {};
+  const tools = orderLike(draft.tools, editable.tools);
 
-  for (const quality of draft.lists.qualities) {
-    const next = Number(draft.credits[quality]);
+  if (!sameSet(tools, model.tools)) payload.tools = tools;
 
-    if (next !== model.creditsPerImage[quality]) credits[quality] = next;
-  }
+  const credits = buildPerQualityChanges({
+    qualities: draft.lists.qualities,
+    draftValues: draft.credits,
+    currentValues: model.creditsPerImage,
+  });
 
   if (Object.keys(credits).length > 0) payload.creditsPerImage = credits;
+
+  const providerCost = buildPerQualityChanges({
+    qualities: draft.lists.qualities,
+    draftValues: draft.providerCost,
+    currentValues: model.providerCostPerImage,
+  });
+
+  if (Object.keys(providerCost).length > 0) {
+    payload.providerCostPerImage = providerCost;
+  }
 
   const capabilities = buildCapabilityChanges({ model, draft, editable });
 

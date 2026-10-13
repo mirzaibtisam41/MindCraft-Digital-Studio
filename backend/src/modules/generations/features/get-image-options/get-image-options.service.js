@@ -2,24 +2,15 @@ import {
   getDefaultImageModelService,
   listImageCapabilitiesService,
 } from '#src/modules/ai-providers/shared/services/index.js';
+import { IMAGE_MODEL_TOOL } from '#src/modules/image-models/image-model.constants.js';
 import * as userSettingsRepositories from '#src/modules/user-settings/shared/repositories/index.js';
 import { presentImageOptionsService } from '#src/modules/generations/shared/services/index.js';
 
-function resolveDefaultModel({
-  models,
-  userDefaultModel,
-  configuredDefaultModel,
-}) {
-  const ids = models.map(({ model }) => model);
-
-  if (ids.includes(userDefaultModel)) return userDefaultModel;
-  if (ids.includes(configuredDefaultModel)) return configuredDefaultModel;
-
-  return ids[0] ?? null;
-}
-
 export async function getImageOptionsService({ fastify, userId }) {
-  const models = await listImageCapabilitiesService({ fastify });
+  const models = await listImageCapabilitiesService({
+    fastify,
+    tool: IMAGE_MODEL_TOOL.TEXT_TO_IMAGE,
+  });
   const userSettings =
     await userSettingsRepositories.findUserSettingsByUserIdRepository({
       db: fastify.db,
@@ -30,11 +21,8 @@ export async function getImageOptionsService({ fastify, userId }) {
   )?.model;
 
   return presentImageOptionsService({
-    defaultModel: resolveDefaultModel({
-      models,
-      userDefaultModel,
-      configuredDefaultModel: getDefaultImageModelService({ fastify }),
-    }),
+    defaultModel:
+      userDefaultModel ?? getDefaultImageModelService({ models }) ?? null,
     models,
   });
 }

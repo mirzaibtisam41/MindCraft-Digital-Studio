@@ -1,8 +1,4 @@
-import {
-  DEFAULT_IMAGE_OUTPUT_FORMAT,
-  IMAGE_ERROR_MESSAGE,
-  IMAGE_MIME_TYPES,
-} from '#src/constants/index.js';
+import { IMAGE_ERROR_MESSAGE, IMAGE_MIME_TYPES } from '#src/constants/index.js';
 import { ServiceUnavailableError } from '#src/utils/index.js';
 import { mapOpenaiErrorUtil } from '#src/modules/ai-providers/shared/utils/index.js';
 
@@ -16,7 +12,7 @@ async function generateImages({ fastify, request }) {
       n: request.n,
       background: request.background,
       moderation: request.moderation,
-      output_format: DEFAULT_IMAGE_OUTPUT_FORMAT,
+      output_format: request.outputFormat,
     });
   } catch (error) {
     fastify.log.error(
@@ -63,7 +59,7 @@ export async function openaiImageProvider({ fastify, request }) {
   const images = await Promise.all(
     result.data.map(async (image) => ({
       data: await readImageBinary({ fastify, image }),
-      mimeType: IMAGE_MIME_TYPES[DEFAULT_IMAGE_OUTPUT_FORMAT],
+      mimeType: IMAGE_MIME_TYPES[request.outputFormat],
     })),
   );
 

@@ -14,7 +14,11 @@ import {
   refundGenerationCreditsService,
   reserveGenerationCreditsService,
 } from '#src/modules/credits/shared/services/index.js';
-import { mapGenerationErrorUtil } from '#src/modules/generations/shared/utils/index.js';
+import {
+  estimateProviderCostUtil,
+  mapGenerationErrorUtil,
+} from '#src/modules/generations/shared/utils/index.js';
+import { IMAGE_MODEL_TOOL } from '#src/modules/image-models/image-model.constants.js';
 import { validatePromptService } from './validate-prompt.service.js';
 import { validateModelService } from './validate-model.service.js';
 import { validateSettingsService } from './validate-settings.service.js';
@@ -46,11 +50,14 @@ export async function generateImagesService({ fastify, userId, input }) {
       db: fastify.db,
       userId,
     });
-  const availableModels = await listImageCapabilitiesService({ fastify });
+  const availableModels = await listImageCapabilitiesService({
+    fastify,
+    tool: IMAGE_MODEL_TOOL.TEXT_TO_IMAGE,
+  });
   const validModel = validateModelService({
     model,
     userDefaultModel: userSettings?.defaultModel,
-    defaultModel: getDefaultImageModelService({ fastify }),
+    defaultModel: getDefaultImageModelService({ models: availableModels }),
     supportedModels: availableModels.map(({ model: id }) => id),
   });
   const capabilities = availableModels.find(
@@ -119,6 +126,7 @@ export async function generateImagesService({ fastify, userId, input }) {
       generationId: generation.id,
       images: result.images,
       size: options.size,
+      outputFormat: options.outputFormat,
     });
 
     const completed =
@@ -128,6 +136,11 @@ export async function generateImagesService({ fastify, userId, input }) {
         data: {
           status: GENERATION_STATUS.COMPLETED,
           imageCount: images.length,
+          providerCostUsd: estimateProviderCostUtil({
+            capabilities,
+            quality: options.quality,
+            imageCount: images.length,
+          }),
           completedAt: new Date(),
         },
       });

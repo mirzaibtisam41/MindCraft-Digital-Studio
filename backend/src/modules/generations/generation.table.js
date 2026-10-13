@@ -2,6 +2,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgEnum,
   pgTable,
   text,
@@ -47,6 +48,7 @@ export const generations = pgTable(
     model: varchar('model', { length: GENERATION_MODEL_MAX_LENGTH }).notNull(),
     settings: jsonb('settings').notNull().default({}),
     imageCount: integer('image_count').notNull().default(1),
+    providerCostUsd: numeric('provider_cost_usd', { precision: 12, scale: 6 }),
     errorCategory: varchar('error_category', {
       length: GENERATION_ERROR_CATEGORY_MAX_LENGTH,
     }),

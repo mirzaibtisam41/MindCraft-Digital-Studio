@@ -1,5 +1,10 @@
 import { ConflictError, NotFoundError } from '#src/utils/index.js';
-import { LAST_ENABLED_MODEL_MESSAGE } from '#src/modules/admin/admin.constants.js';
+import {
+  DEFAULT_MODEL_MUST_BE_ENABLED_MESSAGE,
+  DISABLE_DEFAULT_MODEL_MESSAGE,
+  LAST_ENABLED_MODEL_MESSAGE,
+  UNSET_DEFAULT_MODEL_MESSAGE,
+} from '#src/modules/admin/admin.constants.js';
 import {
   assertImageModelConsistentUtil,
   mergeCapabilitiesUtil,
@@ -13,22 +18,35 @@ import * as imageModelRepositories from '#src/modules/image-models/shared/reposi
 
 const TOP_LEVEL_FIELDS = [
   'label',
+  'description',
+  'badge',
   'enabled',
+  'isDefault',
   'sortOrder',
+  'tools',
   'capabilities',
   'creditsPerImage',
+  'providerCostPerImage',
 ];
 
 function buildNextState({ current, input }) {
   return {
-    label: input.label ?? current.label,
+    label: input.label?.trim() ?? current.label,
+    description: input.description?.trim() ?? current.description,
+    badge: input.badge === undefined ? current.badge : input.badge,
     enabled: input.enabled ?? current.enabled,
+    isDefault: input.isDefault ?? current.isDefault,
     sortOrder: input.sortOrder ?? current.sortOrder,
+    tools: input.tools ?? current.tools,
     capabilities: mergeCapabilitiesUtil({
       current: current.capabilities,
       changes: input.capabilities,
     }),
     creditsPerImage: { ...current.creditsPerImage, ...input.creditsPerImage },
+    providerCostPerImage: {
+      ...current.providerCostPerImage,
+      ...input.providerCostPerImage,
+    },
   };
 }
 
@@ -42,6 +60,20 @@ async function assertAnotherModelStaysEnabled({ db, id }) {
 
   if (!otherEnabled) {
     throw new ConflictError(LAST_ENABLED_MODEL_MESSAGE);
+  }
+}
+
+function assertDefaultRules({ current, next }) {
+  if (current.isDefault && !next.isDefault) {
+    throw new ConflictError(UNSET_DEFAULT_MODEL_MESSAGE);
+  }
+
+  if (current.isDefault && !next.enabled) {
+    throw new ConflictError(DISABLE_DEFAULT_MODEL_MESSAGE);
+  }
+
+  if (next.isDefault && !next.enabled) {
+    throw new ConflictError(DEFAULT_MODEL_MUST_BE_ENABLED_MESSAGE);
   }
 }
 
@@ -71,6 +103,7 @@ export async function updateImageModelService({ db, actorId, id, input }) {
     const next = buildNextState({ current, input });
 
     assertImageModelConsistentUtil(next);
+    assertDefaultRules({ current, next });
 
     if (current.enabled && !next.enabled) {
       await assertAnotherModelStaysEnabled({ db: tx, id });
@@ -80,6 +113,13 @@ export async function updateImageModelService({ db, actorId, id, input }) {
 
     if (Object.keys(changes).length === 0) {
       return current;
+    }
+
+    if (next.isDefault && !current.isDefault) {
+      await imageModelRepositories.clearDefaultImageModelRepository({
+        db: tx,
+        exceptId: id,
+      });
     }
 
     const updated = await imageModelRepositories.updateImageModelRepository({

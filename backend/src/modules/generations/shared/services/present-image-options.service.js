@@ -5,6 +5,9 @@ function presentModel(capabilities) {
   return {
     id: capabilities.model,
     label: capabilities.label,
+    description: capabilities.description,
+    badge: capabilities.badge,
+    isDefault: capabilities.isDefault,
     provider: capabilities.provider,
     sizes: capabilities.sizes,
     aspectRatios: listSupportedAspectRatiosUtil(capabilities.sizes),

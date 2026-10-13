@@ -18,8 +18,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { IMAGE_PROVIDER_OPTIONS } from '@/constants/admin';
+import {
+  IMAGE_MODEL_TOOL_LABELS,
+  IMAGE_PROVIDER_OPTIONS,
+} from '@/constants/admin';
 import { useGetAdminModelsQuery } from '@/features/admin/adminApi';
+import { ModelBadges } from '@/features/admin/models/ModelBadges';
 import { ModelStatusSwitch } from '@/features/admin/models/ModelStatusSwitch';
 import { formatDate } from '@/lib/formatDate';
 
@@ -88,6 +92,7 @@ export function ModelsView() {
               <TableRow className="hover:bg-transparent">
                 <TableHead>Model</TableHead>
                 <TableHead>Provider</TableHead>
+                <TableHead>Tools</TableHead>
                 <TableHead>Credits per image</TableHead>
                 <TableHead className="text-right">Sizes</TableHead>
                 <TableHead className="text-right">Max images</TableHead>
@@ -107,7 +112,10 @@ export function ModelsView() {
                       href={`/admin/models/${encodeURIComponent(model.id)}`}
                       className="flex flex-col outline-none hover:underline focus-visible:underline"
                     >
-                      <span className="font-medium">{model.label}</span>
+                      <span className="flex flex-wrap items-center gap-1.5 font-medium">
+                        {model.label}
+                        <ModelBadges model={model} />
+                      </span>
                       <span className="font-mono text-xs text-muted-foreground">
                         {model.id}
                       </span>
@@ -115,6 +123,11 @@ export function ModelsView() {
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {PROVIDER_LABELS[model.provider] ?? model.provider}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {model.tools
+                      .map((tool) => IMAGE_MODEL_TOOL_LABELS[tool] ?? tool)
+                      .join(', ')}
                   </TableCell>
                   <TableCell>
                     <CreditPrices model={model} />

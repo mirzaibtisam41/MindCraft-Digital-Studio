@@ -40,7 +40,6 @@ function buildPlatformInfo({ appConfig, databaseLatencyMs }) {
     nodeVersion: process.version,
     environment: appConfig.NODE_ENV,
     imageProvider: appConfig.AI_IMAGE_PROVIDER,
-    defaultImageModel: appConfig.OPENAI_IMAGE_MODEL,
     textModel: appConfig.OPENAI_TEXT_MODEL,
     storageBucket: appConfig.STORAGE_R2_BUCKET,
   };

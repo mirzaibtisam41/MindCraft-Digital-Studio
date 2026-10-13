@@ -30,6 +30,7 @@ function buildInitialState(qualities) {
     id: '',
     provider: IMAGE_PROVIDER_OPTIONS[0].value,
     label: '',
+    description: '',
     enabled: true,
     credits: Object.fromEntries(qualities.map((quality) => [quality, ''])),
   };
@@ -89,6 +90,7 @@ export function AddModelForm({ editable }) {
         id: values.id,
         provider: values.provider,
         label: values.label.trim(),
+        description: values.description.trim(),
         enabled: values.enabled,
         creditsPerImage: Object.fromEntries(
           editable.qualities.map((quality) => [
@@ -167,6 +169,23 @@ export function AddModelForm({ editable }) {
             aria-invalid={Boolean(errors.label)}
             aria-describedby={
               errors.label ? 'new-model-label-error' : undefined
+            }
+          />
+        </Field>
+
+        <Field
+          id="new-model-description"
+          label="Description"
+          hint="Optional. One line shown to users in the model picker."
+        >
+          <Input
+            id="new-model-description"
+            className="h-10"
+            placeholder="Fast and cheap, great for drafts"
+            maxLength={editable.descriptionMaxLength}
+            value={values.description}
+            onChange={(event) =>
+              setValues({ ...values, description: event.target.value })
             }
           />
         </Field>

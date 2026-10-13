@@ -18,6 +18,7 @@ import {
   formatDuration,
   formatNumber,
   formatPercent,
+  formatUsd,
 } from '@/lib/formatNumber';
 import { cn } from '@/lib/utils';
 import { CreditsChart } from './CreditsChart';
@@ -166,11 +167,12 @@ function OverviewContent({ data }) {
           hint="Completed generations only"
         />
         <KpiCard
-          label="Credits issued"
-          value={formatNumber(kpis.creditsIssued.current)}
-          pair={kpis.creditsIssued}
+          label="Provider cost"
+          value={formatUsd(kpis.providerCostUsd.current)}
+          pair={kpis.providerCostUsd}
+          upIsGood={false}
           comparisonLabel={comparisonLabel}
-          hint="Signup grants and admin top-ups"
+          hint={`${formatNumber(kpis.creditsIssued.current)} credits issued in this period`}
         />
       </div>
 
@@ -184,7 +186,7 @@ function OverviewContent({ data }) {
             key: item.model,
             label: item.label,
             value: item.generations,
-            detail: `${formatNumber(item.images)} images · ${formatNumber(item.creditsSpent)} cr · ${formatNumber(item.failed)} failed`,
+            detail: `${formatNumber(item.images)} images · ${formatNumber(item.creditsSpent)} cr · ${formatUsd(item.providerCostUsd)} cost · ${formatNumber(item.failed)} failed`,
           }))}
         />
       </div>

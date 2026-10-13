@@ -13,22 +13,32 @@ patch {
 body:json {
   {
     "label": "GPT Image 1 Mini",
-    "enabled": true,
-    "sortOrder": 0,
+    "description": "Fast and cheap, great for drafts",
+    "badge": "fast",
+    "isDefault": true,
+    "tools": ["text_to_image"],
     "creditsPerImage": {
       "low": 1,
       "medium": 2,
       "high": 4
     },
+    "providerCostPerImage": {
+      "low": 0.005,
+      "medium": 0.011,
+      "high": 0.036
+    },
     "capabilities": {
-      "maxImagesPerRequest": 10,
+      "outputFormats": ["png", "webp"],
       "defaults": {
-        "quality": "medium"
+        "quality": "medium",
+        "outputFormat": "png"
       }
     }
   }
 }
 
 docs {
-  Send only the fields you want to change. The last enabled model cannot be disabled. Features (seed, negativePrompt, ...) are owned by the provider adapter and cannot be edited.
+  Send only the fields you want to change.
+  isDefault: true makes this the default model (the previous default is cleared). The default cannot be disabled or unset; make another model the default first.
+  The last enabled model cannot be disabled. Features (seed, negativePrompt, ...) are owned by the provider adapter and cannot be edited.
 }

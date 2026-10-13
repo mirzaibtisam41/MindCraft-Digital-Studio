@@ -12,6 +12,7 @@ import {
   AUDIT_TARGET_TYPE,
 } from '#src/modules/audit-logs/audit-log.constants.js';
 import { recordAuditLogService } from '#src/modules/audit-logs/shared/services/index.js';
+import { IMAGE_MODEL_DEFAULT_TOOLS } from '#src/modules/image-models/image-model.constants.js';
 import * as imageModelRepositories from '#src/modules/image-models/shared/repositories/index.js';
 
 function nextSortOrder(imageModels) {
@@ -36,20 +37,29 @@ export async function createImageModelService({ db, actorId, input }) {
       current: NEW_IMAGE_MODEL_BASELINE,
       changes: input.capabilities,
     });
+    const enabled = input.enabled ?? true;
+    const tools = input.tools ?? IMAGE_MODEL_DEFAULT_TOOLS;
 
     assertImageModelConsistentUtil({
       capabilities,
       creditsPerImage: input.creditsPerImage,
+      tools,
     });
 
     const data = {
       id: input.id,
       provider: input.provider,
       label: input.label.trim(),
-      enabled: input.enabled ?? true,
+      description: input.description?.trim() ?? '',
+      badge: input.badge ?? null,
+      enabled,
+      isDefault:
+        enabled && !imageModels.some((imageModel) => imageModel.isDefault),
       sortOrder: input.sortOrder ?? nextSortOrder(imageModels),
+      tools,
       capabilities,
       creditsPerImage: input.creditsPerImage,
+      providerCostPerImage: input.providerCostPerImage ?? {},
     };
 
     const created = await imageModelRepositories.insertImageModelRepository({
@@ -67,6 +77,7 @@ export async function createImageModelService({ db, actorId, input }) {
         label: data.label,
         provider: data.provider,
         enabled: data.enabled,
+        isDefault: data.isDefault,
         creditsPerImage: data.creditsPerImage,
       },
     });

@@ -15,15 +15,25 @@ body:json {
     "id": "gpt-image-1.5",
     "provider": "openai",
     "label": "GPT Image 1.5",
+    "description": "Sharper detail and better text rendering",
+    "badge": "new",
     "enabled": true,
+    "tools": ["text_to_image"],
     "creditsPerImage": {
       "low": 2,
       "medium": 5,
       "high": 10
+    },
+    "providerCostPerImage": {
+      "low": 0.011,
+      "medium": 0.042,
+      "high": 0.167
     }
   }
 }
 
 docs {
-  The id must match the provider's model id exactly. capabilities is optional and starts from the standard image options. Features are owned by the provider adapter.
+  The id must match the provider's model id exactly. Only id, provider, label and creditsPerImage are required.
+  badge: new, fast, best_quality, popular, beta or null. tools: text_to_image, image_to_image, image_editing (only tools the provider feature supports).
+  providerCostPerImage is in US dollars and only used for admin reports. The first enabled model becomes the default automatically.
 }

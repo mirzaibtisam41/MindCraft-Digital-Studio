@@ -1,9 +1,13 @@
 export const IMAGE_OUTPUT_FORMAT = {
   PNG: 'png',
+  JPEG: 'jpeg',
+  WEBP: 'webp',
 };
 
 export const IMAGE_MIME_TYPES = {
   [IMAGE_OUTPUT_FORMAT.PNG]: 'image/png',
+  [IMAGE_OUTPUT_FORMAT.JPEG]: 'image/jpeg',
+  [IMAGE_OUTPUT_FORMAT.WEBP]: 'image/webp',
 };
 
 export const DEFAULT_IMAGE_OUTPUT_FORMAT = IMAGE_OUTPUT_FORMAT.PNG;

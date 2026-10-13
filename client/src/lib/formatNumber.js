@@ -13,6 +13,17 @@ export function formatCompact(value) {
   return compactFormatter.format(value ?? 0);
 }
 
+const usdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export function formatUsd(value) {
+  return usdFormatter.format(value ?? 0);
+}
+
 export function formatPercent(value, fractionDigits = 1) {
   if (value === null || value === undefined) return '—';
 

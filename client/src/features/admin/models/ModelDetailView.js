@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { BackLink } from '@/components/ui/BackLink';
 import { Button } from '@/components/ui/button';
 import { ErrorState } from '@/components/ui/DataState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { IMAGE_PROVIDER_OPTIONS } from '@/constants/admin';
 import { useGetAdminModelQuery } from '@/features/admin/adminApi';
+import { MakeDefaultButton } from '@/features/admin/models/MakeDefaultButton';
+import { ModelBadges } from '@/features/admin/models/ModelBadges';
 import { ModelEditor } from '@/features/admin/models/ModelEditor';
 import { formatDateTime, formatRelativeTime } from '@/lib/formatDate';
 import { formatNumber } from '@/lib/formatNumber';
@@ -83,22 +84,26 @@ export function ModelDetailView({ id }) {
                 <h1 className="text-[22px] font-semibold tracking-tight">
                   {model.label}
                 </h1>
-                <Badge tone={model.enabled ? 'success' : 'neutral'}>
-                  {model.enabled ? 'Enabled' : 'Disabled'}
-                </Badge>
+                <ModelBadges model={model} showStatus />
               </div>
+              {model.description ? (
+                <p className="text-muted-foreground">{model.description}</p>
+              ) : null}
               <p className="font-mono text-xs text-ink-3">
                 {model.id} · {PROVIDER_LABELS[model.provider] ?? model.provider}{' '}
                 · updated {formatDateTime(model.updatedAt)}
               </p>
             </div>
-            <Button asChild variant="secondary" size="sm">
-              <Link
-                href={`/admin/generations?model=${encodeURIComponent(model.id)}`}
-              >
-                View generations
-              </Link>
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              {model.isDefault ? null : <MakeDefaultButton model={model} />}
+              <Button asChild variant="secondary" size="sm">
+                <Link
+                  href={`/admin/generations?model=${encodeURIComponent(model.id)}`}
+                >
+                  View generations
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <UsageStats usage={data.usage} />

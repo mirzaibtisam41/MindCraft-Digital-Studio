@@ -9,7 +9,6 @@ import {
   LOG_LEVELS,
   MAIL_PROVIDER,
   MAIL_PROVIDERS,
-  OPENAI_IMAGE_MODEL,
   OPENAI_TEXT_MODEL,
   OPENAI_TEXT_MODELS,
 } from '#src/constants/index.js';
@@ -74,10 +73,6 @@ export const envSchemaConfig = {
       default: AI_IMAGE_PROVIDER.OPENAI,
     },
     OPENAI_API_KEY: { type: 'string', minLength: 1 },
-    OPENAI_IMAGE_MODEL: {
-      type: 'string',
-      default: OPENAI_IMAGE_MODEL.GPT_IMAGE_1_MINI,
-    },
     OPENAI_TEXT_MODEL: {
       type: 'string',
       enum: OPENAI_TEXT_MODELS,

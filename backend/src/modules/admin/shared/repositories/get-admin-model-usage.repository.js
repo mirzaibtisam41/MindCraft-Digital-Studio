@@ -6,7 +6,8 @@ export async function getAdminModelUsageRepository({ db, from, to }) {
       select model,
         count(*)::int as generations,
         count(*) filter (where status = 'failed')::int as failed,
-        coalesce(sum(image_count) filter (where status = 'completed'), 0)::int as images
+        coalesce(sum(image_count) filter (where status = 'completed'), 0)::int as images,
+        coalesce(sum(provider_cost_usd), 0)::float8 as cost_usd
       from generations
       where created_at >= ${from} and created_at < ${to}
       group by model
@@ -27,6 +28,7 @@ export async function getAdminModelUsageRepository({ db, from, to }) {
       model_generations.generations,
       model_generations.failed,
       model_generations.images,
+      model_generations.cost_usd as "providerCostUsd",
       coalesce(model_credits.credits_spent, 0) as "creditsSpent"
     from model_generations
     left join model_credits using (model)

@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { DEFAULT_IMAGE_OUTPUT_FORMAT } from '#src/constants/index.js';
 import { buildStorageKey } from '#src/modules/storage/shared/utils/index.js';
 import * as imageRepositories from '#src/modules/images/shared/repositories/index.js';
 import { normalizeImageMetadataService } from './normalize-image-metadata.service.js';
@@ -16,6 +15,7 @@ export async function saveGeneratedImagesService({
   generationId,
   images,
   size,
+  outputFormat,
 }) {
   const storageKeys = [];
 
@@ -28,7 +28,7 @@ export async function saveGeneratedImagesService({
         userId,
         generationId,
         imageId,
-        extension: DEFAULT_IMAGE_OUTPUT_FORMAT,
+        extension: outputFormat,
       });
       const metadata = normalizeImageMetadataService({ image, size });
 

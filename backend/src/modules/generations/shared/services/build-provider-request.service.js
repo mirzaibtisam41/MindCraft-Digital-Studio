@@ -9,5 +9,6 @@ export function buildProviderRequestService({ model, prompt, options }) {
     n: options.n,
     background: options.background,
     moderation: options.moderation,
+    outputFormat: options.outputFormat,
   };
 }

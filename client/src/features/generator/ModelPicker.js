@@ -44,7 +44,7 @@ export function ModelPicker({ model, models, onChange, disabled }) {
     <Field
       id="generator-model"
       label="Model"
-      hint="Controls adapt to the selected model."
+      hint={model.description || 'Controls adapt to the selected model.'}
     >
       <Select value={model.id} disabled={disabled} onValueChange={onChange}>
         <SelectTrigger id="generator-model">

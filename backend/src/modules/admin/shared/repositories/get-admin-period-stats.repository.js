@@ -17,6 +17,8 @@ export async function getAdminPeriodStatsRepository({ db, from, to }) {
         from generations
         where status = 'completed' and started_at is not null and completed_at is not null
           and created_at >= ${from} and created_at < ${to}) as avg_duration_ms,
+      (select coalesce(sum(provider_cost_usd), 0)::float8 from generations
+        where created_at >= ${from} and created_at < ${to}) as provider_cost_usd,
       (select count(*)::int from images
         where created_at >= ${from} and created_at < ${to}) as images,
       (select coalesce(-sum(amount), 0)::int from credit_transactions
@@ -36,6 +38,7 @@ export async function getAdminPeriodStatsRepository({ db, from, to }) {
     completed: row.completed,
     failed: row.failed,
     avgDurationMs: row.avg_duration_ms,
+    providerCostUsd: row.provider_cost_usd,
     images: row.images,
     creditsSpent: row.credits_spent,
     creditsIssued: row.credits_issued,

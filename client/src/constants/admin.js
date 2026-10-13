@@ -65,6 +65,22 @@ export const GENERATION_STATUS_OPTIONS = [
 
 export const IMAGE_PROVIDER_OPTIONS = [{ value: 'openai', label: 'OpenAI' }];
 
+export const IMAGE_MODEL_BADGE_LABELS = {
+  new: 'New',
+  fast: 'Fast',
+  best_quality: 'Best quality',
+  popular: 'Popular',
+  beta: 'Beta',
+};
+
+export const IMAGE_MODEL_TOOL_LABELS = {
+  text_to_image: 'Text to image',
+  image_to_image: 'Image to image',
+  image_editing: 'AI editor',
+};
+
+export const NO_BADGE_VALUE = 'none';
+
 export const AUDIT_ACTION_OPTIONS = [
   { value: 'image_model.created', label: 'Image model added' },
   { value: 'image_model.updated', label: 'Image model updated' },
