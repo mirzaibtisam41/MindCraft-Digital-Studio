@@ -1,0 +1,15 @@
+meta {
+  name: Get my image
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/images/{{imageId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

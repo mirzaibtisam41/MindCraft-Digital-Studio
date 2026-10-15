@@ -1,0 +1,15 @@
+meta {
+  name: Delete my image
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/api/images/{{imageId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
