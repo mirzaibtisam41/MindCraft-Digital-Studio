@@ -38,7 +38,12 @@ const WORKSPACE_GROUP = {
 const LIBRARY_GROUP = {
   label: 'Library',
   items: [
-    { label: 'My Creations', icon: Images },
+    {
+      label: 'My Creations',
+      href: '/app/creations',
+      icon: Images,
+      ready: true,
+    },
     { label: 'Projects', icon: FolderKanban },
     { label: 'Generation History', icon: History },
     { label: 'Prompt Studio', icon: NotebookPen },
