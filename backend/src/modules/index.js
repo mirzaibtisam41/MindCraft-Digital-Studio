@@ -9,6 +9,7 @@ import {
 } from '#src/modules/credit-wallets/credit-wallets.routes.js';
 import { generationTypesRoutes } from '#src/modules/generation-types/generation-types.routes.js';
 import { healthRoutes } from '#src/modules/health/health.routes.js';
+import { imagesRoutes } from '#src/modules/images/images.routes.js';
 import { platformSettingsRoutes } from '#src/modules/platform-settings/platform-settings.routes.js';
 import { adminUsersRoutes } from '#src/modules/users/users.routes.js';
 
@@ -16,6 +17,7 @@ export async function registerRoutes(fastify) {
   await fastify.register(healthRoutes, { prefix: '/health' });
   await fastify.register(authRoutes, { prefix: '/api/auth' });
   await fastify.register(myWalletRoutes, { prefix: '/api/wallet' });
+  await fastify.register(imagesRoutes, { prefix: '/api/images' });
   await fastify.register(aiProvidersRoutes, { prefix: '/api/admin/providers' });
   await fastify.register(aiModelsRoutes, { prefix: '/api/admin/models' });
   await fastify.register(modelWorkflowsRoutes, {

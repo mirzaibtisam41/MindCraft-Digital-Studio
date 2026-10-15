@@ -32,6 +32,12 @@ export const ConflictError = createError(
   StatusCodes.CONFLICT,
 );
 
+export const PayloadTooLargeError = createError(
+  ERROR_CODE.PAYLOAD_TOO_LARGE,
+  '%s',
+  StatusCodes.REQUEST_TOO_LONG,
+);
+
 export const TooManyRequestsError = createError(
   ERROR_CODE.TOO_MANY_REQUESTS,
   '%s',
