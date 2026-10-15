@@ -9,7 +9,7 @@ import {
 import {
   GENERATION_TYPE_CODE_MAX_LENGTH,
   GENERATION_TYPE_NAME_MAX_LENGTH,
-} from './generation-type.constants.js';
+} from '#src/modules/generation-types/generation-type.constants.js';
 
 export const generationTypes = pgTable('generation_types', {
   id: uuid().primaryKey().defaultRandom(),

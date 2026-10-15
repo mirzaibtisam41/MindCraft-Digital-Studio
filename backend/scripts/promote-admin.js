@@ -1,10 +1,10 @@
-import '../src/bootstrap/load-env.bootstrap.js';
+import '#src/bootstrap/load-env.bootstrap.js';
 import pg from 'pg';
 import { eq, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { buildAppConfig } from '../src/config/index.js';
-import { users } from '../src/modules/users/user.table.js';
-import { USER_ROLE } from '../src/modules/users/user.constants.js';
+import { buildAppConfig } from '#src/config/index.js';
+import { users } from '#src/modules/users/user.table.js';
+import { USER_ROLE } from '#src/modules/users/user.constants.js';
 
 const email = process.argv[2]?.trim().toLowerCase();
 

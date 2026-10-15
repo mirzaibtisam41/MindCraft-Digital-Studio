@@ -1,4 +1,4 @@
-import { updateAiProviderStatusService } from './update-ai-provider-status.service.js';
+import { updateAiProviderStatusService } from '#src/modules/ai-providers/features/update-ai-provider-status/update-ai-provider-status.service.js';
 
 export async function updateAiProviderStatusController(request, reply) {
   const provider = await updateAiProviderStatusService({

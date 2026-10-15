@@ -8,7 +8,7 @@ import {
 import {
   AI_PROVIDER_CODE_MAX_LENGTH,
   AI_PROVIDER_NAME_MAX_LENGTH,
-} from './ai-provider.constants.js';
+} from '#src/modules/ai-providers/ai-provider.constants.js';
 
 export const aiProviders = pgTable('ai_providers', {
   id: uuid().primaryKey().defaultRandom(),

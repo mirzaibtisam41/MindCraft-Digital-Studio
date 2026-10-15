@@ -1,4 +1,4 @@
-import './load-env.bootstrap.js';
+import '#src/bootstrap/load-env.bootstrap.js';
 
-export * from './build-app.bootstrap.js';
-export * from './start-server.bootstrap.js';
+export * from '#src/bootstrap/build-app.bootstrap.js';
+export * from '#src/bootstrap/start-server.bootstrap.js';

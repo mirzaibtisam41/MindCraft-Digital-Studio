@@ -1,4 +1,4 @@
-import { saveWorkflowCreditPricesService } from './save-workflow-credit-prices.service.js';
+import { saveWorkflowCreditPricesService } from '#src/modules/ai-model-credit-prices/features/save-workflow-credit-prices/save-workflow-credit-prices.service.js';
 
 export async function saveWorkflowCreditPricesController(request, reply) {
   const prices = await saveWorkflowCreditPricesService({

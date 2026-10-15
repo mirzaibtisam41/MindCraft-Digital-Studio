@@ -1,4 +1,4 @@
-import { deleteGenerationTypeService } from './delete-generation-type.service.js';
+import { deleteGenerationTypeService } from '#src/modules/generation-types/features/delete-generation-type/delete-generation-type.service.js';
 
 export async function deleteGenerationTypeController(request, reply) {
   await deleteGenerationTypeService({

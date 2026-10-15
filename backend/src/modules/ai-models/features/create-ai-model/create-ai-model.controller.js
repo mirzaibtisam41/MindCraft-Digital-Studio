@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { createAiModelService } from './create-ai-model.service.js';
+import { createAiModelService } from '#src/modules/ai-models/features/create-ai-model/create-ai-model.service.js';
 
 export async function createAiModelController(request, reply) {
   const model = await createAiModelService({

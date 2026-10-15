@@ -2,7 +2,7 @@ import {
   REFRESH_COOKIE_NAME,
   buildRefreshCookieConfig,
 } from '#src/config/index.js';
-import { logoutService } from './logout.service.js';
+import { logoutService } from '#src/modules/auth/features/logout/logout.service.js';
 
 export async function logoutController(request, reply) {
   await logoutService({

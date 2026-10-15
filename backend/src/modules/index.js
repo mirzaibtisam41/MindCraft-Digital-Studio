@@ -1,15 +1,15 @@
-import { aiModelCreditPricesRoutes } from './ai-model-credit-prices/ai-model-credit-prices.routes.js';
-import { modelWorkflowsRoutes } from './model-workflows/model-workflows.routes.js';
-import { aiModelsRoutes } from './ai-models/ai-models.routes.js';
-import { aiProvidersRoutes } from './ai-providers/ai-providers.routes.js';
-import { authRoutes } from './auth/auth.routes.js';
+import { aiModelCreditPricesRoutes } from '#src/modules/ai-model-credit-prices/ai-model-credit-prices.routes.js';
+import { modelWorkflowsRoutes } from '#src/modules/model-workflows/model-workflows.routes.js';
+import { aiModelsRoutes } from '#src/modules/ai-models/ai-models.routes.js';
+import { aiProvidersRoutes } from '#src/modules/ai-providers/ai-providers.routes.js';
+import { authRoutes } from '#src/modules/auth/auth.routes.js';
 import {
   adminUserWalletRoutes,
   myWalletRoutes,
-} from './credit-wallets/credit-wallets.routes.js';
-import { generationTypesRoutes } from './generation-types/generation-types.routes.js';
-import { healthRoutes } from './health/health.routes.js';
-import { platformSettingsRoutes } from './platform-settings/platform-settings.routes.js';
+} from '#src/modules/credit-wallets/credit-wallets.routes.js';
+import { generationTypesRoutes } from '#src/modules/generation-types/generation-types.routes.js';
+import { healthRoutes } from '#src/modules/health/health.routes.js';
+import { platformSettingsRoutes } from '#src/modules/platform-settings/platform-settings.routes.js';
 
 export async function registerRoutes(fastify) {
   await fastify.register(healthRoutes, { prefix: '/health' });

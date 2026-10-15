@@ -1,4 +1,4 @@
-import { listModelWorkflowsService } from './list-model-workflows.service.js';
+import { listModelWorkflowsService } from '#src/modules/model-workflows/features/list-model-workflows/list-model-workflows.service.js';
 
 export async function listModelWorkflowsController(request, reply) {
   const { workflows, availableOptions } = await listModelWorkflowsService({

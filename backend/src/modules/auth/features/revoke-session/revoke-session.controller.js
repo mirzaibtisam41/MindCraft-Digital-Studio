@@ -1,4 +1,4 @@
-import { revokeSessionService } from './revoke-session.service.js';
+import { revokeSessionService } from '#src/modules/auth/features/revoke-session/revoke-session.service.js';
 
 export async function revokeSessionController(request, reply) {
   await revokeSessionService({

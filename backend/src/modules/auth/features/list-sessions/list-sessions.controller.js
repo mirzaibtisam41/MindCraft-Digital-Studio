@@ -1,4 +1,4 @@
-import { listSessionsService } from './list-sessions.service.js';
+import { listSessionsService } from '#src/modules/auth/features/list-sessions/list-sessions.service.js';
 
 export async function listSessionsController(request, reply) {
   const sessions = await listSessionsService({

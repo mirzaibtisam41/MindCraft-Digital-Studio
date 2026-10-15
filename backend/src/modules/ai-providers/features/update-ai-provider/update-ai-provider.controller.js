@@ -1,4 +1,4 @@
-import { updateAiProviderService } from './update-ai-provider.service.js';
+import { updateAiProviderService } from '#src/modules/ai-providers/features/update-ai-provider/update-ai-provider.service.js';
 
 export async function updateAiProviderController(request, reply) {
   const provider = await updateAiProviderService({

@@ -1,5 +1,5 @@
 import { NotFoundError } from '#src/utils/index.js';
-import { errorHandler } from './error.handler.js';
+import { errorHandler } from '#src/handlers/error.handler.js';
 
 export function notFoundHandler(request, reply) {
   const error = new NotFoundError(

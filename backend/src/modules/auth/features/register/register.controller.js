@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { registerService } from './register.service.js';
+import { registerService } from '#src/modules/auth/features/register/register.service.js';
 
 export async function registerController(request, reply) {
   const user = await registerService({

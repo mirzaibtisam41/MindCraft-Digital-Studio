@@ -1,5 +1,5 @@
 import { gracefulShutdownHandler } from '#src/handlers/index.js';
-import { buildApp } from './build-app.bootstrap.js';
+import { buildApp } from '#src/bootstrap/build-app.bootstrap.js';
 
 export async function startServer() {
   const fastify = buildApp();

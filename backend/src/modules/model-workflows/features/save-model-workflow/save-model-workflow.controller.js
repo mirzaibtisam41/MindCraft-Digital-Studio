@@ -1,4 +1,4 @@
-import { saveModelWorkflowService } from './save-model-workflow.service.js';
+import { saveModelWorkflowService } from '#src/modules/model-workflows/features/save-model-workflow/save-model-workflow.service.js';
 
 export async function saveModelWorkflowController(request, reply) {
   const workflow = await saveModelWorkflowService({

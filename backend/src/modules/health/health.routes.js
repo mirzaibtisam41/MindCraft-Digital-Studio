@@ -1,4 +1,4 @@
-import { checkHealthController } from './health.controller.js';
+import { checkHealthController } from '#src/modules/health/health.controller.js';
 
 export function healthRoutes(fastify) {
   fastify.get('/', checkHealthController);

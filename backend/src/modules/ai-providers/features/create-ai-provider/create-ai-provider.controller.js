@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { createAiProviderService } from './create-ai-provider.service.js';
+import { createAiProviderService } from '#src/modules/ai-providers/features/create-ai-provider/create-ai-provider.service.js';
 
 export async function createAiProviderController(request, reply) {
   const provider = await createAiProviderService({

@@ -2,7 +2,7 @@ import {
   REFRESH_COOKIE_NAME,
   buildRefreshCookieConfig,
 } from '#src/config/index.js';
-import { refreshSessionService } from './refresh-session.service.js';
+import { refreshSessionService } from '#src/modules/auth/features/refresh-session/refresh-session.service.js';
 
 export async function refreshSessionController(request, reply) {
   const { accessToken, refreshToken, user } = await refreshSessionService({

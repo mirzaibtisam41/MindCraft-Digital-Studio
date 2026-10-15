@@ -12,7 +12,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { creditWallets } from '#src/modules/credit-wallets/credit-wallet.table.js';
 import { users } from '#src/modules/users/user.table.js';
-import { CREDIT_TRANSACTION_TYPES } from './credit-transaction.constants.js';
+import { CREDIT_TRANSACTION_TYPES } from '#src/modules/credit-transactions/credit-transaction.constants.js';
 
 export const creditTransactionTypeEnum = pgEnum(
   'credit_transaction_type',

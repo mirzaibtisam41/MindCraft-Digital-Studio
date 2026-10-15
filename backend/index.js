@@ -1,3 +1,3 @@
-import { startServer } from './src/bootstrap/index.js';
+import { startServer } from '#src/bootstrap/index.js';
 
 await startServer();

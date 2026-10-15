@@ -16,7 +16,7 @@ import {
   AI_MODEL_SLUG_MAX_LENGTH,
   AI_MODEL_STATUS,
   AI_MODEL_STATUSES,
-} from './ai-model.constants.js';
+} from '#src/modules/ai-models/ai-model.constants.js';
 
 export const aiModelStatusEnum = pgEnum('ai_model_status', AI_MODEL_STATUSES);
 

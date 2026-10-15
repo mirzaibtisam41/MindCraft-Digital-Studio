@@ -1,4 +1,4 @@
-import { updateAiModelStatusService } from './update-ai-model-status.service.js';
+import { updateAiModelStatusService } from '#src/modules/ai-models/features/update-ai-model-status/update-ai-model-status.service.js';
 
 export async function updateAiModelStatusController(request, reply) {
   const model = await updateAiModelStatusService({

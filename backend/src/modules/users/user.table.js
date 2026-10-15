@@ -15,7 +15,7 @@ import {
   USER_ROLES,
   USER_STATUS,
   USER_STATUSES,
-} from './user.constants.js';
+} from '#src/modules/users/user.constants.js';
 
 export const userRoleEnum = pgEnum('user_role', USER_ROLES);
 

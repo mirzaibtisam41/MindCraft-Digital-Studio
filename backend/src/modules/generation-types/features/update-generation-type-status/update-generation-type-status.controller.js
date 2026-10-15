@@ -1,4 +1,4 @@
-import { updateGenerationTypeStatusService } from './update-generation-type-status.service.js';
+import { updateGenerationTypeStatusService } from '#src/modules/generation-types/features/update-generation-type-status/update-generation-type-status.service.js';
 
 export async function updateGenerationTypeStatusController(request, reply) {
   const generationType = await updateGenerationTypeStatusService({
