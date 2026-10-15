@@ -11,8 +11,6 @@ import {
 } from '#src/modules/auth-sessions/shared/repositories/index.js';
 import { startAuthSessionService } from '#src/modules/auth/shared/services/index.js';
 
-class TokenAlreadyUsedError extends Error {}
-
 function wasReplacedJustNow({ session }) {
   return (
     session.replacedById && Date.now() - session.revokedAt.getTime() < 10000
@@ -71,41 +69,33 @@ export async function refreshSessionService({ server, refreshToken, client }) {
     );
   }
 
-  try {
-    const tokens = await server.db.transaction(async (tx) => {
-      const newSession = await startAuthSessionService({
-        server,
-        db: tx,
-        userId: user.id,
-        familyId: session.familyId,
-        client,
-      });
-
-      const replacedSession = await markAuthSessionAsReplacedRepository({
-        db: tx,
-        sessionId: session.id,
-        replacedById: newSession.session.id,
-      });
-
-      if (!replacedSession) {
-        throw new TokenAlreadyUsedError();
-      }
-
-      return newSession;
+  const tokens = await server.db.transaction(async (tx) => {
+    const newSession = await startAuthSessionService({
+      server,
+      db: tx,
+      userId: user.id,
+      familyId: session.familyId,
+      client,
     });
 
-    return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-      user,
-    };
-  } catch (error) {
-    if (error instanceof TokenAlreadyUsedError) {
+    const replacedSession = await markAuthSessionAsReplacedRepository({
+      db: tx,
+      sessionId: session.id,
+      replacedById: newSession.session.id,
+    });
+
+    if (!replacedSession) {
       throw new UnauthorizedError(
         'Your session has expired, please log in again',
       );
     }
 
-    throw error;
-  }
+    return newSession;
+  });
+
+  return {
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+    user,
+  };
 }
