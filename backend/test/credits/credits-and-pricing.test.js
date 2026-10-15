@@ -244,7 +244,7 @@ describe('credits and pricing', () => {
       const user = await testApp.registerAndLogin();
       const change = (tx) =>
         applyCreditChangeService({
-          tx,
+          db: tx,
           userId: user.user.id,
           amount: 25,
           type: 'admin_credit',
@@ -253,7 +253,7 @@ describe('credits and pricing', () => {
       const key = `test:${randomUUID()}`;
       const sameKeyChange = (tx) =>
         applyCreditChangeService({
-          tx,
+          db: tx,
           userId: user.user.id,
           amount: 25,
           type: 'admin_credit',

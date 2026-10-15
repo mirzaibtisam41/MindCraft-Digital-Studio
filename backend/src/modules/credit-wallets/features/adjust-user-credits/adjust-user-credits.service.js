@@ -4,7 +4,7 @@ import { applyCreditChangeService } from '#src/modules/credit-wallets/shared/ser
 export function adjustUserCreditsService({ db, userId, data, adminId }) {
   return db.transaction((tx) =>
     applyCreditChangeService({
-      tx,
+      db: tx,
       userId,
       amount: data.amount,
       type:

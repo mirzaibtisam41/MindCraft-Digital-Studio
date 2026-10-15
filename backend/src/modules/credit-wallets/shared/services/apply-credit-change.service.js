@@ -9,7 +9,7 @@ import {
 } from '#src/modules/credit-transactions/shared/repositories/index.js';
 
 export async function applyCreditChangeService({
-  tx,
+  db,
   userId,
   amount,
   type,
@@ -18,7 +18,7 @@ export async function applyCreditChangeService({
   idempotencyKey = null,
 }) {
   const wallet = await findCreditWalletByUserIdRepository({
-    db: tx,
+    db,
     userId,
     lockForUpdate: true,
   });
@@ -30,7 +30,7 @@ export async function applyCreditChangeService({
   if (idempotencyKey) {
     const existingTransaction =
       await findCreditTransactionByIdempotencyKeyRepository({
-        db: tx,
+        db,
         idempotencyKey,
       });
 
@@ -46,13 +46,13 @@ export async function applyCreditChangeService({
   }
 
   await updateCreditWalletBalanceRepository({
-    db: tx,
+    db,
     walletId: wallet.id,
     balance: balanceAfter,
   });
 
   const transaction = await createCreditTransactionRepository({
-    db: tx,
+    db,
     data: {
       walletId: wallet.id,
       amount,

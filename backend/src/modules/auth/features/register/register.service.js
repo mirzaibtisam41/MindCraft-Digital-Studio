@@ -32,7 +32,7 @@ export async function registerService({ db, data }) {
 
       if (signupCredits > 0) {
         await applyCreditChangeService({
-          tx,
+          db: tx,
           userId: user.id,
           amount: signupCredits,
           type: CREDIT_TRANSACTION_TYPE.SIGNUP_GRANT,
