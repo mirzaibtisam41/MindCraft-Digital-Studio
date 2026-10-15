@@ -37,7 +37,8 @@ backend/
     ├── hooks/               *.hook.js (auth check, ownership/access checks, rate limits)
     ├── plugins/             *.plugin.js wrapped with fastify-plugin (reply-success.plugin.js adds reply.success); index.js re-exports
     ├── shared/schemas/      request schemas used by several modules, e.g. uuid-params.schema.js →
-    │                        uuidParamsSchema('id') / uuidParamsSchema('modelId', 'typeId') for every :id route
+    │                        uuidParamsSchema('id') / uuidParamsSchema('modelId', 'typeId') for every :id route,
+    │                        pagination-query.schema.js → paginationQuerySchema (page, limit) for list endpoints
     ├── utils/               *.util.js (errors, reply, password, pagination...); index.js re-exports
     │                        (all of the above: add an <area>/ sub-folder only at 3+ files for one area)
     └── modules/

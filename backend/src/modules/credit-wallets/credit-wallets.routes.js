@@ -3,7 +3,7 @@ import {
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
 import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
-import { walletTransactionsQuerySchema } from './wallet-transactions-query.schema.js';
+import { paginationQuerySchema } from '#src/shared/schemas/pagination-query.schema.js';
 import { adjustUserCreditsController } from './features/adjust-user-credits/adjust-user-credits.controller.js';
 import { adjustUserCreditsBodySchema } from './features/adjust-user-credits/adjust-user-credits.schema.js';
 import { getMyWalletController } from './features/get-my-wallet/get-my-wallet.controller.js';
@@ -14,7 +14,7 @@ export function myWalletRoutes(fastify) {
 
   fastify.get(
     '/',
-    { schema: { querystring: walletTransactionsQuerySchema } },
+    { schema: { querystring: paginationQuerySchema } },
     getMyWalletController,
   );
 }
@@ -28,7 +28,7 @@ export function adminUserWalletRoutes(fastify) {
     {
       schema: {
         params: uuidParamsSchema('userId'),
-        querystring: walletTransactionsQuerySchema,
+        querystring: paginationQuerySchema,
       },
     },
     getUserWalletController,
