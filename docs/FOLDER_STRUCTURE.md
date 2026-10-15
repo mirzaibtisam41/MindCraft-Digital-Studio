@@ -60,7 +60,7 @@ backend/
 ```
 
 ### Naming conventions
-- Files: **kebab-case** with a role suffix: `login.controller.js`, `find-business-by-id.repository.js`, `cors.plugin.js`, `hash-password.util.js`, `check-user-is-logged-in.hook.js`, `user.table.js`.
+- Files: **kebab-case** with a role suffix: `login.controller.js`, `find-business-by-id.repository.js`, `cors.plugin.js`, `password.util.js`, `check-user-is-logged-in.hook.js`, `user.table.js`.
 - Folders: **kebab-case** for every multiword name. Feature folders: `forgot-password`, `refresh-session`. Module folders: kebab-case plural (`user-settings`, `password-reset-tokens`). A module with a single small endpoint stays flat (`health/health.controller.js` + `health.routes.js`) instead of `features/<name>/`.
 - Function name = file name in camelCase + role suffix: `login.controller.js` → `loginController`, `find-business-by-id.repository.js` → `findBusinessByIdRepository`, `pino.config.js` → `pinoConfig` (a builder function gets a `build` prefix: `listen.config.js` → `buildListenConfig`), `cors.plugin.js` → `corsPlugin`, `not-found.handler.js` → `notFoundHandler`.
 - Functions take **one object argument** (`{ db, id }`, `{ server, email }`).
