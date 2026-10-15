@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { authSessions } from '#src/modules/auth-sessions/auth-session.table.js';
 import { users } from '#src/modules/users/user.table.js';
+import { USER_COLUMNS } from '#src/modules/users/user-columns.constants.js';
 
 export async function findAuthSessionByTokenHashRepository({
   db,
@@ -15,15 +16,7 @@ export async function findAuthSessionByTokenHashRepository({
         expiresAt: authSessions.expiresAt,
         revokedAt: authSessions.revokedAt,
       },
-      user: {
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        role: users.role,
-        status: users.status,
-        emailVerifiedAt: users.emailVerifiedAt,
-        createdAt: users.createdAt,
-      },
+      user: USER_COLUMNS,
     })
     .from(authSessions)
     .innerJoin(users, eq(users.id, authSessions.userId))

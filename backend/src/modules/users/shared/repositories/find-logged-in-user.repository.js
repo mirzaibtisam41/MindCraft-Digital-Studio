@@ -1,5 +1,6 @@
 import { and, eq, exists, gt, isNull } from 'drizzle-orm';
 import { users } from '#src/modules/users/user.table.js';
+import { USER_COLUMNS } from '#src/modules/users/user-columns.constants.js';
 import { authSessions } from '#src/modules/auth-sessions/auth-session.table.js';
 
 export async function findLoggedInUserRepository({ db, userId, familyId }) {
@@ -16,15 +17,7 @@ export async function findLoggedInUserRepository({ db, userId, familyId }) {
     );
 
   const [user] = await db
-    .select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      role: users.role,
-      status: users.status,
-      emailVerifiedAt: users.emailVerifiedAt,
-      createdAt: users.createdAt,
-    })
+    .select(USER_COLUMNS)
     .from(users)
     .where(and(eq(users.id, userId), exists(activeSessionInFamily)))
     .limit(1);
