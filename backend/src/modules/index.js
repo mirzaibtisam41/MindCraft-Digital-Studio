@@ -10,6 +10,7 @@ import {
 import { generationTypesRoutes } from '#src/modules/generation-types/generation-types.routes.js';
 import { healthRoutes } from '#src/modules/health/health.routes.js';
 import { platformSettingsRoutes } from '#src/modules/platform-settings/platform-settings.routes.js';
+import { adminUsersRoutes } from '#src/modules/users/users.routes.js';
 
 export async function registerRoutes(fastify) {
   await fastify.register(healthRoutes, { prefix: '/health' });
@@ -29,5 +30,6 @@ export async function registerRoutes(fastify) {
   await fastify.register(platformSettingsRoutes, {
     prefix: '/api/admin/settings',
   });
+  await fastify.register(adminUsersRoutes, { prefix: '/api/admin/users' });
   await fastify.register(adminUserWalletRoutes, { prefix: '/api/admin/users' });
 }
