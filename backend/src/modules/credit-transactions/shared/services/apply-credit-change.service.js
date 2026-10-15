@@ -1,6 +1,4 @@
 import { BadRequestError, NotFoundError } from '#src/utils/index.js';
-import { NOT_ENOUGH_CREDITS_MESSAGE } from '#src/modules/credit-transactions/credit-transaction.constants.js';
-import { WALLET_NOT_FOUND_MESSAGE } from '#src/modules/credit-wallets/credit-wallet.constants.js';
 import {
   findCreditWalletByUserIdRepository,
   updateCreditWalletBalanceRepository,
@@ -26,7 +24,7 @@ export async function applyCreditChangeService({
   });
 
   if (!wallet) {
-    throw new NotFoundError(WALLET_NOT_FOUND_MESSAGE);
+    throw new NotFoundError('User wallet not found');
   }
 
   if (idempotencyKey) {
@@ -44,7 +42,7 @@ export async function applyCreditChangeService({
   const balanceAfter = wallet.balance + amount;
 
   if (balanceAfter < 0) {
-    throw new BadRequestError(NOT_ENOUGH_CREDITS_MESSAGE);
+    throw new BadRequestError('Not enough credits for this change');
   }
 
   await updateCreditWalletBalanceRepository({

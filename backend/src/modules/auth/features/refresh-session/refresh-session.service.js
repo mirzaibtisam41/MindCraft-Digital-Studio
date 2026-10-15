@@ -3,11 +3,7 @@ import {
   UnauthorizedError,
   hashTokenUtil,
 } from '#src/utils/index.js';
-import {
-  ACCOUNT_SUSPENDED_MESSAGE,
-  REFRESH_TOKEN_REUSE_GRACE_MS,
-  SESSION_EXPIRED_MESSAGE,
-} from '#src/modules/auth/auth.constants.js';
+import { REFRESH_TOKEN_REUSE_GRACE_MS } from '#src/modules/auth/auth.constants.js';
 import { USER_STATUS } from '#src/modules/users/user.constants.js';
 import {
   findAuthSessionByTokenHashRepository,
@@ -27,7 +23,9 @@ function wasReplacedJustNow({ session }) {
 
 export async function refreshSessionService({ server, refreshToken, client }) {
   if (!refreshToken) {
-    throw new UnauthorizedError(SESSION_EXPIRED_MESSAGE);
+    throw new UnauthorizedError(
+      'Your session has expired, please log in again',
+    );
   }
 
   const found = await findAuthSessionByTokenHashRepository({
@@ -36,7 +34,9 @@ export async function refreshSessionService({ server, refreshToken, client }) {
   });
 
   if (!found) {
-    throw new UnauthorizedError(SESSION_EXPIRED_MESSAGE);
+    throw new UnauthorizedError(
+      'Your session has expired, please log in again',
+    );
   }
 
   const { session, user } = found;
@@ -50,11 +50,15 @@ export async function refreshSessionService({ server, refreshToken, client }) {
       });
     }
 
-    throw new UnauthorizedError(SESSION_EXPIRED_MESSAGE);
+    throw new UnauthorizedError(
+      'Your session has expired, please log in again',
+    );
   }
 
   if (session.expiresAt < new Date()) {
-    throw new UnauthorizedError(SESSION_EXPIRED_MESSAGE);
+    throw new UnauthorizedError(
+      'Your session has expired, please log in again',
+    );
   }
 
   if (user.status === USER_STATUS.SUSPENDED) {
@@ -64,7 +68,9 @@ export async function refreshSessionService({ server, refreshToken, client }) {
       familyId: session.familyId,
     });
 
-    throw new ForbiddenError(ACCOUNT_SUSPENDED_MESSAGE);
+    throw new ForbiddenError(
+      'This account has been suspended, please contact support',
+    );
   }
 
   try {
@@ -97,7 +103,9 @@ export async function refreshSessionService({ server, refreshToken, client }) {
     };
   } catch (error) {
     if (error instanceof TokenAlreadyUsedError) {
-      throw new UnauthorizedError(SESSION_EXPIRED_MESSAGE);
+      throw new UnauthorizedError(
+        'Your session has expired, please log in again',
+      );
     }
 
     throw error;

@@ -1,5 +1,4 @@
 import { ConflictError, isUniqueViolationErrorUtil } from '#src/utils/index.js';
-import { AI_PROVIDER_CODE_TAKEN_MESSAGE } from '#src/modules/ai-providers/ai-provider.constants.js';
 import {
   createAiProviderRepository,
   findAiProviderByCodeRepository,
@@ -11,7 +10,7 @@ export async function createAiProviderService({ db, data }) {
   const existingProvider = await findAiProviderByCodeRepository({ db, code });
 
   if (existingProvider) {
-    throw new ConflictError(AI_PROVIDER_CODE_TAKEN_MESSAGE);
+    throw new ConflictError('A provider with this code already exists');
   }
 
   try {
@@ -21,7 +20,7 @@ export async function createAiProviderService({ db, data }) {
     });
   } catch (error) {
     if (isUniqueViolationErrorUtil({ error })) {
-      throw new ConflictError(AI_PROVIDER_CODE_TAKEN_MESSAGE);
+      throw new ConflictError('A provider with this code already exists');
     }
 
     throw error;

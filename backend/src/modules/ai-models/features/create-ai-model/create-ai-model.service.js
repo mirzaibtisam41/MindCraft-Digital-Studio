@@ -3,11 +3,6 @@ import {
   ConflictError,
   isUniqueViolationErrorUtil,
 } from '#src/utils/index.js';
-import {
-  AI_MODEL_PROVIDER_MODEL_TAKEN_MESSAGE,
-  AI_MODEL_PROVIDER_NOT_FOUND_MESSAGE,
-  AI_MODEL_SLUG_TAKEN_MESSAGE,
-} from '#src/modules/ai-models/ai-model.constants.js';
 import { findAiProviderByIdRepository } from '#src/modules/ai-providers/shared/repositories/index.js';
 import {
   createAiModelRepository,
@@ -34,7 +29,7 @@ export async function createAiModelService({ db, data, adminId }) {
   });
 
   if (!provider) {
-    throw new BadRequestError(AI_MODEL_PROVIDER_NOT_FOUND_MESSAGE);
+    throw new BadRequestError('The selected provider does not exist');
   }
 
   const modelWithSameSlug = await findAiModelBySlugRepository({
@@ -43,7 +38,7 @@ export async function createAiModelService({ db, data, adminId }) {
   });
 
   if (modelWithSameSlug) {
-    throw new ConflictError(AI_MODEL_SLUG_TAKEN_MESSAGE);
+    throw new ConflictError('A model with this slug already exists');
   }
 
   const modelWithSameProviderModelId =
@@ -54,7 +49,9 @@ export async function createAiModelService({ db, data, adminId }) {
     });
 
   if (modelWithSameProviderModelId) {
-    throw new ConflictError(AI_MODEL_PROVIDER_MODEL_TAKEN_MESSAGE);
+    throw new ConflictError(
+      'This provider already has a model with this provider model ID',
+    );
   }
 
   try {
@@ -65,8 +62,8 @@ export async function createAiModelService({ db, data, adminId }) {
 
       throw new ConflictError(
         constraint === SLUG_UNIQUE_CONSTRAINT
-          ? AI_MODEL_SLUG_TAKEN_MESSAGE
-          : AI_MODEL_PROVIDER_MODEL_TAKEN_MESSAGE,
+          ? 'A model with this slug already exists'
+          : 'This provider already has a model with this provider model ID',
       );
     }
 

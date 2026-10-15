@@ -1,5 +1,4 @@
 import { NotFoundError } from '#src/utils/index.js';
-import { AI_PROVIDER_NOT_FOUND_MESSAGE } from '#src/modules/ai-providers/ai-provider.constants.js';
 import { updateAiProviderRepository } from '#src/modules/ai-providers/shared/repositories/index.js';
 
 export async function updateAiProviderStatusService({ db, id, isActive }) {
@@ -10,7 +9,7 @@ export async function updateAiProviderStatusService({ db, id, isActive }) {
   });
 
   if (!provider) {
-    throw new NotFoundError(AI_PROVIDER_NOT_FOUND_MESSAGE);
+    throw new NotFoundError('Provider not found');
   }
 
   return provider;

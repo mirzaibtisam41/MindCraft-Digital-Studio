@@ -1,11 +1,4 @@
 import { BadRequestError, NotFoundError } from '#src/utils/index.js';
-import {
-  GENERATION_TYPE_INACTIVE_MESSAGE,
-  OPTIONS_REQUIRED_TO_ENABLE_MESSAGE,
-  OPTIONS_SENT_TOGETHER_MESSAGE,
-} from '#src/modules/model-workflows/model-workflow.constants.js';
-import { AI_MODEL_NOT_FOUND_MESSAGE } from '#src/modules/ai-models/ai-model.constants.js';
-import { GENERATION_TYPE_NOT_FOUND_MESSAGE } from '#src/modules/generation-types/generation-type.constants.js';
 import { findAiModelByIdRepository } from '#src/modules/ai-models/shared/repositories/index.js';
 import { findGenerationTypeByIdRepository } from '#src/modules/generation-types/shared/repositories/index.js';
 import { saveModelWorkflowRepository } from '#src/modules/model-workflows/shared/repositories/index.js';
@@ -38,7 +31,7 @@ export async function saveModelWorkflowService({ db, modelId, typeId, data }) {
   const model = await findAiModelByIdRepository({ db, id: modelId });
 
   if (!model) {
-    throw new NotFoundError(AI_MODEL_NOT_FOUND_MESSAGE);
+    throw new NotFoundError('Model not found');
   }
 
   const generationType = await findGenerationTypeByIdRepository({
@@ -47,11 +40,13 @@ export async function saveModelWorkflowService({ db, modelId, typeId, data }) {
   });
 
   if (!generationType) {
-    throw new NotFoundError(GENERATION_TYPE_NOT_FOUND_MESSAGE);
+    throw new NotFoundError('Generation type not found');
   }
 
   if (Boolean(enabledOptions) !== Boolean(defaultOptions)) {
-    throw new BadRequestError(OPTIONS_SENT_TOGETHER_MESSAGE);
+    throw new BadRequestError(
+      'Send enabled options and default options together',
+    );
   }
 
   if (enabledOptions) {
@@ -64,11 +59,15 @@ export async function saveModelWorkflowService({ db, modelId, typeId, data }) {
   }
 
   if (data.isEnabled && !enabledOptions) {
-    throw new BadRequestError(OPTIONS_REQUIRED_TO_ENABLE_MESSAGE);
+    throw new BadRequestError(
+      'Choose the enabled options and defaults before enabling this workflow',
+    );
   }
 
   if (data.isEnabled && !generationType.isActive) {
-    throw new BadRequestError(GENERATION_TYPE_INACTIVE_MESSAGE);
+    throw new BadRequestError(
+      'This generation type is turned off, so the workflow cannot be enabled',
+    );
   }
 
   return db.transaction(async (tx) => {

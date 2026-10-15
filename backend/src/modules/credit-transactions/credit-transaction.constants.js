@@ -9,5 +9,3 @@ export const CREDIT_TRANSACTION_TYPE = {
 };
 
 export const CREDIT_TRANSACTION_TYPES = Object.values(CREDIT_TRANSACTION_TYPE);
-
-export const NOT_ENOUGH_CREDITS_MESSAGE = 'Not enough credits for this change';

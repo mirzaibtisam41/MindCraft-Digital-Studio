@@ -5,10 +5,6 @@ import {
   hashPasswordUtil,
   verifyPasswordUtil,
 } from '#src/utils/index.js';
-import {
-  ACCOUNT_SUSPENDED_MESSAGE,
-  INVALID_EMAIL_OR_PASSWORD_MESSAGE,
-} from '#src/modules/auth/auth.constants.js';
 import { USER_STATUS } from '#src/modules/users/user.constants.js';
 import {
   findUserWithPasswordByEmailRepository,
@@ -34,11 +30,13 @@ export async function loginService({ server, data, client }) {
   });
 
   if (!user || !isPasswordCorrect) {
-    throw new UnauthorizedError(INVALID_EMAIL_OR_PASSWORD_MESSAGE);
+    throw new UnauthorizedError('Invalid email or password');
   }
 
   if (user.status === USER_STATUS.SUSPENDED) {
-    throw new ForbiddenError(ACCOUNT_SUSPENDED_MESSAGE);
+    throw new ForbiddenError(
+      'This account has been suspended, please contact support',
+    );
   }
 
   const { accessToken, refreshToken } = await startAuthSessionService({

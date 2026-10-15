@@ -1,5 +1,4 @@
 import { ConflictError, isUniqueViolationErrorUtil } from '#src/utils/index.js';
-import { GENERATION_TYPE_CODE_TAKEN_MESSAGE } from '#src/modules/generation-types/generation-type.constants.js';
 import {
   createGenerationTypeRepository,
   findGenerationTypeByCodeRepository,
@@ -11,7 +10,7 @@ export async function createGenerationTypeService({ db, data }) {
   const existingType = await findGenerationTypeByCodeRepository({ db, code });
 
   if (existingType) {
-    throw new ConflictError(GENERATION_TYPE_CODE_TAKEN_MESSAGE);
+    throw new ConflictError('A provider with this code already exists');
   }
 
   try {
@@ -26,7 +25,7 @@ export async function createGenerationTypeService({ db, data }) {
     });
   } catch (error) {
     if (isUniqueViolationErrorUtil({ error })) {
-      throw new ConflictError(GENERATION_TYPE_CODE_TAKEN_MESSAGE);
+      throw new ConflictError('A provider with this code already exists');
     }
 
     throw error;

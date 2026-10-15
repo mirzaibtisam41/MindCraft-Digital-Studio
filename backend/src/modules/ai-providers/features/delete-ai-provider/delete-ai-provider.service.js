@@ -3,10 +3,6 @@ import {
   NotFoundError,
   isForeignKeyViolationErrorUtil,
 } from '#src/utils/index.js';
-import {
-  AI_PROVIDER_HAS_MODELS_MESSAGE,
-  AI_PROVIDER_NOT_FOUND_MESSAGE,
-} from '#src/modules/ai-providers/ai-provider.constants.js';
 import { deleteAiProviderRepository } from '#src/modules/ai-providers/shared/repositories/index.js';
 
 export async function deleteAiProviderService({ db, id }) {
@@ -14,11 +10,13 @@ export async function deleteAiProviderService({ db, id }) {
     const deletedProvider = await deleteAiProviderRepository({ db, id });
 
     if (!deletedProvider) {
-      throw new NotFoundError(AI_PROVIDER_NOT_FOUND_MESSAGE);
+      throw new NotFoundError('Provider not found');
     }
   } catch (error) {
     if (isForeignKeyViolationErrorUtil({ error })) {
-      throw new ConflictError(AI_PROVIDER_HAS_MODELS_MESSAGE);
+      throw new ConflictError(
+        'This provider has models and cannot be deleted. Deactivate it instead.',
+      );
     }
 
     throw error;

@@ -1,10 +1,5 @@
 import { BadRequestError, NotFoundError } from '#src/utils/index.js';
-import {
-  AI_MODEL_NEEDS_ENABLED_WORKFLOW_MESSAGE,
-  AI_MODEL_NEEDS_PRICES_MESSAGE,
-  AI_MODEL_NOT_FOUND_MESSAGE,
-  AI_MODEL_STATUS,
-} from '#src/modules/ai-models/ai-model.constants.js';
+import { AI_MODEL_STATUS } from '#src/modules/ai-models/ai-model.constants.js';
 import {
   findAiModelByIdRepository,
   updateAiModelRepository,
@@ -16,7 +11,9 @@ async function checkModelCanBeActivated({ db, modelId }) {
   const workflows = await listEnabledModelWorkflowsRepository({ db, modelId });
 
   if (workflows.length === 0) {
-    throw new BadRequestError(AI_MODEL_NEEDS_ENABLED_WORKFLOW_MESSAGE);
+    throw new BadRequestError(
+      'Turn on at least one workflow before activating this model',
+    );
   }
 
   const prices = await listModelCreditPricesRepository({ db, modelId });
@@ -35,7 +32,7 @@ async function checkModelCanBeActivated({ db, modelId }) {
 
   if (missingPrices.length > 0) {
     throw new BadRequestError(
-      `${AI_MODEL_NEEDS_PRICES_MESSAGE}: ${missingPrices.join(', ')}`,
+      `Set a price for every enabled quality before activating this model: ${missingPrices.join(', ')}`,
     );
   }
 }
@@ -44,7 +41,7 @@ export async function updateAiModelStatusService({ db, id, status, adminId }) {
   const existingModel = await findAiModelByIdRepository({ db, id });
 
   if (!existingModel) {
-    throw new NotFoundError(AI_MODEL_NOT_FOUND_MESSAGE);
+    throw new NotFoundError('Model not found');
   }
 
   if (status === AI_MODEL_STATUS.ACTIVE) {

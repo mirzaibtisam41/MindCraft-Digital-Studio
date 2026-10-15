@@ -3,10 +3,6 @@ import {
   NotFoundError,
   isForeignKeyViolationErrorUtil,
 } from '#src/utils/index.js';
-import {
-  GENERATION_TYPE_IN_USE_MESSAGE,
-  GENERATION_TYPE_NOT_FOUND_MESSAGE,
-} from '#src/modules/generation-types/generation-type.constants.js';
 import { deleteGenerationTypeRepository } from '#src/modules/generation-types/shared/repositories/index.js';
 
 export async function deleteGenerationTypeService({ db, id }) {
@@ -14,11 +10,13 @@ export async function deleteGenerationTypeService({ db, id }) {
     const deletedType = await deleteGenerationTypeRepository({ db, id });
 
     if (!deletedType) {
-      throw new NotFoundError(GENERATION_TYPE_NOT_FOUND_MESSAGE);
+      throw new NotFoundError('Generation type not found');
     }
   } catch (error) {
     if (isForeignKeyViolationErrorUtil({ error })) {
-      throw new ConflictError(GENERATION_TYPE_IN_USE_MESSAGE);
+      throw new ConflictError(
+        'This generation type is used by models and cannot be deleted. Turn it off instead.',
+      );
     }
 
     throw error;

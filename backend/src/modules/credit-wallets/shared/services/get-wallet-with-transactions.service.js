@@ -1,5 +1,4 @@
 import { NotFoundError } from '#src/utils/index.js';
-import { WALLET_NOT_FOUND_MESSAGE } from '#src/modules/credit-wallets/credit-wallet.constants.js';
 import { findCreditWalletByUserIdRepository } from '#src/modules/credit-wallets/shared/repositories/index.js';
 import { listCreditTransactionsRepository } from '#src/modules/credit-transactions/shared/repositories/index.js';
 
@@ -12,7 +11,7 @@ export async function getWalletWithTransactionsService({
   const wallet = await findCreditWalletByUserIdRepository({ db, userId });
 
   if (!wallet) {
-    throw new NotFoundError(WALLET_NOT_FOUND_MESSAGE);
+    throw new NotFoundError('User wallet not found');
   }
 
   const { transactions, total } = await listCreditTransactionsRepository({

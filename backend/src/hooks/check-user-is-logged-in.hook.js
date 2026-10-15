@@ -1,8 +1,4 @@
 import { ForbiddenError, UnauthorizedError } from '#src/utils/index.js';
-import {
-  ACCOUNT_SUSPENDED_MESSAGE,
-  NOT_LOGGED_IN_MESSAGE,
-} from '#src/modules/auth/auth.constants.js';
 import { USER_STATUS } from '#src/modules/users/user.constants.js';
 import { findLoggedInUserRepository } from '#src/modules/users/shared/repositories/index.js';
 
@@ -12,7 +8,7 @@ export async function checkUserIsLoggedInHook(request) {
   try {
     tokenPayload = await request.jwtVerify();
   } catch {
-    throw new UnauthorizedError(NOT_LOGGED_IN_MESSAGE);
+    throw new UnauthorizedError('Please log in to continue');
   }
 
   const user = await findLoggedInUserRepository({
@@ -22,11 +18,13 @@ export async function checkUserIsLoggedInHook(request) {
   });
 
   if (!user) {
-    throw new UnauthorizedError(NOT_LOGGED_IN_MESSAGE);
+    throw new UnauthorizedError('Please log in to continue');
   }
 
   if (user.status === USER_STATUS.SUSPENDED) {
-    throw new ForbiddenError(ACCOUNT_SUSPENDED_MESSAGE);
+    throw new ForbiddenError(
+      'This account has been suspended, please contact support',
+    );
   }
 
   request.user = user;

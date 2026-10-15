@@ -3,7 +3,6 @@ import {
   hashPasswordUtil,
   isUniqueViolationErrorUtil,
 } from '#src/utils/index.js';
-import { EMAIL_ALREADY_REGISTERED_MESSAGE } from '#src/modules/auth/auth.constants.js';
 import {
   createUserRepository,
   findUserByEmailRepository,
@@ -21,7 +20,7 @@ export async function registerService({ db, data }) {
   const existingUser = await findUserByEmailRepository({ db, email });
 
   if (existingUser) {
-    throw new ConflictError(EMAIL_ALREADY_REGISTERED_MESSAGE);
+    throw new ConflictError('An account with this email already exists');
   }
 
   const passwordHash = await hashPasswordUtil({ password: data.password });
@@ -54,7 +53,7 @@ export async function registerService({ db, data }) {
     });
   } catch (error) {
     if (isUniqueViolationErrorUtil({ error })) {
-      throw new ConflictError(EMAIL_ALREADY_REGISTERED_MESSAGE);
+      throw new ConflictError('An account with this email already exists');
     }
 
     throw error;
