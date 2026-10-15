@@ -10,8 +10,8 @@ import {
 import { aiModels } from '#src/modules/ai-models/ai-model.table.js';
 import { generationTypes } from '#src/modules/generation-types/generation-type.table.js';
 
-export const aiModelGenerationTypes = pgTable(
-  'ai_model_generation_types',
+export const modelWorkflows = pgTable(
+  'model_workflows',
   {
     id: uuid().primaryKey().defaultRandom(),
     modelId: uuid().notNull(),
@@ -27,16 +27,16 @@ export const aiModelGenerationTypes = pgTable(
   },
   (table) => [
     foreignKey({
-      name: 'ai_model_generation_types_model_fk',
+      name: 'model_workflows_model_fk',
       columns: [table.modelId],
       foreignColumns: [aiModels.id],
     }).onDelete('cascade'),
     foreignKey({
-      name: 'ai_model_generation_types_generation_type_fk',
+      name: 'model_workflows_generation_type_fk',
       columns: [table.generationTypeId],
       foreignColumns: [generationTypes.id],
     }).onDelete('restrict'),
-    unique('ai_model_generation_types_model_type_unique').on(
+    unique('model_workflows_model_type_unique').on(
       table.modelId,
       table.generationTypeId,
     ),

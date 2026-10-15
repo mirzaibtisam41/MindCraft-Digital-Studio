@@ -97,7 +97,7 @@ describe('credits and pricing', () => {
   function saveWorkflow(modelId, payload) {
     return send(
       'PUT',
-      `/api/admin/models/${modelId}/generation-types/${textToImageId}`,
+      `/api/admin/models/${modelId}/workflows/${textToImageId}`,
       payload,
     );
   }
@@ -105,7 +105,7 @@ describe('credits and pricing', () => {
   function savePrices(modelId, prices) {
     return send(
       'PUT',
-      `/api/admin/models/${modelId}/generation-types/${textToImageId}/prices`,
+      `/api/admin/models/${modelId}/workflows/${textToImageId}/prices`,
       { prices },
     );
   }

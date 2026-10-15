@@ -9,7 +9,7 @@ import {
   findAiModelByIdRepository,
   updateAiModelRepository,
 } from '#src/modules/ai-models/shared/repositories/index.js';
-import { listEnabledModelWorkflowsRepository } from '#src/modules/ai-model-generation-types/shared/repositories/index.js';
+import { listEnabledModelWorkflowsRepository } from '#src/modules/model-workflows/shared/repositories/index.js';
 import { listModelCreditPricesRepository } from '#src/modules/ai-model-credit-prices/shared/repositories/index.js';
 
 async function checkModelCanBeActivated({ db, modelId }) {
@@ -26,8 +26,7 @@ async function checkModelCanBeActivated({ db, modelId }) {
     for (const quality of workflow.enabledOptions.qualities) {
       const hasPrice = prices.some(
         (price) =>
-          price.modelGenerationTypeId === workflow.id &&
-          price.quality === quality,
+          price.modelWorkflowId === workflow.id && price.quality === quality,
       );
 
       if (!hasPrice) missingPrices.push(`${workflow.name} (${quality})`);

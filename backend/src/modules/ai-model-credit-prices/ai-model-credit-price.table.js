@@ -9,7 +9,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { aiModelGenerationTypes } from '#src/modules/ai-model-generation-types/ai-model-generation-type.table.js';
+import { modelWorkflows } from '#src/modules/model-workflows/model-workflow.table.js';
 import { users } from '#src/modules/users/user.table.js';
 import { AI_MODEL_CREDIT_PRICE_QUALITY_MAX_LENGTH } from './ai-model-credit-price.constants.js';
 
@@ -17,7 +17,7 @@ export const aiModelCreditPrices = pgTable(
   'ai_model_credit_prices',
   {
     id: uuid().primaryKey().defaultRandom(),
-    modelGenerationTypeId: uuid().notNull(),
+    modelWorkflowId: uuid().notNull(),
     quality: varchar({
       length: AI_MODEL_CREDIT_PRICE_QUALITY_MAX_LENGTH,
     }).notNull(),
@@ -32,11 +32,11 @@ export const aiModelCreditPrices = pgTable(
   (table) => [
     foreignKey({
       name: 'ai_model_credit_prices_workflow_fk',
-      columns: [table.modelGenerationTypeId],
-      foreignColumns: [aiModelGenerationTypes.id],
+      columns: [table.modelWorkflowId],
+      foreignColumns: [modelWorkflows.id],
     }).onDelete('cascade'),
     unique('ai_model_credit_prices_workflow_quality_unique').on(
-      table.modelGenerationTypeId,
+      table.modelWorkflowId,
       table.quality,
     ),
     check(

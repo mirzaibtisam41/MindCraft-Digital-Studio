@@ -1,5 +1,5 @@
 import { aiModelCreditPricesRoutes } from './ai-model-credit-prices/ai-model-credit-prices.routes.js';
-import { aiModelGenerationTypesRoutes } from './ai-model-generation-types/ai-model-generation-types.routes.js';
+import { modelWorkflowsRoutes } from './model-workflows/model-workflows.routes.js';
 import { aiModelsRoutes } from './ai-models/ai-models.routes.js';
 import { aiProvidersRoutes } from './ai-providers/ai-providers.routes.js';
 import { authRoutes } from './auth/auth.routes.js';
@@ -17,7 +17,7 @@ export async function registerRoutes(fastify) {
   await fastify.register(myWalletRoutes, { prefix: '/api/wallet' });
   await fastify.register(aiProvidersRoutes, { prefix: '/api/admin/providers' });
   await fastify.register(aiModelsRoutes, { prefix: '/api/admin/models' });
-  await fastify.register(aiModelGenerationTypesRoutes, {
+  await fastify.register(modelWorkflowsRoutes, {
     prefix: '/api/admin/models',
   });
   await fastify.register(aiModelCreditPricesRoutes, {

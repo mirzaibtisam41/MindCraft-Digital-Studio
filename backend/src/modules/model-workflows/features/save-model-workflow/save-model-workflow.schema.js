@@ -1,4 +1,4 @@
-import { GENERATION_OPTIONS } from '#src/modules/ai-model-generation-types/generation-options.constants.js';
+import { GENERATION_OPTIONS } from '#src/modules/model-workflows/generation-options.constants.js';
 
 function listOf(values) {
   return {

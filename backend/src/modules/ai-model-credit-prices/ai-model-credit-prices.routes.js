@@ -18,7 +18,7 @@ export function aiModelCreditPricesRoutes(fastify) {
   );
 
   fastify.put(
-    '/:modelId/generation-types/:typeId/prices',
+    '/:modelId/workflows/:typeId/prices',
     {
       schema: {
         params: uuidParamsSchema('modelId', 'typeId'),

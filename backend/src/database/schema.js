@@ -4,7 +4,7 @@ export * from '#src/modules/auth-tokens/auth-token.table.js';
 export * from '#src/modules/ai-providers/ai-provider.table.js';
 export * from '#src/modules/ai-models/ai-model.table.js';
 export * from '#src/modules/generation-types/generation-type.table.js';
-export * from '#src/modules/ai-model-generation-types/ai-model-generation-type.table.js';
+export * from '#src/modules/model-workflows/model-workflow.table.js';
 export * from '#src/modules/ai-model-credit-prices/ai-model-credit-price.table.js';
 export * from '#src/modules/credit-wallets/credit-wallet.table.js';
 export * from '#src/modules/credit-transactions/credit-transaction.table.js';

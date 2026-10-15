@@ -3,12 +3,12 @@ import {
   GENERATION_TYPE_INACTIVE_MESSAGE,
   OPTIONS_REQUIRED_TO_ENABLE_MESSAGE,
   OPTIONS_SENT_TOGETHER_MESSAGE,
-} from '#src/modules/ai-model-generation-types/ai-model-generation-type.constants.js';
+} from '#src/modules/model-workflows/model-workflow.constants.js';
 import { AI_MODEL_NOT_FOUND_MESSAGE } from '#src/modules/ai-models/ai-model.constants.js';
 import { GENERATION_TYPE_NOT_FOUND_MESSAGE } from '#src/modules/generation-types/generation-type.constants.js';
 import { findAiModelByIdRepository } from '#src/modules/ai-models/shared/repositories/index.js';
 import { findGenerationTypeByIdRepository } from '#src/modules/generation-types/shared/repositories/index.js';
-import { saveModelGenerationTypeRepository } from '#src/modules/ai-model-generation-types/shared/repositories/index.js';
+import { saveModelWorkflowRepository } from '#src/modules/model-workflows/shared/repositories/index.js';
 import { deleteWorkflowCreditPricesExceptRepository } from '#src/modules/ai-model-credit-prices/shared/repositories/index.js';
 
 function findDefaultOutsideEnabledOptions({ enabledOptions, defaultOptions }) {
@@ -72,7 +72,7 @@ export async function saveModelWorkflowService({ db, modelId, typeId, data }) {
   }
 
   return db.transaction(async (tx) => {
-    const workflow = await saveModelGenerationTypeRepository({
+    const workflow = await saveModelWorkflowRepository({
       db: tx,
       data: {
         modelId,
@@ -85,7 +85,7 @@ export async function saveModelWorkflowService({ db, modelId, typeId, data }) {
 
     await deleteWorkflowCreditPricesExceptRepository({
       db: tx,
-      modelGenerationTypeId: workflow.id,
+      modelWorkflowId: workflow.id,
       qualitiesToKeep: enabledOptions?.qualities ?? [],
     });
 

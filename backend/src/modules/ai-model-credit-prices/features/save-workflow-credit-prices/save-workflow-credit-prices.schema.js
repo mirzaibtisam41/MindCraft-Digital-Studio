@@ -1,4 +1,4 @@
-import { GENERATION_OPTIONS } from '#src/modules/ai-model-generation-types/generation-options.constants.js';
+import { GENERATION_OPTIONS } from '#src/modules/model-workflows/generation-options.constants.js';
 import { CREDITS_PER_IMAGE_MAX } from '#src/modules/ai-model-credit-prices/ai-model-credit-price.constants.js';
 
 const creditsPerImageSchema = {

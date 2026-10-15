@@ -3,12 +3,10 @@ import { aiModelCreditPrices } from '#src/modules/ai-model-credit-prices/ai-mode
 
 export async function deleteWorkflowCreditPricesExceptRepository({
   db,
-  modelGenerationTypeId,
+  modelWorkflowId,
   qualitiesToKeep,
 }) {
-  const conditions = [
-    eq(aiModelCreditPrices.modelGenerationTypeId, modelGenerationTypeId),
-  ];
+  const conditions = [eq(aiModelCreditPrices.modelWorkflowId, modelWorkflowId)];
 
   if (qualitiesToKeep.length > 0) {
     conditions.push(notInArray(aiModelCreditPrices.quality, qualitiesToKeep));

@@ -97,7 +97,7 @@ describe('generation types and model workflows', () => {
   function saveWorkflow(typeId, payload) {
     return send(
       'PUT',
-      `/api/admin/models/${model.id}/generation-types/${typeId}`,
+      `/api/admin/models/${model.id}/workflows/${typeId}`,
       payload,
     );
   }
@@ -204,7 +204,7 @@ describe('generation types and model workflows', () => {
     it('lists every generation type for a model, all off at first', async () => {
       const response = await send(
         'GET',
-        `/api/admin/models/${model.id}/generation-types`,
+        `/api/admin/models/${model.id}/workflows`,
       );
       const workflows = response.body.data.workflows;
 
@@ -223,10 +223,7 @@ describe('generation types and model workflows', () => {
 
     it('saves and enables a workflow with valid options', async () => {
       const response = await saveWorkflow(textToImage.id, VALID_WORKFLOW);
-      const list = await send(
-        'GET',
-        `/api/admin/models/${model.id}/generation-types`,
-      );
+      const list = await send('GET', `/api/admin/models/${model.id}/workflows`);
       const saved = list.body.data.workflows.find(
         (workflow) => workflow.generationType.id === textToImage.id,
       );
@@ -244,7 +241,7 @@ describe('generation types and model workflows', () => {
       });
 
       const rows = await testApp.runSql(
-        'SELECT is_enabled FROM ai_model_generation_types WHERE model_id = $1 AND generation_type_id = $2',
+        'SELECT is_enabled FROM model_workflows WHERE model_id = $1 AND generation_type_id = $2',
         [model.id, textToImage.id],
       );
 
@@ -335,13 +332,13 @@ describe('generation types and model workflows', () => {
     it('returns 404 for an unknown model or generation type', async () => {
       const unknownModel = await send(
         'PUT',
-        `/api/admin/models/${UNKNOWN_ID}/generation-types/${textToImage.id}`,
+        `/api/admin/models/${UNKNOWN_ID}/workflows/${textToImage.id}`,
         VALID_WORKFLOW,
       );
       const unknownType = await saveWorkflow(UNKNOWN_ID, VALID_WORKFLOW);
       const unknownModelList = await send(
         'GET',
-        `/api/admin/models/${UNKNOWN_ID}/generation-types`,
+        `/api/admin/models/${UNKNOWN_ID}/workflows`,
       );
 
       assert.equal(unknownModel.statusCode, 404);
@@ -375,13 +372,13 @@ describe('generation types and model workflows', () => {
       ),
       send(
         'GET',
-        `/api/admin/models/${model.id}/generation-types`,
+        `/api/admin/models/${model.id}/workflows`,
         undefined,
         user.accessToken,
       ),
       send(
         'PUT',
-        `/api/admin/models/${model.id}/generation-types/${textToImage.id}`,
+        `/api/admin/models/${model.id}/workflows/${textToImage.id}`,
         VALID_WORKFLOW,
         user.accessToken,
       ),

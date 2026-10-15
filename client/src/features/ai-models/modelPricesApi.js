@@ -9,7 +9,7 @@ export const modelPricesApi = baseApi.injectEndpoints({
     }),
     saveWorkflowPrices: builder.mutation({
       query: ({ modelId, typeId, prices }) => ({
-        url: `/api/admin/models/${modelId}/generation-types/${typeId}/prices`,
+        url: `/api/admin/models/${modelId}/workflows/${typeId}/prices`,
         method: 'PUT',
         body: { prices },
       }),

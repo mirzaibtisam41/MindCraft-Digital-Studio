@@ -2,17 +2,17 @@ import { aiModelCreditPrices } from '#src/modules/ai-model-credit-prices/ai-mode
 
 export async function saveWorkflowCreditPriceRepository({
   db,
-  modelGenerationTypeId,
+  modelWorkflowId,
   quality,
   creditsPerImage,
   updatedBy,
 }) {
   await db
     .insert(aiModelCreditPrices)
-    .values({ modelGenerationTypeId, quality, creditsPerImage, updatedBy })
+    .values({ modelWorkflowId, quality, creditsPerImage, updatedBy })
     .onConflictDoUpdate({
       target: [
-        aiModelCreditPrices.modelGenerationTypeId,
+        aiModelCreditPrices.modelWorkflowId,
         aiModelCreditPrices.quality,
       ],
       set: { creditsPerImage, updatedBy, updatedAt: new Date() },

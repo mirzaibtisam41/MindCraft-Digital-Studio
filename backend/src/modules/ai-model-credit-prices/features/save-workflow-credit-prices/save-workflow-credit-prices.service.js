@@ -3,7 +3,7 @@ import {
   QUALITY_NOT_ENABLED_MESSAGE,
   WORKFLOW_NOT_SAVED_MESSAGE,
 } from '#src/modules/ai-model-credit-prices/ai-model-credit-price.constants.js';
-import { findModelGenerationTypeRepository } from '#src/modules/ai-model-generation-types/shared/repositories/index.js';
+import { findModelWorkflowRepository } from '#src/modules/model-workflows/shared/repositories/index.js';
 import {
   deleteWorkflowCreditPricesExceptRepository,
   saveWorkflowCreditPriceRepository,
@@ -16,7 +16,7 @@ export async function saveWorkflowCreditPricesService({
   prices,
   adminId,
 }) {
-  const workflow = await findModelGenerationTypeRepository({
+  const workflow = await findModelWorkflowRepository({
     db,
     modelId,
     generationTypeId: typeId,
@@ -41,14 +41,14 @@ export async function saveWorkflowCreditPricesService({
   await db.transaction(async (tx) => {
     await deleteWorkflowCreditPricesExceptRepository({
       db: tx,
-      modelGenerationTypeId: workflow.id,
+      modelWorkflowId: workflow.id,
       qualitiesToKeep: qualities,
     });
 
     for (const quality of qualities) {
       await saveWorkflowCreditPriceRepository({
         db: tx,
-        modelGenerationTypeId: workflow.id,
+        modelWorkflowId: workflow.id,
         quality,
         creditsPerImage: prices[quality],
         updatedBy: adminId,

@@ -7,18 +7,18 @@ import { listModelWorkflowsController } from './features/list-model-workflows/li
 import { saveModelWorkflowController } from './features/save-model-workflow/save-model-workflow.controller.js';
 import { saveModelWorkflowBodySchema } from './features/save-model-workflow/save-model-workflow.schema.js';
 
-export function aiModelGenerationTypesRoutes(fastify) {
+export function modelWorkflowsRoutes(fastify) {
   fastify.addHook('onRequest', checkUserIsLoggedInHook);
   fastify.addHook('onRequest', checkUserIsAdminHook);
 
   fastify.get(
-    '/:modelId/generation-types',
+    '/:modelId/workflows',
     { schema: { params: uuidParamsSchema('modelId') } },
     listModelWorkflowsController,
   );
 
   fastify.put(
-    '/:modelId/generation-types/:typeId',
+    '/:modelId/workflows/:typeId',
     {
       schema: {
         params: uuidParamsSchema('modelId', 'typeId'),

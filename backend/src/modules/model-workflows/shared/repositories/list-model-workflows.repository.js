@@ -1,8 +1,8 @@
 import { and, asc, eq } from 'drizzle-orm';
-import { aiModelGenerationTypes } from '#src/modules/ai-model-generation-types/ai-model-generation-type.table.js';
+import { modelWorkflows } from '#src/modules/model-workflows/model-workflow.table.js';
 import { generationTypes } from '#src/modules/generation-types/generation-type.table.js';
 
-export async function listModelGenerationTypesRepository({ db, modelId }) {
+export async function listModelWorkflowsRepository({ db, modelId }) {
   const rows = await db
     .select({
       generationType: {
@@ -12,17 +12,17 @@ export async function listModelGenerationTypesRepository({ db, modelId }) {
         description: generationTypes.description,
         isActive: generationTypes.isActive,
       },
-      isEnabled: aiModelGenerationTypes.isEnabled,
-      enabledOptions: aiModelGenerationTypes.enabledOptions,
-      defaultOptions: aiModelGenerationTypes.defaultOptions,
-      updatedAt: aiModelGenerationTypes.updatedAt,
+      isEnabled: modelWorkflows.isEnabled,
+      enabledOptions: modelWorkflows.enabledOptions,
+      defaultOptions: modelWorkflows.defaultOptions,
+      updatedAt: modelWorkflows.updatedAt,
     })
     .from(generationTypes)
     .leftJoin(
-      aiModelGenerationTypes,
+      modelWorkflows,
       and(
-        eq(aiModelGenerationTypes.generationTypeId, generationTypes.id),
-        eq(aiModelGenerationTypes.modelId, modelId),
+        eq(modelWorkflows.generationTypeId, generationTypes.id),
+        eq(modelWorkflows.modelId, modelId),
       ),
     )
     .orderBy(asc(generationTypes.name));

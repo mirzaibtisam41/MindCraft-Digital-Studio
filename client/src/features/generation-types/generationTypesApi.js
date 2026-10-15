@@ -42,13 +42,13 @@ export const generationTypesApi = baseApi.injectEndpoints({
       invalidatesTags: ['GenerationTypes', 'ModelWorkflows'],
     }),
     getModelWorkflows: builder.query({
-      query: (modelId) => `/api/admin/models/${modelId}/generation-types`,
+      query: (modelId) => `/api/admin/models/${modelId}/workflows`,
       transformResponse: (response) => response.data,
       providesTags: ['ModelWorkflows'],
     }),
     saveModelWorkflow: builder.mutation({
       query: ({ modelId, typeId, ...body }) => ({
-        url: `/api/admin/models/${modelId}/generation-types/${typeId}`,
+        url: `/api/admin/models/${modelId}/workflows/${typeId}`,
         method: 'PUT',
         body,
       }),

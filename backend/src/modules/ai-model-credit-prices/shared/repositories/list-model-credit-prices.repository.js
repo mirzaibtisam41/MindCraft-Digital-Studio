@@ -1,20 +1,20 @@
 import { eq } from 'drizzle-orm';
 import { aiModelCreditPrices } from '#src/modules/ai-model-credit-prices/ai-model-credit-price.table.js';
-import { aiModelGenerationTypes } from '#src/modules/ai-model-generation-types/ai-model-generation-type.table.js';
+import { modelWorkflows } from '#src/modules/model-workflows/model-workflow.table.js';
 
 export function listModelCreditPricesRepository({ db, modelId }) {
   return db
     .select({
-      modelGenerationTypeId: aiModelCreditPrices.modelGenerationTypeId,
-      generationTypeId: aiModelGenerationTypes.generationTypeId,
+      modelWorkflowId: aiModelCreditPrices.modelWorkflowId,
+      generationTypeId: modelWorkflows.generationTypeId,
       quality: aiModelCreditPrices.quality,
       creditsPerImage: aiModelCreditPrices.creditsPerImage,
       updatedAt: aiModelCreditPrices.updatedAt,
     })
     .from(aiModelCreditPrices)
     .innerJoin(
-      aiModelGenerationTypes,
-      eq(aiModelGenerationTypes.id, aiModelCreditPrices.modelGenerationTypeId),
+      modelWorkflows,
+      eq(modelWorkflows.id, aiModelCreditPrices.modelWorkflowId),
     )
-    .where(eq(aiModelGenerationTypes.modelId, modelId));
+    .where(eq(modelWorkflows.modelId, modelId));
 }
