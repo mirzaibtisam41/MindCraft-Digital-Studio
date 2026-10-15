@@ -15,7 +15,7 @@ const LOG_LEVELS = [
 
 const COOKIE_SAME_SITES = ['lax', 'strict', 'none'];
 
-export const envSchemaConfig = {
+const envSchemaConfig = {
   type: 'object',
   required: ['NODE_ENV', 'PORT', 'DATABASE_URL', 'JWT_ACCESS_SECRET'],
   properties: {

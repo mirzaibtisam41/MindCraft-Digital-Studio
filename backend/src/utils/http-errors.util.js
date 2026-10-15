@@ -37,9 +37,3 @@ export const TooManyRequestsError = createError(
   '%s',
   StatusCodes.TOO_MANY_REQUESTS,
 );
-
-export const ServiceUnavailableError = createError(
-  ERROR_CODE.SERVICE_UNAVAILABLE,
-  '%s',
-  StatusCodes.SERVICE_UNAVAILABLE,
-);
