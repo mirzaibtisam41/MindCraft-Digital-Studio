@@ -1,1 +1,1 @@
-export * from '#src/integrations/r2-storage.integration.js';
+export * from '#src/integrations/r2/index.js';

@@ -37,7 +37,8 @@ backend/
     ├── handlers/            request handlers Fastify calls: error, not-found (*.handler.js → errorHandler, notFoundHandler)
     ├── hooks/               *.hook.js (auth check, ownership/access checks, rate limits)
     ├── integrations/        third-party services the app talks to (no routes, no tables): <service>.integration.js,
-    │                        e.g. openai.integration.js, r2-storage.integration.js, resend-mail.integration.js,
+    │                        e.g. openai.integration.js, resend-mail.integration.js, r2/ (build-r2-client, upload-r2-file,
+    │                        delete-r2-file, create-r2-signed-url .integration.js; one file per action),
     │                        upstash-redis.integration.js; a <service>/ folder only at 3+ files; index.js re-exports
     ├── plugins/             *.plugin.js wrapped with fastify-plugin (reply-success.plugin.js adds reply.success); index.js re-exports
     ├── shared/schemas/      request schemas used by several modules, e.g. uuid-params.schema.js →
