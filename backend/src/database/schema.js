@@ -9,3 +9,4 @@ export * from '#src/modules/ai-model-credit-prices/ai-model-credit-price.table.j
 export * from '#src/modules/credit-wallets/credit-wallet.table.js';
 export * from '#src/modules/credit-transactions/credit-transaction.table.js';
 export * from '#src/modules/platform-settings/platform-setting.table.js';
+export * from '#src/modules/images/image.table.js';

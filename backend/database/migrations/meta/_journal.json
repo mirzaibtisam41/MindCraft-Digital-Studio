@@ -43,6 +43,13 @@
       "when": 1792062375869,
       "tag": "0005_rename_to_model_workflows",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792068448043,
+      "tag": "0006_create_images",
+      "breakpoints": true
     }
   ]
 }
