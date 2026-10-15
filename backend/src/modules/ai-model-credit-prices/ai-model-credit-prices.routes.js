@@ -2,13 +2,10 @@ import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
+import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { listModelCreditPricesController } from './features/list-model-credit-prices/list-model-credit-prices.controller.js';
-import { listModelCreditPricesParamsSchema } from './features/list-model-credit-prices/list-model-credit-prices.schema.js';
 import { saveWorkflowCreditPricesController } from './features/save-workflow-credit-prices/save-workflow-credit-prices.controller.js';
-import {
-  saveWorkflowCreditPricesBodySchema,
-  saveWorkflowCreditPricesParamsSchema,
-} from './features/save-workflow-credit-prices/save-workflow-credit-prices.schema.js';
+import { saveWorkflowCreditPricesBodySchema } from './features/save-workflow-credit-prices/save-workflow-credit-prices.schema.js';
 
 export function aiModelCreditPricesRoutes(fastify) {
   fastify.addHook('onRequest', checkUserIsLoggedInHook);
@@ -16,7 +13,7 @@ export function aiModelCreditPricesRoutes(fastify) {
 
   fastify.get(
     '/:modelId/prices',
-    { schema: { params: listModelCreditPricesParamsSchema } },
+    { schema: { params: uuidParamsSchema('modelId') } },
     listModelCreditPricesController,
   );
 
@@ -24,7 +21,7 @@ export function aiModelCreditPricesRoutes(fastify) {
     '/:modelId/generation-types/:typeId/prices',
     {
       schema: {
-        params: saveWorkflowCreditPricesParamsSchema,
+        params: uuidParamsSchema('modelId', 'typeId'),
         body: saveWorkflowCreditPricesBodySchema,
       },
     },

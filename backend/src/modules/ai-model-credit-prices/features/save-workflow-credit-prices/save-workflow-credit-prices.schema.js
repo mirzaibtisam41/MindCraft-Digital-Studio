@@ -7,16 +7,6 @@ const creditsPerImageSchema = {
   maximum: CREDITS_PER_IMAGE_MAX,
 };
 
-export const saveWorkflowCreditPricesParamsSchema = {
-  type: 'object',
-  required: ['modelId', 'typeId'],
-  properties: {
-    modelId: { type: 'string', format: 'uuid' },
-    typeId: { type: 'string', format: 'uuid' },
-  },
-  additionalProperties: false,
-};
-
 export const saveWorkflowCreditPricesBodySchema = {
   type: 'object',
   required: ['prices'],

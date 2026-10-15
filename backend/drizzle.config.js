@@ -1,4 +1,4 @@
-import './src/bootstrap/index.js';
+import './src/bootstrap/load-env.bootstrap.js';
 import { defineConfig } from 'drizzle-kit';
 import { buildAppConfig } from './src/config/index.js';
 

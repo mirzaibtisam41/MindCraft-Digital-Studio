@@ -2,7 +2,7 @@ import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
-import { aiModelIdParamsSchema } from './ai-model-id-params.schema.js';
+import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { createAiModelController } from './features/create-ai-model/create-ai-model.controller.js';
 import { createAiModelBodySchema } from './features/create-ai-model/create-ai-model.schema.js';
 import { getAiModelController } from './features/get-ai-model/get-ai-model.controller.js';
@@ -31,14 +31,14 @@ export function aiModelsRoutes(fastify) {
 
   fastify.get(
     '/:id',
-    { schema: { params: aiModelIdParamsSchema } },
+    { schema: { params: uuidParamsSchema('id') } },
     getAiModelController,
   );
 
   fastify.patch(
     '/:id',
     {
-      schema: { params: aiModelIdParamsSchema, body: updateAiModelBodySchema },
+      schema: { params: uuidParamsSchema('id'), body: updateAiModelBodySchema },
     },
     updateAiModelController,
   );
@@ -47,7 +47,7 @@ export function aiModelsRoutes(fastify) {
     '/:id/status',
     {
       schema: {
-        params: aiModelIdParamsSchema,
+        params: uuidParamsSchema('id'),
         body: updateAiModelStatusBodySchema,
       },
     },

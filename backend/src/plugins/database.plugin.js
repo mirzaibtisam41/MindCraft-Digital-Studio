@@ -1,14 +1,14 @@
 import fp from 'fastify-plugin';
 import fastifyPostgres from '@fastify/postgres';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { buildDatabaseConfig } from '#src/config/index.js';
 import * as schema from '#src/database/schema.js';
 
 async function registerDatabase(fastify) {
-  await fastify.register(
-    fastifyPostgres,
-    buildDatabaseConfig({ appConfig: fastify.config }),
-  );
+  await fastify.register(fastifyPostgres, {
+    connectionString: fastify.config.DATABASE_URL,
+    max: fastify.config.DATABASE_POOL_MAX,
+    connectionTimeoutMillis: fastify.config.DATABASE_CONNECTION_TIMEOUT_MS,
+  });
 
   fastify.pg.pool.on('error', (error) => {
     fastify.log.error(error, 'Database pool error');

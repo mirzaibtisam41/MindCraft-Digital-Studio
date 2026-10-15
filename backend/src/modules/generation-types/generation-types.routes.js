@@ -2,7 +2,7 @@ import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
-import { generationTypeIdParamsSchema } from './generation-type-id-params.schema.js';
+import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { createGenerationTypeController } from './features/create-generation-type/create-generation-type.controller.js';
 import { createGenerationTypeBodySchema } from './features/create-generation-type/create-generation-type.schema.js';
 import { deleteGenerationTypeController } from './features/delete-generation-type/delete-generation-type.controller.js';
@@ -28,7 +28,7 @@ export function generationTypesRoutes(fastify) {
     '/:id',
     {
       schema: {
-        params: generationTypeIdParamsSchema,
+        params: uuidParamsSchema('id'),
         body: updateGenerationTypeBodySchema,
       },
     },
@@ -39,7 +39,7 @@ export function generationTypesRoutes(fastify) {
     '/:id/status',
     {
       schema: {
-        params: generationTypeIdParamsSchema,
+        params: uuidParamsSchema('id'),
         body: updateGenerationTypeStatusBodySchema,
       },
     },
@@ -48,7 +48,7 @@ export function generationTypesRoutes(fastify) {
 
   fastify.delete(
     '/:id',
-    { schema: { params: generationTypeIdParamsSchema } },
+    { schema: { params: uuidParamsSchema('id') } },
     deleteGenerationTypeController,
   );
 }

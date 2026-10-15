@@ -1,3 +1,4 @@
+import envSchema from 'env-schema';
 import {
   COOKIE_SAME_SITE,
   COOKIE_SAME_SITES,
@@ -42,3 +43,7 @@ export const envSchemaConfig = {
     },
   },
 };
+
+export function buildAppConfig() {
+  return envSchema({ schema: envSchemaConfig });
+}

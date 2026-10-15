@@ -1,12 +1,12 @@
 import fp from 'fastify-plugin';
 import fastifyCors from '@fastify/cors';
-import { buildCorsConfig } from '#src/config/index.js';
 
 async function registerCors(fastify) {
-  await fastify.register(
-    fastifyCors,
-    buildCorsConfig({ appConfig: fastify.config }),
-  );
+  await fastify.register(fastifyCors, {
+    origin: fastify.config.CORS_ORIGIN.split(','),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  });
 }
 
 export const corsPlugin = fp(registerCors);

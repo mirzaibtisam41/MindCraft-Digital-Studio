@@ -2,10 +2,8 @@ import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
-import {
-  userIdParamsSchema,
-  walletTransactionsQuerySchema,
-} from './credit-wallet-request.schema.js';
+import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
+import { walletTransactionsQuerySchema } from './credit-wallet-request.schema.js';
 import { adjustUserCreditsController } from './features/adjust-user-credits/adjust-user-credits.controller.js';
 import { adjustUserCreditsBodySchema } from './features/adjust-user-credits/adjust-user-credits.schema.js';
 import { getMyWalletController } from './features/get-my-wallet/get-my-wallet.controller.js';
@@ -29,7 +27,7 @@ export function adminUserWalletRoutes(fastify) {
     '/:userId/wallet',
     {
       schema: {
-        params: userIdParamsSchema,
+        params: uuidParamsSchema('userId'),
         querystring: walletTransactionsQuerySchema,
       },
     },
@@ -39,7 +37,10 @@ export function adminUserWalletRoutes(fastify) {
   fastify.post(
     '/:userId/credit-adjustments',
     {
-      schema: { params: userIdParamsSchema, body: adjustUserCreditsBodySchema },
+      schema: {
+        params: uuidParamsSchema('userId'),
+        body: adjustUserCreditsBodySchema,
+      },
     },
     adjustUserCreditsController,
   );

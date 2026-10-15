@@ -16,12 +16,3 @@ export const walletTransactionsQuerySchema = {
   },
   additionalProperties: false,
 };
-
-export const userIdParamsSchema = {
-  type: 'object',
-  required: ['userId'],
-  properties: {
-    userId: { type: 'string', format: 'uuid' },
-  },
-  additionalProperties: false,
-};

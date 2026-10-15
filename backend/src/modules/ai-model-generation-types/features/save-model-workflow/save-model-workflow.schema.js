@@ -9,16 +9,6 @@ function listOf(values) {
   };
 }
 
-export const saveModelWorkflowParamsSchema = {
-  type: 'object',
-  required: ['modelId', 'typeId'],
-  properties: {
-    modelId: { type: 'string', format: 'uuid' },
-    typeId: { type: 'string', format: 'uuid' },
-  },
-  additionalProperties: false,
-};
-
 export const saveModelWorkflowBodySchema = {
   type: 'object',
   required: ['isEnabled'],

@@ -1,4 +1,5 @@
 import { checkUserIsLoggedInHook } from '#src/hooks/index.js';
+import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { getMeController } from './features/get-me/get-me.controller.js';
 import { listSessionsController } from './features/list-sessions/list-sessions.controller.js';
 import { loginController } from './features/login/login.controller.js';
@@ -9,7 +10,6 @@ import { refreshSessionController } from './features/refresh-session/refresh-ses
 import { registerController } from './features/register/register.controller.js';
 import { registerBodySchema } from './features/register/register.schema.js';
 import { revokeSessionController } from './features/revoke-session/revoke-session.controller.js';
-import { revokeSessionParamsSchema } from './features/revoke-session/revoke-session.schema.js';
 
 export function authRoutes(fastify) {
   fastify.post(
@@ -50,7 +50,7 @@ export function authRoutes(fastify) {
     '/sessions/:familyId',
     {
       onRequest: [checkUserIsLoggedInHook],
-      schema: { params: revokeSessionParamsSchema },
+      schema: { params: uuidParamsSchema('familyId') },
     },
     revokeSessionController,
   );

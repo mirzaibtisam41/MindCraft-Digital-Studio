@@ -1,4 +1,4 @@
-import '../src/bootstrap/index.js';
+import '../src/bootstrap/load-env.bootstrap.js';
 import pg from 'pg';
 import { eq, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';

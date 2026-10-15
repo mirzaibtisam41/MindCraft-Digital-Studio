@@ -1,5 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import Fastify from 'fastify';
-import { buildAppConfig, buildFastifyConfig } from './src/config/index.js';
+import { buildAppConfig, buildPinoConfig } from '#src/config/index.js';
 import {
   configPlugin,
   cookiePlugin,
@@ -10,12 +11,15 @@ import {
   jwtPlugin,
   rateLimitPlugin,
   replySuccessPlugin,
-} from './src/plugins/index.js';
-import { registerRoutes } from './src/modules/index.js';
+} from '#src/plugins/index.js';
+import { registerRoutes } from '#src/modules/index.js';
 
 export function buildApp() {
   const appConfig = buildAppConfig();
-  const fastify = Fastify(buildFastifyConfig({ appConfig }));
+  const fastify = Fastify({
+    logger: buildPinoConfig({ appConfig }),
+    genReqId: () => randomUUID(),
+  });
 
   fastify.register(configPlugin, { appConfig });
   fastify.register(databasePlugin);

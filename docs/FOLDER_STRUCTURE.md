@@ -18,8 +18,7 @@ Mindcraft Digital Studio/
 ## backend/
 ```
 backend/
-├── index.js                 entry: imports bootstrap, buildApp(), listen, shutdown signals
-├── app.js                   export function buildApp(): creates Fastify, registers plugins, then registerRoutes
+├── index.js                 entry: only calls startServer() from src/bootstrap
 ├── drizzle.config.js
 ├── eslint.config.js
 ├── package.json             "type": "module", "imports": { "#src/*": "./src/*" }
@@ -27,16 +26,19 @@ backend/
 ├── bruno/<module>/          API request collections (Bruno) per module + environments/
 ├── test/<module>/*.test.js  node:test; test/helpers/ (test-app.js, test-env.js)
 └── src/
-    ├── bootstrap/           index.js + load-dotenv.bootstrap.js (runs first)
-    ├── config/              *.config.js builders like buildCorsConfig({ appConfig }); index.js re-exports
-    │                        (env-schema, pino, fastify, listen, cors, jwt, database, rate-limit…)
+    ├── bootstrap/           how the app starts, in order: load-env.bootstrap.js (loads .env, runs first),
+    │                        build-app.bootstrap.js (buildApp(): Fastify + plugins in order + routes, used by tests),
+    │                        start-server.bootstrap.js (startServer(): ready, listen, shutdown signals), index.js
+    ├── config/              only settings that are big or used in several places: env.config.js (env schema +
+    │                        buildAppConfig), pino.config.js, refresh-cookie.config.js; index.js re-exports
     ├── constants/           *.constants.js; index.js re-exports
     ├── database/schema.js   re-exports every modules/<m>/<m>.table.js (for Drizzle)
     ├── decorators/          reply.success(...) decorator
     ├── handlers/            error, not-found, graceful-shutdown (*.handler.js → errorHandler, notFoundHandler...)
     ├── hooks/               *.hook.js (auth check, ownership/access checks, rate limits)
     ├── plugins/             *.plugin.js wrapped with fastify-plugin; index.js re-exports
-    ├── shared/schemas/      fields/, params/, query/ reusable request schemas
+    ├── shared/schemas/      request schemas used by several modules, e.g. uuid-params.schema.js →
+    │                        uuidParamsSchema('id') / uuidParamsSchema('modelId', 'typeId') for every :id route
     ├── utils/               *.util.js (errors, reply, password, pagination...); index.js re-exports
     │                        (all of the above: add an <area>/ sub-folder only at 3+ files for one area)
     └── modules/
@@ -120,4 +122,6 @@ client/
 | Toasts | own `context/ToastContext.js` + `ToastRegion` | **sonner** via shadcn's `components/ui/sonner.jsx` (bottom-right, 3 visible, 6 s, pauses on hover as DESIGN.md asks); no `context/` folder needed yet |
 | Sign-out redirect | `AuthGuard` always adds `?next=` when the session ends, so a deliberate sign-out from a deep page sends the next login back there | `sessionEnded({ reason })`: a deliberate sign-out goes to plain `/login`; only an expired session keeps `?next=` |
 | AI | Gemini SDK directly | LangChain.js + image provider adapter (still under `modules/ai/providers/`) |
+| Startup | `index.js` loads env, root `app.js` builds the app, `index.js` listens | **everything about starting the app lives in `src/bootstrap/`**: `load-env`, `build-app` (`buildApp`), `start-server` (`startServer`); root `index.js` only calls `startServer()`. Plugin **settings** stay in `config/`, plugin **registration** in `plugins/`; bootstrap only decides the order (2026-10-15) |
+| Config files | one builder per plugin (`buildCorsConfig`, `buildJwtConfig`…) | **no tiny builders** (2026-10-15): a setting of a few lines that is used in one place is written inline where it is used (cors, jwt, rate limit and database options inside their plugin, listen options in `start-server`, Fastify options in `build-app`). `config/` keeps only big or shared settings |
 | Extra | — | Redis/BullMQ worker, storage service, credits |

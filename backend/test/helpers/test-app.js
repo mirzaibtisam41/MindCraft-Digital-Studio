@@ -1,6 +1,5 @@
-import '#src/bootstrap/index.js';
 import { randomInt, randomUUID } from 'node:crypto';
-import { buildApp } from '../../app.js';
+import { buildApp } from '#src/bootstrap/index.js';
 import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,

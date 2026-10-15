@@ -2,7 +2,7 @@ import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
-import { aiProviderIdParamsSchema } from './ai-provider-id-params.schema.js';
+import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { createAiProviderController } from './features/create-ai-provider/create-ai-provider.controller.js';
 import { createAiProviderBodySchema } from './features/create-ai-provider/create-ai-provider.schema.js';
 import { deleteAiProviderController } from './features/delete-ai-provider/delete-ai-provider.controller.js';
@@ -27,7 +27,7 @@ export function aiProvidersRoutes(fastify) {
 
   fastify.get(
     '/:id',
-    { schema: { params: aiProviderIdParamsSchema } },
+    { schema: { params: uuidParamsSchema('id') } },
     getAiProviderController,
   );
 
@@ -35,7 +35,7 @@ export function aiProvidersRoutes(fastify) {
     '/:id',
     {
       schema: {
-        params: aiProviderIdParamsSchema,
+        params: uuidParamsSchema('id'),
         body: updateAiProviderBodySchema,
       },
     },
@@ -46,7 +46,7 @@ export function aiProvidersRoutes(fastify) {
     '/:id/status',
     {
       schema: {
-        params: aiProviderIdParamsSchema,
+        params: uuidParamsSchema('id'),
         body: updateAiProviderStatusBodySchema,
       },
     },
@@ -55,7 +55,7 @@ export function aiProvidersRoutes(fastify) {
 
   fastify.delete(
     '/:id',
-    { schema: { params: aiProviderIdParamsSchema } },
+    { schema: { params: uuidParamsSchema('id') } },
     deleteAiProviderController,
   );
 }

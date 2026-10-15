@@ -2,13 +2,10 @@ import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
+import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { listModelWorkflowsController } from './features/list-model-workflows/list-model-workflows.controller.js';
-import { listModelWorkflowsParamsSchema } from './features/list-model-workflows/list-model-workflows.schema.js';
 import { saveModelWorkflowController } from './features/save-model-workflow/save-model-workflow.controller.js';
-import {
-  saveModelWorkflowBodySchema,
-  saveModelWorkflowParamsSchema,
-} from './features/save-model-workflow/save-model-workflow.schema.js';
+import { saveModelWorkflowBodySchema } from './features/save-model-workflow/save-model-workflow.schema.js';
 
 export function aiModelGenerationTypesRoutes(fastify) {
   fastify.addHook('onRequest', checkUserIsLoggedInHook);
@@ -16,7 +13,7 @@ export function aiModelGenerationTypesRoutes(fastify) {
 
   fastify.get(
     '/:modelId/generation-types',
-    { schema: { params: listModelWorkflowsParamsSchema } },
+    { schema: { params: uuidParamsSchema('modelId') } },
     listModelWorkflowsController,
   );
 
@@ -24,7 +21,7 @@ export function aiModelGenerationTypesRoutes(fastify) {
     '/:modelId/generation-types/:typeId',
     {
       schema: {
-        params: saveModelWorkflowParamsSchema,
+        params: uuidParamsSchema('modelId', 'typeId'),
         body: saveModelWorkflowBodySchema,
       },
     },
