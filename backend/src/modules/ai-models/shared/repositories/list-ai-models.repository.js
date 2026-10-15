@@ -1,17 +1,14 @@
 import { and, asc, count, eq, ilike, or } from 'drizzle-orm';
+import { escapeLikePatternUtil } from '#src/utils/index.js';
 import { aiModels } from '#src/modules/ai-models/ai-model.table.js';
 import { aiProviders } from '#src/modules/ai-providers/ai-provider.table.js';
 import { AI_MODEL_WITH_PROVIDER_COLUMNS } from '#src/modules/ai-models/ai-model-columns.constants.js';
-
-function escapeLikePattern(text) {
-  return text.replace(/[\\%_]/g, (character) => `\\${character}`);
-}
 
 function buildFilters({ search, providerId, status }) {
   const conditions = [];
 
   if (search) {
-    const pattern = `%${escapeLikePattern(search)}%`;
+    const pattern = `%${escapeLikePatternUtil({ text: search })}%`;
 
     conditions.push(
       or(

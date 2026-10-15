@@ -4,3 +4,4 @@ export * from '#src/modules/auth-sessions/shared/repositories/mark-auth-session-
 export * from '#src/modules/auth-sessions/shared/repositories/revoke-auth-session-family.repository.js';
 export * from '#src/modules/auth-sessions/shared/repositories/list-active-auth-sessions.repository.js';
 export * from '#src/modules/auth-sessions/shared/repositories/revoke-other-auth-session-families.repository.js';
+export * from '#src/modules/auth-sessions/shared/repositories/revoke-all-user-auth-sessions.repository.js';

@@ -2,3 +2,4 @@ export * from '#src/utils/http-errors.util.js';
 export * from '#src/utils/password.util.js';
 export * from '#src/utils/token.util.js';
 export * from '#src/utils/postgres-errors.util.js';
+export * from '#src/utils/escape-like-pattern.util.js';
