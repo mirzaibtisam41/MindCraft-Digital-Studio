@@ -1,5 +1,6 @@
 import { randomInt, randomUUID } from 'node:crypto';
 import { buildApp } from '#src/bootstrap/index.js';
+import { REFRESH_COOKIE_NAME } from '#src/config/index.js';
 import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
@@ -14,7 +15,7 @@ function randomIpAddress() {
 function readRefreshCookie(response) {
   const setCookie = [response.headers['set-cookie'] ?? []].flat().join(';');
 
-  return setCookie.match(/mds_refresh=([^;]*)/)?.[1];
+  return setCookie.match(new RegExp(`${REFRESH_COOKIE_NAME}=([^;]*)`))?.[1];
 }
 
 export async function buildTestApp({ env = {} } = {}) {
@@ -50,7 +51,9 @@ export async function buildTestApp({ env = {} } = {}) {
       remoteAddress: randomIpAddress(),
       headers: {
         ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}),
-        ...(refreshToken ? { cookie: `mds_refresh=${refreshToken}` } : {}),
+        ...(refreshToken
+          ? { cookie: `${REFRESH_COOKIE_NAME}=${refreshToken}` }
+          : {}),
       },
     });
 
