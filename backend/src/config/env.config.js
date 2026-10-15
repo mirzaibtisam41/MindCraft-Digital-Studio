@@ -1,14 +1,19 @@
 import envSchema from 'env-schema';
-import {
-  COOKIE_SAME_SITE,
-  COOKIE_SAME_SITES,
-  ENVIRONMENT,
-  ENVIRONMENTS,
-  LOG_LEVEL,
-  LOG_LEVELS,
-} from '#src/constants/index.js';
+import { ENVIRONMENT, ENVIRONMENTS } from '#src/constants/index.js';
 
 const JWT_SECRET_MIN_LENGTH = 32;
+
+const LOG_LEVELS = [
+  'fatal',
+  'error',
+  'warn',
+  'info',
+  'debug',
+  'trace',
+  'silent',
+];
+
+const COOKIE_SAME_SITES = ['lax', 'strict', 'none'];
 
 export const envSchemaConfig = {
   type: 'object',
@@ -19,7 +24,7 @@ export const envSchemaConfig = {
       enum: ENVIRONMENTS,
       default: ENVIRONMENT.DEVELOPMENT,
     },
-    LOG_LEVEL: { type: 'string', enum: LOG_LEVELS, default: LOG_LEVEL.INFO },
+    LOG_LEVEL: { type: 'string', enum: LOG_LEVELS, default: 'info' },
     PORT: { type: 'number', minimum: 1, maximum: 65535, default: 8000 },
     HOST: { type: 'string', default: '0.0.0.0' },
     CORS_ORIGIN: { type: 'string', default: 'http://localhost:3000' },
@@ -39,7 +44,7 @@ export const envSchemaConfig = {
     COOKIE_SAME_SITE: {
       type: 'string',
       enum: COOKIE_SAME_SITES,
-      default: COOKIE_SAME_SITE.LAX,
+      default: 'lax',
     },
   },
 };

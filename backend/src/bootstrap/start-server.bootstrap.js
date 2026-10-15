@@ -1,6 +1,7 @@
-import { SHUTDOWN_SIGNALS } from '#src/constants/index.js';
 import { gracefulShutdownHandler } from '#src/handlers/index.js';
 import { buildApp } from './build-app.bootstrap.js';
+
+const SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'];
 
 export async function startServer() {
   const fastify = buildApp();
