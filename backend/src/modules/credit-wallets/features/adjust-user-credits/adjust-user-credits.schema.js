@@ -1,7 +1,7 @@
 import {
   CREDIT_ADJUSTMENT_MAX,
   CREDIT_ADJUSTMENT_REASON_MAX_LENGTH,
-} from '#src/modules/credit-transactions/credit-transaction.constants.js';
+} from '#src/modules/credit-wallets/credit-wallet.constants.js';
 
 export const adjustUserCreditsBodySchema = {
   type: 'object',

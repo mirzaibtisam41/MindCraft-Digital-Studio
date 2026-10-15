@@ -1,8 +1,6 @@
 import { BadRequestError, NotFoundError } from '#src/utils/index.js';
-import {
-  NOT_ENOUGH_CREDITS_MESSAGE,
-  WALLET_NOT_FOUND_MESSAGE,
-} from '#src/modules/credit-transactions/credit-transaction.constants.js';
+import { NOT_ENOUGH_CREDITS_MESSAGE } from '#src/modules/credit-transactions/credit-transaction.constants.js';
+import { WALLET_NOT_FOUND_MESSAGE } from '#src/modules/credit-wallets/credit-wallet.constants.js';
 import {
   findCreditWalletByUserIdRepository,
   updateCreditWalletBalanceRepository,

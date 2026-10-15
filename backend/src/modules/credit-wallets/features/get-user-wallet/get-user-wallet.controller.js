@@ -1,4 +1,4 @@
-import { getWalletWithTransactionsService } from '#src/modules/credit-transactions/shared/services/index.js';
+import { getWalletWithTransactionsService } from '#src/modules/credit-wallets/shared/services/index.js';
 
 export async function getUserWalletController(request, reply) {
   const { balance, transactions, meta } =
