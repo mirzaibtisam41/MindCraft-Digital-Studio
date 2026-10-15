@@ -17,18 +17,15 @@ async function checkModelCanBeActivated({ db, modelId }) {
   }
 
   const prices = await listModelCreditPricesRepository({ db, modelId });
-  const missingPrices = [];
+  const pricedQualities = new Set(
+    prices.map((price) => `${price.modelWorkflowId}:${price.quality}`),
+  );
 
-  for (const workflow of workflows) {
-    for (const quality of workflow.enabledOptions.qualities) {
-      const hasPrice = prices.some(
-        (price) =>
-          price.modelWorkflowId === workflow.id && price.quality === quality,
-      );
-
-      if (!hasPrice) missingPrices.push(`${workflow.name} (${quality})`);
-    }
-  }
+  const missingPrices = workflows.flatMap((workflow) =>
+    workflow.enabledOptions.qualities
+      .filter((quality) => !pricedQualities.has(`${workflow.id}:${quality}`))
+      .map((quality) => `${workflow.name} (${quality})`),
+  );
 
   if (missingPrices.length > 0) {
     throw new BadRequestError(
