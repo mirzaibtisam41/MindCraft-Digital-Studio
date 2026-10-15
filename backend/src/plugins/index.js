@@ -7,10 +7,12 @@ import { helmetPlugin } from '#src/plugins/helmet.plugin.js';
 import { jwtPlugin } from '#src/plugins/jwt.plugin.js';
 import { rateLimitPlugin } from '#src/plugins/rate-limit.plugin.js';
 import { replySuccessPlugin } from '#src/plugins/reply-success.plugin.js';
+import { storagePlugin } from '#src/plugins/storage.plugin.js';
 
-export function registerPlugins({ fastify, appConfig }) {
+export function registerPlugins({ fastify, appConfig, storage }) {
   fastify.register(configPlugin, { appConfig });
   fastify.register(databasePlugin);
+  fastify.register(storagePlugin, { storage });
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);

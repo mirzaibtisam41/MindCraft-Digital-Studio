@@ -3,7 +3,16 @@ import { ENVIRONMENT, ENVIRONMENTS } from '#src/constants/index.js';
 
 const envSchemaConfig = {
   type: 'object',
-  required: ['NODE_ENV', 'PORT', 'DATABASE_URL', 'JWT_ACCESS_SECRET'],
+  required: [
+    'NODE_ENV',
+    'PORT',
+    'DATABASE_URL',
+    'JWT_ACCESS_SECRET',
+    'STORAGE_R2_ACCOUNT_ID',
+    'STORAGE_R2_ACCESS_KEY_ID',
+    'STORAGE_R2_SECRET_ACCESS_KEY',
+    'STORAGE_R2_BUCKET',
+  ],
   properties: {
     NODE_ENV: {
       type: 'string',
@@ -19,6 +28,10 @@ const envSchemaConfig = {
     CORS_ORIGIN: { type: 'string', default: 'http://localhost:3000' },
     DATABASE_URL: { type: 'string', minLength: 1 },
     JWT_ACCESS_SECRET: { type: 'string', minLength: 32 },
+    STORAGE_R2_ACCOUNT_ID: { type: 'string', minLength: 1 },
+    STORAGE_R2_ACCESS_KEY_ID: { type: 'string', minLength: 1 },
+    STORAGE_R2_SECRET_ACCESS_KEY: { type: 'string', minLength: 1 },
+    STORAGE_R2_BUCKET: { type: 'string', minLength: 1 },
     COOKIE_SAME_SITE: {
       type: 'string',
       enum: ['lax', 'strict', 'none'],

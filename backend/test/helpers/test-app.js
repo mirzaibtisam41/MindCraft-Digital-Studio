@@ -5,6 +5,7 @@ import {
   checkUserIsAdminHook,
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
+import { createMemoryStorage } from './memory-storage.js';
 
 export const TEST_PASSWORD = 'secret123';
 
@@ -23,7 +24,8 @@ export async function buildTestApp({ env = {} } = {}) {
   process.env.LOG_LEVEL = 'silent';
   Object.assign(process.env, env);
 
-  const app = buildApp();
+  const storage = createMemoryStorage();
+  const app = buildApp({ storage });
   const createdEmails = [];
 
   app.register(
@@ -129,6 +131,7 @@ export async function buildTestApp({ env = {} } = {}) {
 
   return {
     app,
+    storage,
     sendRequest,
     makeEmail,
     registerUser,
