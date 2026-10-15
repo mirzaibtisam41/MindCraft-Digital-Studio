@@ -101,6 +101,7 @@ export const baseApi = createApi({
     'ModelPrices',
     'PlatformSettings',
     'Wallet',
+    'Users',
   ],
   endpoints: () => ({}),
 });

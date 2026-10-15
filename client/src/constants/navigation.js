@@ -14,6 +14,7 @@ import {
   SlidersHorizontal,
   Workflow,
   ShieldCheck,
+  Users,
   Wand2,
 } from 'lucide-react';
 
@@ -72,6 +73,7 @@ const ADMIN_GROUP = {
       ready: true,
       exact: true,
     },
+    { label: 'Users', href: '/admin/users', icon: Users, ready: true },
     {
       label: 'AI Providers',
       href: '/admin/providers',
