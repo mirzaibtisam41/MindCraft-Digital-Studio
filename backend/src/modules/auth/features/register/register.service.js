@@ -8,7 +8,7 @@ import {
   findUserByEmailRepository,
 } from '#src/modules/users/shared/repositories/index.js';
 import { createCreditWalletRepository } from '#src/modules/credit-wallets/shared/repositories/index.js';
-import { applyCreditChangeService } from '#src/modules/credit-transactions/shared/services/index.js';
+import { applyCreditChangeService } from '#src/modules/credit-wallets/shared/services/index.js';
 import { CREDIT_TRANSACTION_TYPE } from '#src/modules/credit-transactions/credit-transaction.constants.js';
 import { PLATFORM_SETTING_KEY } from '#src/modules/platform-settings/platform-setting.constants.js';
 import { findPlatformSettingRepository } from '#src/modules/platform-settings/shared/repositories/index.js';

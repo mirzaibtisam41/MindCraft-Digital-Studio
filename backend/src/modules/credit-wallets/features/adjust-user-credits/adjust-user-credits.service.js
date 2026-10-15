@@ -1,5 +1,5 @@
 import { CREDIT_TRANSACTION_TYPE } from '#src/modules/credit-transactions/credit-transaction.constants.js';
-import { applyCreditChangeService } from '#src/modules/credit-transactions/shared/services/index.js';
+import { applyCreditChangeService } from '#src/modules/credit-wallets/shared/services/index.js';
 
 export function adjustUserCreditsService({ db, userId, data, adminId }) {
   return db.transaction((tx) =>

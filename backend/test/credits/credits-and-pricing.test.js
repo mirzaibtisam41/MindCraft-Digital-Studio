@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { after, before, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildTestApp } from '../helpers/test-app.js';
-import { applyCreditChangeService } from '#src/modules/credit-transactions/shared/services/index.js';
+import { applyCreditChangeService } from '#src/modules/credit-wallets/shared/services/index.js';
 
 const UNKNOWN_ID = '00000000-0000-4000-8000-000000000000';
 
