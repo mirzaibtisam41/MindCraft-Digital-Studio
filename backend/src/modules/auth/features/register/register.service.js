@@ -3,10 +3,7 @@ import {
   hashPasswordUtil,
   isUniqueViolationErrorUtil,
 } from '#src/utils/index.js';
-import {
-  createUserRepository,
-  findUserByEmailRepository,
-} from '#src/modules/users/shared/repositories/index.js';
+import { createUserRepository } from '#src/modules/users/shared/repositories/index.js';
 import { createCreditWalletRepository } from '#src/modules/credit-wallets/shared/repositories/index.js';
 import { applyCreditChangeService } from '#src/modules/credit-wallets/shared/services/index.js';
 import { CREDIT_TRANSACTION_TYPE } from '#src/modules/credit-transactions/credit-transaction.constants.js';
@@ -16,12 +13,6 @@ import { findPlatformSettingRepository } from '#src/modules/platform-settings/sh
 export async function registerService({ db, data }) {
   const name = data.name.trim();
   const email = data.email.trim().toLowerCase();
-
-  const existingUser = await findUserByEmailRepository({ db, email });
-
-  if (existingUser) {
-    throw new ConflictError('An account with this email already exists');
-  }
 
   const passwordHash = await hashPasswordUtil({ password: data.password });
 

@@ -4,11 +4,7 @@ import {
   isUniqueViolationErrorUtil,
 } from '#src/utils/index.js';
 import { findAiProviderByIdRepository } from '#src/modules/ai-providers/shared/repositories/index.js';
-import {
-  createAiModelRepository,
-  findAiModelByProviderModelIdRepository,
-  findAiModelBySlugRepository,
-} from '#src/modules/ai-models/shared/repositories/index.js';
+import { createAiModelRepository } from '#src/modules/ai-models/shared/repositories/index.js';
 
 export async function createAiModelService({ db, data, adminId }) {
   const newModel = {
@@ -28,28 +24,6 @@ export async function createAiModelService({ db, data, adminId }) {
 
   if (!provider) {
     throw new BadRequestError('The selected provider does not exist');
-  }
-
-  const modelWithSameSlug = await findAiModelBySlugRepository({
-    db,
-    slug: newModel.slug,
-  });
-
-  if (modelWithSameSlug) {
-    throw new ConflictError('A model with this slug already exists');
-  }
-
-  const modelWithSameProviderModelId =
-    await findAiModelByProviderModelIdRepository({
-      db,
-      providerId: newModel.providerId,
-      providerModelId: newModel.providerModelId,
-    });
-
-  if (modelWithSameProviderModelId) {
-    throw new ConflictError(
-      'This provider already has a model with this provider model ID',
-    );
   }
 
   try {
