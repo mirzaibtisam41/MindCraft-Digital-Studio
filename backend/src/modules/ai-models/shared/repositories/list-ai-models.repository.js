@@ -1,7 +1,7 @@
 import { and, asc, count, eq, ilike, or } from 'drizzle-orm';
 import { aiModels } from '#src/modules/ai-models/ai-model.table.js';
 import { aiProviders } from '#src/modules/ai-providers/ai-provider.table.js';
-import { AI_MODEL_WITH_PROVIDER_COLUMNS } from '#src/modules/ai-models/ai-model-with-provider-columns.constants.js';
+import { AI_MODEL_WITH_PROVIDER_COLUMNS } from '#src/modules/ai-models/ai-model-columns.constants.js';
 
 function escapeLikePattern(text) {
   return text.replace(/[\\%_]/g, (character) => `\\${character}`);
