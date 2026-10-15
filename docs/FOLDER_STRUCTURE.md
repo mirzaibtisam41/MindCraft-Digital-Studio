@@ -3,7 +3,7 @@
 **Rule: follow the structure of the sibling project `D:\My Projects\business book`.** When unsure how something is organized, open the matching folder there and copy the pattern (structure only; the stack differences are listed at the bottom).
 **But fix its mistakes here:** where business book does something badly (needless nesting, duplication, etc.), improve it in this project and record the change in the "Differences" table at the bottom.
 
-**Flat infrastructure folders:** `bootstrap/`, `config/`, `constants/`, `plugins/`, `hooks/`, `handlers/`, `utils/`, `decorators/` keep their files directly inside (the kebab-case name + role suffix already says the area, e.g. `config/pino.config.js`, `plugins/cors.plugin.js`). Create an `<area>/` sub-folder only once one area has **3+ files**. `modules/<module>/features/<feature>/` stays nested.
+**Flat infrastructure folders:** `bootstrap/`, `config/`, `constants/`, `plugins/`, `hooks/`, `handlers/`, `utils/` keep their files directly inside (the kebab-case name + role suffix already says the area, e.g. `config/pino.config.js`, `plugins/cors.plugin.js`). Create an `<area>/` sub-folder only once one area has **3+ files**. `modules/<module>/features/<feature>/` stays nested.
 
 ## Repo root
 ```
@@ -33,10 +33,9 @@ backend/
     │                        buildAppConfig), pino.config.js, refresh-cookie.config.js; index.js re-exports
     ├── constants/           *.constants.js; index.js re-exports
     ├── database/schema.js   re-exports every modules/<m>/<m>.table.js (for Drizzle)
-    ├── decorators/          reply.success(...) decorator
     ├── handlers/            error, not-found, graceful-shutdown (*.handler.js → errorHandler, notFoundHandler...)
     ├── hooks/               *.hook.js (auth check, ownership/access checks, rate limits)
-    ├── plugins/             *.plugin.js wrapped with fastify-plugin; index.js re-exports
+    ├── plugins/             *.plugin.js wrapped with fastify-plugin (reply-success.plugin.js adds reply.success); index.js re-exports
     ├── shared/schemas/      request schemas used by several modules, e.g. uuid-params.schema.js →
     │                        uuidParamsSchema('id') / uuidParamsSchema('modelId', 'typeId') for every :id route
     ├── utils/               *.util.js (errors, reply, password, pagination...); index.js re-exports
@@ -104,7 +103,7 @@ client/
 | `.gitignore` | one per folder (`backend/`, `client/`) | **one at repo root** |
 | Plugin naming | `validate-env.plugin.js` / `validateEnvPlugin` (named after an action) | plugins are named after what they register, like `cors.plugin.js` / `corsPlugin` |
 | Env / config | `validate-env.plugin.js` reads `process.env` itself; other files (pino, fastify config) also read `process.env` | env is validated **once** in `buildApp()` with `env-schema` (`config/app.config.js` → `buildAppConfig()`); the same `appConfig` builds the logger and is decorated as `fastify.config` by `plugins/config.plugin.js`. **Only `fastify.config` / `appConfig` is used; nothing reads `process.env` directly** (except bootstrap loading `.env`) |
-| Reply decorator | `decorators/reply/send-success.decorator.js` (`sendSuccessDecorator`) + `plugins/reply/success-reply.plugin.js` | **flat** `decorators/reply-success.decorator.js` (`replySuccessDecorator`) + `plugins/reply-success.plugin.js` (`replySuccessPlugin`): one name, `reply-success`, everywhere |
+| Reply decorator | `decorators/reply/send-success.decorator.js` (`sendSuccessDecorator`) + `plugins/reply/success-reply.plugin.js` | **one file** `plugins/reply-success.plugin.js` (`replySuccessPlugin`) holds the `reply.success` function and registers it; no `decorators/` folder and no separate success-response util (2026-10-15) |
 | HTTP errors | `utils/errors/http-errors.util.js`, codes hard-coded as `'FST_NOT_FOUND'` (Fastify's own prefix) | **flat** `utils/http-errors.util.js`; codes come from `constants/error-code.constants.js` (`ERROR_CODE.NOT_FOUND`), one list the client can rely on and provider error categories get added to |
 | Error handler | `handlers/error/handle-error.handler.js`; body key `error: 'FST_...'`; 500 messages hidden except an `instanceof` allow-list | **flat** `handlers/error.handler.js`; body key `code` (from `ERROR_CODE`), validation errors add `details`; a private `resolveError()` decides the response; messages are shown only for our own `ERROR_CODE` errors (that list is the allow-list), every other 5xx is hidden |
 | Handler naming | `handle-error.handler.js` / `handleErrorHandler` (verb + role repeats itself) | **`error.handler.js` / `errorHandler`**, `not-found.handler.js` / `notFoundHandler`: named after what they handle, same rule as plugins |
