@@ -1,11 +1,11 @@
 import { BadRequestError, NotFoundError } from '#src/utils/index.js';
 import {
   GENERATION_TYPE_INACTIVE_MESSAGE,
-  GENERATION_TYPE_NOT_FOUND_MESSAGE,
-  MODEL_NOT_FOUND_MESSAGE,
   OPTIONS_REQUIRED_TO_ENABLE_MESSAGE,
   OPTIONS_SENT_TOGETHER_MESSAGE,
 } from '#src/modules/ai-model-generation-types/ai-model-generation-type.constants.js';
+import { AI_MODEL_NOT_FOUND_MESSAGE } from '#src/modules/ai-models/ai-model.constants.js';
+import { GENERATION_TYPE_NOT_FOUND_MESSAGE } from '#src/modules/generation-types/generation-type.constants.js';
 import { findAiModelByIdRepository } from '#src/modules/ai-models/shared/repositories/index.js';
 import { findGenerationTypeByIdRepository } from '#src/modules/generation-types/shared/repositories/index.js';
 import { saveModelGenerationTypeRepository } from '#src/modules/ai-model-generation-types/shared/repositories/index.js';
@@ -38,7 +38,7 @@ export async function saveModelWorkflowService({ db, modelId, typeId, data }) {
   const model = await findAiModelByIdRepository({ db, id: modelId });
 
   if (!model) {
-    throw new NotFoundError(MODEL_NOT_FOUND_MESSAGE);
+    throw new NotFoundError(AI_MODEL_NOT_FOUND_MESSAGE);
   }
 
   const generationType = await findGenerationTypeByIdRepository({

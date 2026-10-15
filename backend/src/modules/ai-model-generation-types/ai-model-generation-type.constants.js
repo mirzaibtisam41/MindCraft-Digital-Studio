@@ -1,7 +1,3 @@
-export const MODEL_NOT_FOUND_MESSAGE = 'Model not found';
-
-export const GENERATION_TYPE_NOT_FOUND_MESSAGE = 'Generation type not found';
-
 export const OPTIONS_SENT_TOGETHER_MESSAGE =
   'Send enabled options and default options together';
 
