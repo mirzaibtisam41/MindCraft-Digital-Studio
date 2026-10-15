@@ -73,28 +73,46 @@ const ADMIN_GROUP = {
       ready: true,
       exact: true,
     },
-    { label: 'Users', href: '/admin/users', icon: Users, ready: true },
+    {
+      label: 'Users',
+      href: '/admin/users',
+      icon: Users,
+      ready: true,
+      description:
+        'Search accounts, suspend users, change roles and adjust credits.',
+    },
     {
       label: 'AI Providers',
       href: '/admin/providers',
       icon: Server,
       ready: true,
+      description: 'Companies whose image models the platform uses.',
     },
-    { label: 'AI Models', href: '/admin/models', icon: Boxes, ready: true },
+    {
+      label: 'AI Models',
+      href: '/admin/models',
+      icon: Boxes,
+      ready: true,
+      description: 'Models, their workflows, options and credit prices.',
+    },
     {
       label: 'Generation Types',
       href: '/admin/generation-types',
       icon: Workflow,
       ready: true,
+      description: 'Kinds of generation, such as text to image.',
     },
     {
       label: 'Platform settings',
       href: '/admin/settings',
       icon: SlidersHorizontal,
       ready: true,
+      description: 'Platform-wide settings such as signup credits.',
     },
   ],
 };
+
+export const ADMIN_TOOLS = ADMIN_GROUP.items.filter((item) => item.description);
 
 export function getNavGroups({ isAdmin }) {
   const groups = [WORKSPACE_GROUP, LIBRARY_GROUP, ACCOUNT_GROUP];
