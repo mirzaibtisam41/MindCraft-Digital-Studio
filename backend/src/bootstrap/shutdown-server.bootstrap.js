@@ -1,10 +1,10 @@
-export async function gracefulShutdownHandler({ fastify, signal }) {
+export async function shutdownServer({ fastify, signal }) {
   fastify.log.info(`${signal} received, shutting down`);
 
   const forceExit = setTimeout(() => {
     fastify.log.error('Shutdown took too long, forcing exit');
     process.exit(1);
-  }, fastify.config.SHUTDOWN_TIMEOUT_MS);
+  }, 10000);
 
   forceExit.unref();
 
