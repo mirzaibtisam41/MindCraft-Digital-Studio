@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
 import { ERROR_CODE, ERROR_CODES } from '#src/constants/index.js';
-import { buildErrorResponseUtil } from '#src/utils/index.js';
 
 function resolveError(error) {
   if (error.validation) {
@@ -42,5 +41,5 @@ export function errorHandler(error, request, reply) {
     request.log.error({ err: error }, 'Unhandled error');
   }
 
-  return reply.code(response.statusCode).send(buildErrorResponseUtil(response));
+  return reply.code(response.statusCode).send({ success: false, ...response });
 }
