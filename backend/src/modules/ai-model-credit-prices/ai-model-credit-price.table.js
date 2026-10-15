@@ -11,7 +11,6 @@ import {
 } from 'drizzle-orm/pg-core';
 import { modelWorkflows } from '#src/modules/model-workflows/model-workflow.table.js';
 import { users } from '#src/modules/users/user.table.js';
-import { AI_MODEL_CREDIT_PRICE_QUALITY_MAX_LENGTH } from './ai-model-credit-price.constants.js';
 
 export const aiModelCreditPrices = pgTable(
   'ai_model_credit_prices',
@@ -19,7 +18,7 @@ export const aiModelCreditPrices = pgTable(
     id: uuid().primaryKey().defaultRandom(),
     modelWorkflowId: uuid().notNull(),
     quality: varchar({
-      length: AI_MODEL_CREDIT_PRICE_QUALITY_MAX_LENGTH,
+      length: 30,
     }).notNull(),
     creditsPerImage: integer().notNull(),
     updatedBy: uuid().references(() => users.id, { onDelete: 'set null' }),

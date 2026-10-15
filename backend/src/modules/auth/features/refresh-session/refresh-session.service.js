@@ -3,7 +3,6 @@ import {
   UnauthorizedError,
   hashTokenUtil,
 } from '#src/utils/index.js';
-import { REFRESH_TOKEN_REUSE_GRACE_MS } from '#src/modules/auth/auth.constants.js';
 import { USER_STATUS } from '#src/modules/users/user.constants.js';
 import {
   findAuthSessionByTokenHashRepository,
@@ -16,8 +15,7 @@ class TokenAlreadyUsedError extends Error {}
 
 function wasReplacedJustNow({ session }) {
   return (
-    session.replacedById &&
-    Date.now() - session.revokedAt.getTime() < REFRESH_TOKEN_REUSE_GRACE_MS
+    session.replacedById && Date.now() - session.revokedAt.getTime() < 10000
   );
 }
 

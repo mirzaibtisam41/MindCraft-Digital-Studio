@@ -1,8 +1,6 @@
 import { gracefulShutdownHandler } from '#src/handlers/index.js';
 import { buildApp } from './build-app.bootstrap.js';
 
-const SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'];
-
 export async function startServer() {
   const fastify = buildApp();
 
@@ -14,7 +12,7 @@ export async function startServer() {
       host: fastify.config.HOST,
     });
 
-    for (const signal of SHUTDOWN_SIGNALS) {
+    for (const signal of ['SIGINT', 'SIGTERM']) {
       process.once(signal, () => gracefulShutdownHandler({ fastify, signal }));
     }
   } catch (err) {

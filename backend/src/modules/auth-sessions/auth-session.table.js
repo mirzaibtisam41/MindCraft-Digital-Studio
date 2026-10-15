@@ -8,8 +8,6 @@ import {
 } from 'drizzle-orm/pg-core';
 import { users } from '#src/modules/users/user.table.js';
 
-const IP_ADDRESS_MAX_LENGTH = 45;
-
 export const authSessions = pgTable(
   'auth_sessions',
   {
@@ -25,7 +23,7 @@ export const authSessions = pgTable(
       onDelete: 'set null',
     }),
     userAgent: text(),
-    ipAddress: varchar({ length: IP_ADDRESS_MAX_LENGTH }),
+    ipAddress: varchar({ length: 45 }),
     expiresAt: timestamp({ withTimezone: true }).notNull(),
     lastUsedAt: timestamp({ withTimezone: true }),
     revokedAt: timestamp({ withTimezone: true }),

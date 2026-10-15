@@ -1,9 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto';
 
-const TOKEN_BYTES = 32;
-
 export function generateTokenUtil() {
-  return randomBytes(TOKEN_BYTES).toString('base64url');
+  return randomBytes(32).toString('base64url');
 }
 
 export function hashTokenUtil({ token }) {

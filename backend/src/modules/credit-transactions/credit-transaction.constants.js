@@ -1,5 +1,3 @@
-export const CREDIT_TRANSACTION_IDEMPOTENCY_KEY_MAX_LENGTH = 200;
-
 export const CREDIT_TRANSACTION_TYPE = {
   SIGNUP_GRANT: 'signup_grant',
   ADMIN_CREDIT: 'admin_credit',

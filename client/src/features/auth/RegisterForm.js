@@ -10,7 +10,6 @@ import { useLoginMutation, useRegisterMutation } from '@/features/auth/authApi';
 import { getErrorMessage } from '@/lib/apiError';
 
 const PASSWORD_MIN_LENGTH = 8;
-const EMAIL_TAKEN_STATUS = 409;
 
 function validate({ name, email, password }) {
   const errors = {};
@@ -54,7 +53,7 @@ export function RegisterForm() {
       await register({ name: values.name.trim(), ...credentials }).unwrap();
       await login(credentials).unwrap();
     } catch (error) {
-      if (error.status === EMAIL_TAKEN_STATUS) {
+      if (error.status === 409) {
         setFieldErrors({ email: getErrorMessage(error) });
 
         return;

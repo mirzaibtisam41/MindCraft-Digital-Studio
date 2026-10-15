@@ -10,15 +10,13 @@ import {
 } from '@/features/auth/authSlice';
 import { PageLoader } from '@/components/layout/PageLoader';
 
-const ADMIN_ROLE = 'admin';
-
 export function AuthGuard({ adminOnly = false, children }) {
   const router = useRouter();
   const status = useSelector(selectAuthStatus);
   const user = useSelector(selectCurrentUser);
 
   const isLoggedIn = status === AUTH_STATUS.LOGGED_IN;
-  const isMissingAdminRole = adminOnly && user?.role !== ADMIN_ROLE;
+  const isMissingAdminRole = adminOnly && user?.role !== 'admin';
 
   useEffect(() => {
     if (status === AUTH_STATUS.LOGGED_OUT) {

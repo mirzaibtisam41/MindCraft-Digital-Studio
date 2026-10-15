@@ -44,7 +44,6 @@ import { useGetAiProvidersQuery } from '@/features/ai-providers/aiProvidersApi';
 import { getErrorMessage } from '@/lib/apiError';
 
 const PAGE_SIZE = 10;
-const SEARCH_DELAY_MS = 300;
 const ALL = 'all';
 
 function StatusSelect({ model }) {
@@ -139,7 +138,7 @@ export function AiModelsView() {
     const timer = setTimeout(() => {
       setSearch(searchText.trim());
       setPage(1);
-    }, SEARCH_DELAY_MS);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchText]);

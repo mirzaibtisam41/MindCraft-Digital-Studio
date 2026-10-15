@@ -7,9 +7,11 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { users } from '#src/modules/users/user.table.js';
-import { AUTH_TOKEN_TYPES } from './auth-token.constants.js';
 
-export const authTokenTypeEnum = pgEnum('auth_token_type', AUTH_TOKEN_TYPES);
+export const authTokenTypeEnum = pgEnum('auth_token_type', [
+  'email_verify',
+  'password_reset',
+]);
 
 export const authTokens = pgTable(
   'auth_tokens',

@@ -14,7 +14,3 @@ export const AI_MODEL_STATUS = {
 export const AI_MODEL_STATUSES = Object.values(AI_MODEL_STATUS);
 
 export const AI_MODEL_DESCRIPTION_MAX_LENGTH = 1000;
-
-export const AI_MODEL_LIST_DEFAULT_LIMIT = 20;
-
-export const AI_MODEL_LIST_MAX_LIMIT = 100;

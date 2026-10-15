@@ -29,7 +29,6 @@ import { getErrorMessage } from '@/lib/apiError';
 
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const PROVIDER_MODEL_ID_PATTERN = /^[A-Za-z0-9._:/-]+$/;
-const DUPLICATE_STATUS = 409;
 
 const TEXTAREA_CLASSES =
   'min-h-20 w-full rounded-md border bg-background px-3 py-2 text-sm shadow-xs outline-none placeholder:text-ink-3 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:border-input dark:bg-input/30';
@@ -122,7 +121,7 @@ function ModelForm({ model, providers, onDone }) {
 
       onDone();
     } catch (error) {
-      if (error.status === DUPLICATE_STATUS) {
+      if (error.status === 409) {
         const field = /slug/i.test(error.data?.message ?? '')
           ? 'slug'
           : 'providerModelId';

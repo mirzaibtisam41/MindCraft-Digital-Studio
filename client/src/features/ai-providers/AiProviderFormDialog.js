@@ -22,7 +22,6 @@ import {
 import { getErrorMessage } from '@/lib/apiError';
 
 const CODE_PATTERN = /^[a-z0-9-]+$/;
-const CODE_TAKEN_STATUS = 409;
 
 function validate({ name, code }) {
   const errors = {};
@@ -81,7 +80,7 @@ function ProviderForm({ provider, onDone }) {
 
       onDone();
     } catch (error) {
-      if (error.status === CODE_TAKEN_STATUS) {
+      if (error.status === 409) {
         setFieldErrors({ code: getErrorMessage(error) });
 
         return;

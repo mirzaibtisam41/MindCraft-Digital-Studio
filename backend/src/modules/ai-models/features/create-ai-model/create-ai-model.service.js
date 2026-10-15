@@ -10,8 +10,6 @@ import {
   findAiModelBySlugRepository,
 } from '#src/modules/ai-models/shared/repositories/index.js';
 
-const SLUG_UNIQUE_CONSTRAINT = 'ai_models_slug_unique';
-
 export async function createAiModelService({ db, data, adminId }) {
   const newModel = {
     providerId: data.providerId,
@@ -61,7 +59,7 @@ export async function createAiModelService({ db, data, adminId }) {
       const constraint = error.cause?.constraint ?? error.constraint;
 
       throw new ConflictError(
-        constraint === SLUG_UNIQUE_CONSTRAINT
+        constraint === 'ai_models_slug_unique'
           ? 'A model with this slug already exists'
           : 'This provider already has a model with this provider model ID',
       );

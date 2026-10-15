@@ -12,10 +12,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { creditWallets } from '#src/modules/credit-wallets/credit-wallet.table.js';
 import { users } from '#src/modules/users/user.table.js';
-import {
-  CREDIT_TRANSACTION_IDEMPOTENCY_KEY_MAX_LENGTH,
-  CREDIT_TRANSACTION_TYPES,
-} from './credit-transaction.constants.js';
+import { CREDIT_TRANSACTION_TYPES } from './credit-transaction.constants.js';
 
 export const creditTransactionTypeEnum = pgEnum(
   'credit_transaction_type',
@@ -33,7 +30,7 @@ export const creditTransactions = pgTable(
     balanceAfter: integer().notNull(),
     type: creditTransactionTypeEnum().notNull(),
     idempotencyKey: varchar({
-      length: CREDIT_TRANSACTION_IDEMPOTENCY_KEY_MAX_LENGTH,
+      length: 200,
     }).unique('credit_transactions_idempotency_key_unique'),
     reason: text(),
     createdBy: uuid().references(() => users.id, { onDelete: 'set null' }),

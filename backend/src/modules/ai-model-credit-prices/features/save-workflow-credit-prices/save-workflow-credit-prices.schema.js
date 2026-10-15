@@ -1,10 +1,9 @@
 import { GENERATION_OPTIONS } from '#src/modules/model-workflows/generation-options.constants.js';
-import { CREDITS_PER_IMAGE_MAX } from '#src/modules/ai-model-credit-prices/ai-model-credit-price.constants.js';
 
 const creditsPerImageSchema = {
   type: 'integer',
   minimum: 1,
-  maximum: CREDITS_PER_IMAGE_MAX,
+  maximum: 100000,
 };
 
 export const saveWorkflowCreditPricesBodySchema = {

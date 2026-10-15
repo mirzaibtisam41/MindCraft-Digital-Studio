@@ -1,20 +1,6 @@
 import envSchema from 'env-schema';
 import { ENVIRONMENT, ENVIRONMENTS } from '#src/constants/index.js';
 
-const JWT_SECRET_MIN_LENGTH = 32;
-
-const LOG_LEVELS = [
-  'fatal',
-  'error',
-  'warn',
-  'info',
-  'debug',
-  'trace',
-  'silent',
-];
-
-const COOKIE_SAME_SITES = ['lax', 'strict', 'none'];
-
 const envSchemaConfig = {
   type: 'object',
   required: ['NODE_ENV', 'PORT', 'DATABASE_URL', 'JWT_ACCESS_SECRET'],
@@ -24,7 +10,11 @@ const envSchemaConfig = {
       enum: ENVIRONMENTS,
       default: ENVIRONMENT.DEVELOPMENT,
     },
-    LOG_LEVEL: { type: 'string', enum: LOG_LEVELS, default: 'info' },
+    LOG_LEVEL: {
+      type: 'string',
+      enum: ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'],
+      default: 'info',
+    },
     PORT: { type: 'number', minimum: 1, maximum: 65535, default: 8000 },
     HOST: { type: 'string', default: '0.0.0.0' },
     CORS_ORIGIN: { type: 'string', default: 'http://localhost:3000' },
@@ -38,12 +28,12 @@ const envSchemaConfig = {
       minimum: 1000,
       default: 5000,
     },
-    JWT_ACCESS_SECRET: { type: 'string', minLength: JWT_SECRET_MIN_LENGTH },
+    JWT_ACCESS_SECRET: { type: 'string', minLength: 32 },
     JWT_ACCESS_EXPIRES_IN: { type: 'string', default: '15m' },
     REFRESH_TOKEN_TTL_DAYS: { type: 'number', minimum: 1, default: 30 },
     COOKIE_SAME_SITE: {
       type: 'string',
-      enum: COOKIE_SAME_SITES,
+      enum: ['lax', 'strict', 'none'],
       default: 'lax',
     },
   },
