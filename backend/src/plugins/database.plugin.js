@@ -6,8 +6,8 @@ import * as schema from '#src/database/schema.js';
 async function registerDatabase(fastify) {
   await fastify.register(fastifyPostgres, {
     connectionString: fastify.config.DATABASE_URL,
-    max: fastify.config.DATABASE_POOL_MAX,
-    connectionTimeoutMillis: fastify.config.DATABASE_CONNECTION_TIMEOUT_MS,
+    max: 10,
+    connectionTimeoutMillis: 5000,
   });
 
   fastify.pg.pool.on('error', (error) => {

@@ -1,7 +1,6 @@
 import { generateTokenUtil, hashTokenUtil } from '#src/utils/index.js';
 import { createAuthSessionRepository } from '#src/modules/auth-sessions/shared/repositories/index.js';
-
-const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
+import { REFRESH_TOKEN_TTL_DAYS } from '#src/modules/auth/auth.constants.js';
 
 export async function startAuthSessionService({
   server,
@@ -21,8 +20,7 @@ export async function startAuthSessionService({
       userAgent: client.userAgent,
       ipAddress: client.ipAddress,
       expiresAt: new Date(
-        Date.now() +
-          server.config.REFRESH_TOKEN_TTL_DAYS * MILLISECONDS_IN_A_DAY,
+        Date.now() + REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
       ),
     },
   });

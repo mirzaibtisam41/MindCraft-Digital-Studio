@@ -5,8 +5,8 @@ import { TooManyRequestsError } from '#src/utils/index.js';
 async function registerRateLimit(fastify) {
   await fastify.register(fastifyRateLimit, {
     global: true,
-    max: fastify.config.RATE_LIMIT_MAX,
-    timeWindow: fastify.config.RATE_LIMIT_WINDOW_MS,
+    max: 100,
+    timeWindow: 60000,
     errorResponseBuilder: (_request, context) =>
       new TooManyRequestsError(
         `Too many requests, please try again in ${context.after}`,
