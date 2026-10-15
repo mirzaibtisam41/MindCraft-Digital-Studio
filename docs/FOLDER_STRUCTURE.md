@@ -63,7 +63,7 @@ backend/
 ```
 
 ### API route map (which module owns which URL)
-Prefixes are set in `src/modules/index.js`. Three modules share `/api/admin/models`, so look at the path after the model id.
+Prefixes are set in `src/modules/index.js`. Three modules share `/api/admin/models` and two share `/api/admin/users`, so look at the path after the id.
 
 | Method + path | Module | Feature folder | Who |
 |---|---|---|---|
@@ -78,6 +78,7 @@ Prefixes are set in `src/modules/index.js`. Three modules share `/api/admin/mode
 | `GET /api/admin/models/:modelId/prices` · `PUT /api/admin/models/:modelId/workflows/:typeId/prices` | `ai-model-credit-prices` | `list-model-credit-prices` · `save-workflow-credit-prices` | admin |
 | `POST · GET /api/admin/generation-types` · `PATCH · DELETE /api/admin/generation-types/:id` · `PATCH /api/admin/generation-types/:id/status` | `generation-types` | `create-generation-type` · `list-generation-types` · `update-generation-type` · `delete-generation-type` · `update-generation-type-status` | admin |
 | `GET · PATCH /api/admin/settings` | `platform-settings` | `get-platform-settings` · `update-platform-settings` | admin |
+| `GET /api/admin/users` · `GET /api/admin/users/:userId` · `PATCH /api/admin/users/:userId/status` · `PATCH /api/admin/users/:userId/role` | `users` (`adminUsersRoutes`) | `list-users` · `get-user` · `update-user-status` · `update-user-role` | admin |
 | `GET /api/admin/users/:userId/wallet` · `POST /api/admin/users/:userId/credit-adjustments` | `credit-wallets` (`adminUserWalletRoutes`) | `get-user-wallet` · `adjust-user-credits` | admin |
 
 Keep this table updated when a route is added or moved.
