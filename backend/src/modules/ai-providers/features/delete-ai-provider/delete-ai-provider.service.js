@@ -6,12 +6,10 @@ import {
 import { deleteAiProviderRepository } from '#src/modules/ai-providers/shared/repositories/index.js';
 
 export async function deleteAiProviderService({ db, id }) {
-  try {
-    const deletedProvider = await deleteAiProviderRepository({ db, id });
+  let deletedProvider;
 
-    if (!deletedProvider) {
-      throw new NotFoundError('Provider not found');
-    }
+  try {
+    deletedProvider = await deleteAiProviderRepository({ db, id });
   } catch (error) {
     if (isForeignKeyViolationErrorUtil({ error })) {
       throw new ConflictError(
@@ -20,5 +18,9 @@ export async function deleteAiProviderService({ db, id }) {
     }
 
     throw error;
+  }
+
+  if (!deletedProvider) {
+    throw new NotFoundError('Provider not found');
   }
 }

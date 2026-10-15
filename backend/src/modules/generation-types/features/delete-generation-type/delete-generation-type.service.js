@@ -6,12 +6,10 @@ import {
 import { deleteGenerationTypeRepository } from '#src/modules/generation-types/shared/repositories/index.js';
 
 export async function deleteGenerationTypeService({ db, id }) {
-  try {
-    const deletedType = await deleteGenerationTypeRepository({ db, id });
+  let deletedType;
 
-    if (!deletedType) {
-      throw new NotFoundError('Generation type not found');
-    }
+  try {
+    deletedType = await deleteGenerationTypeRepository({ db, id });
   } catch (error) {
     if (isForeignKeyViolationErrorUtil({ error })) {
       throw new ConflictError(
@@ -20,5 +18,9 @@ export async function deleteGenerationTypeService({ db, id }) {
     }
 
     throw error;
+  }
+
+  if (!deletedType) {
+    throw new NotFoundError('Generation type not found');
   }
 }
