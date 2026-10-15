@@ -41,6 +41,7 @@ export async function loginService({ server, data, client }) {
 
   const { accessToken, refreshToken } = await startAuthSessionService({
     server,
+    db: server.db,
     userId: user.id,
     familyId: randomUUID(),
     client,

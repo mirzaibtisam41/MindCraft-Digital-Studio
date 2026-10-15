@@ -5,7 +5,7 @@ const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
 
 export async function startAuthSessionService({
   server,
-  db = server.db,
+  db,
   userId,
   familyId,
   client,
