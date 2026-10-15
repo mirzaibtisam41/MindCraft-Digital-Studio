@@ -10,7 +10,7 @@ export async function createGenerationTypeService({ db, data }) {
   const existingType = await findGenerationTypeByCodeRepository({ db, code });
 
   if (existingType) {
-    throw new ConflictError('A provider with this code already exists');
+    throw new ConflictError('A generation type with this code already exists');
   }
 
   try {
@@ -25,7 +25,9 @@ export async function createGenerationTypeService({ db, data }) {
     });
   } catch (error) {
     if (isUniqueViolationErrorUtil({ error })) {
-      throw new ConflictError('A provider with this code already exists');
+      throw new ConflictError(
+        'A generation type with this code already exists',
+      );
     }
 
     throw error;

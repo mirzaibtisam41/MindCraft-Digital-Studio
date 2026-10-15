@@ -170,6 +170,10 @@ describe('generation types and model workflows', () => {
       });
 
       assert.equal(duplicate.statusCode, 409);
+      assert.equal(
+        duplicate.body.message,
+        'A generation type with this code already exists',
+      );
       assert.equal(invalid.statusCode, 400);
     });
 

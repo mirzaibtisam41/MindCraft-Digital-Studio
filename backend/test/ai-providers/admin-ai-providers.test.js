@@ -66,6 +66,10 @@ describe('admin AI providers CRUD', () => {
     });
 
     assert.equal(response.statusCode, 409);
+    assert.equal(
+      response.body.message,
+      'A provider with this code already exists',
+    );
   });
 
   it('rejects invalid input', async () => {
