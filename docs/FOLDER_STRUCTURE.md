@@ -60,12 +60,33 @@ backend/
             └── providers/      (AI modules) provider adapters, e.g. providers/<name>/shared/*.util.js
 ```
 
+### API route map (which module owns which URL)
+Prefixes are set in `src/modules/index.js`. Three modules share `/api/admin/models`, so look at the path after the model id.
+
+| Method + path | Module | Feature folder | Who |
+|---|---|---|---|
+| `GET /health` | `health` | — | anyone |
+| `POST /api/auth/register` · `login` · `refresh` · `logout` | `auth` | `register` · `login` · `refresh-session` · `logout` | anyone |
+| `GET /api/auth/me` | `auth` | `get-me` | logged in |
+| `GET /api/auth/sessions` · `DELETE /api/auth/sessions/:familyId` · `POST /api/auth/logout-others` | `auth` | `list-sessions` · `revoke-session` · `logout-other-sessions` | logged in |
+| `GET /api/wallet` | `credit-wallets` (`myWalletRoutes`) | `get-my-wallet` | logged in |
+| `POST · GET /api/admin/providers` · `GET · PATCH · DELETE /api/admin/providers/:id` · `PATCH /api/admin/providers/:id/status` | `ai-providers` | `create-ai-provider` · `list-ai-providers` · `get-ai-provider` · `update-ai-provider` · `delete-ai-provider` · `update-ai-provider-status` | admin |
+| `POST · GET /api/admin/models` · `GET · PATCH /api/admin/models/:id` · `PATCH /api/admin/models/:id/status` | `ai-models` | `create-ai-model` · `list-ai-models` · `get-ai-model` · `update-ai-model` · `update-ai-model-status` | admin |
+| `GET /api/admin/models/:modelId/workflows` · `PUT /api/admin/models/:modelId/workflows/:typeId` | `model-workflows` | `list-model-workflows` · `save-model-workflow` | admin |
+| `GET /api/admin/models/:modelId/prices` · `PUT /api/admin/models/:modelId/workflows/:typeId/prices` | `ai-model-credit-prices` | `list-model-credit-prices` · `save-workflow-credit-prices` | admin |
+| `POST · GET /api/admin/generation-types` · `PATCH · DELETE /api/admin/generation-types/:id` · `PATCH /api/admin/generation-types/:id/status` | `generation-types` | `create-generation-type` · `list-generation-types` · `update-generation-type` · `delete-generation-type` · `update-generation-type-status` | admin |
+| `GET · PATCH /api/admin/settings` | `platform-settings` | `get-platform-settings` · `update-platform-settings` | admin |
+| `GET /api/admin/users/:userId/wallet` · `POST /api/admin/users/:userId/credit-adjustments` | `credit-wallets` (`adminUserWalletRoutes`) | `get-user-wallet` · `adjust-user-credits` | admin |
+
+Keep this table updated when a route is added or moved.
+
 ### Naming conventions
 - Files: **kebab-case** with a role suffix: `login.controller.js`, `find-business-by-id.repository.js`, `cors.plugin.js`, `password.util.js`, `check-user-is-logged-in.hook.js`, `user.table.js`.
 - Folders: **kebab-case** for every multiword name. Feature folders: `forgot-password`, `refresh-session`. Module folders: kebab-case plural (`user-settings`, `password-reset-tokens`). A module with a single small endpoint stays flat (`health/health.controller.js` + `health.routes.js`) instead of `features/<name>/`.
 - Function name = file name in camelCase + role suffix: `login.controller.js` → `loginController`, `find-business-by-id.repository.js` → `findBusinessByIdRepository`, `pino.config.js` → `pinoConfig` (a builder function gets a `build` prefix: `listen.config.js` → `buildListenConfig`), `cors.plugin.js` → `corsPlugin`, `not-found.handler.js` → `notFoundHandler`.
 - Functions take **one object argument** (`{ db, id }`, `{ server, email }`).
 - Every folder of shared pieces has an **`index.js` barrel** that re-exports; imports use `#src/...` aliases, e.g. `import { hashPasswordUtil } from '#src/utils/index.js'`.
+- **Every import uses `#src/...`, never `./` or `../`** — even a file in the same folder (controller → its service, route → its features, barrel `index.js` re-exports, table → its constants). Root files (`index.js`, `drizzle.config.js`, `scripts/`) too. Only `tests/` keeps relative imports for its own helpers (they live outside `src/`).
 - Layering: routes → controller → service → repository. Repositories only talk to the DB; controllers never query the DB.
 
 ### Planned modules for this project (mapped to the roadmap)
