@@ -1,0 +1,15 @@
+meta {
+  name: Complete onboarding
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/me/onboarding/complete
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
