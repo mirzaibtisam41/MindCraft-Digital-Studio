@@ -65,6 +65,10 @@ export function GeneratorForm({
   balance,
   isGenerating,
   onGenerate,
+  submitLabel,
+  promptPlaceholder = 'A red fox sitting in fresh snow, soft morning light',
+  isReady = true,
+  children,
 }) {
   const { enabledOptions, prices } = model;
   const pricePerImage = prices[options.quality];
@@ -76,7 +80,7 @@ export function GeneratorForm({
   function handleSubmit(event) {
     event.preventDefault();
 
-    if (hasPrompt && hasEnoughCredits && !isGenerating) onGenerate();
+    if (isReady && hasPrompt && hasEnoughCredits && !isGenerating) onGenerate();
   }
 
   return (
@@ -84,6 +88,7 @@ export function GeneratorForm({
       onSubmit={handleSubmit}
       className="flex flex-col gap-5 rounded-xl border bg-card p-4"
     >
+      {children}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-3">
           <Label htmlFor="generator-prompt">Prompt</Label>
@@ -112,7 +117,7 @@ export function GeneratorForm({
           id="generator-prompt"
           rows={5}
           maxLength={PROMPT_MAX_LENGTH}
-          placeholder="A red fox sitting in fresh snow, soft morning light"
+          placeholder={promptPlaceholder}
           value={prompt}
           disabled={isGenerating}
           onChange={(event) => onPromptChange(event.target.value)}
@@ -258,12 +263,13 @@ export function GeneratorForm({
         </div>
         <Button
           type="submit"
-          disabled={!hasPrompt || !hasEnoughCredits || isGenerating}
+          disabled={!isReady || !hasPrompt || !hasEnoughCredits || isGenerating}
         >
           {isGenerating ? <Spinner /> : <Sparkles />}
           {isGenerating
             ? 'Generating…'
-            : `Generate ${options.n} ${options.n === 1 ? 'image' : 'images'}`}
+            : (submitLabel ??
+              `Generate ${options.n} ${options.n === 1 ? 'image' : 'images'}`)}
         </Button>
       </div>
     </form>

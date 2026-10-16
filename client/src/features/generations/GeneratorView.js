@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { ImagePlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormAlert } from '@/components/ui/FormAlert';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,62 +10,17 @@ import { ImagePreviewDialog } from '@/features/images/ImagePreviewDialog';
 import { GenerationHistory } from '@/features/generations/GenerationHistory';
 import { GenerationResult } from '@/features/generations/GenerationResult';
 import { GeneratorForm } from '@/features/generations/GeneratorForm';
+import { NoModels } from '@/features/generations/NoModels';
+import {
+  readOptionsFromUrl,
+  useGeneratorOptions,
+} from '@/features/generations/useGeneratorOptions';
 import {
   useCreateGenerationMutation,
   useGetGenerationOptionsQuery,
   useGetMyGenerationsQuery,
 } from '@/features/generations/generationsApi';
 import { getErrorMessage } from '@/lib/apiError';
-
-const OPTION_LISTS = {
-  size: 'sizes',
-  quality: 'qualities',
-  outputFormat: 'outputFormats',
-};
-
-function readOptionsFromUrl(searchParams) {
-  const options = {};
-
-  for (const key of ['size', 'quality', 'outputFormat']) {
-    if (searchParams.get(key)) options[key] = searchParams.get(key);
-  }
-
-  if (searchParams.get('n')) options.n = Number(searchParams.get('n'));
-
-  return options;
-}
-
-function keepAllowedOptions({ model, chosenOptions }) {
-  const allowed = {};
-
-  for (const [key, value] of Object.entries(chosenOptions)) {
-    if (key === 'n') {
-      if (value >= 1 && value <= model.enabledOptions.maxImagesPerRequest) {
-        allowed.n = value;
-      }
-    } else if (model.enabledOptions[OPTION_LISTS[key]]?.includes(value)) {
-      allowed[key] = value;
-    }
-  }
-
-  return allowed;
-}
-
-function NoModels() {
-  return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed p-10 text-center">
-      <span className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-        <ImagePlus className="size-5" />
-      </span>
-      <div className="flex flex-col gap-1">
-        <p className="font-medium">No image models are available yet</p>
-        <p className="text-sm text-muted-foreground">
-          An admin needs to turn on a model before you can generate images.
-        </p>
-      </div>
-    </div>
-  );
-}
 
 export function GeneratorView() {
   const { data: models, isLoading, error } = useGetGenerationOptionsQuery();
@@ -75,45 +29,25 @@ export function GeneratorView() {
   const [createGeneration] = useCreateGenerationMutation();
 
   const searchParams = useSearchParams();
-  const [selectedModelId, setSelectedModelId] = useState(() =>
-    searchParams.get('modelId'),
-  );
   const [prompt, setPrompt] = useState(
     () => searchParams.get('prompt')?.slice(0, 2000) ?? '',
   );
-  const [chosenOptions, setChosenOptions] = useState(() =>
-    readOptionsFromUrl(searchParams),
-  );
+  const { model, options, changeModel, changeOption } = useGeneratorOptions({
+    models,
+    initialModelId: searchParams.get('modelId'),
+    initialOptions: readOptionsFromUrl(searchParams),
+  });
   const [pendingCount, setPendingCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [shownGenerationId, setShownGenerationId] = useState(null);
   const [lastCreated, setLastCreated] = useState(null);
   const [openImageId, setOpenImageId] = useState(null);
 
-  const model =
-    models?.find((item) => item.id === selectedModelId) ?? models?.[0];
-  const options = model
-    ? {
-        ...model.defaultOptions,
-        quality: model.enabledOptions.qualities.includes(
-          model.defaultOptions.quality,
-        )
-          ? model.defaultOptions.quality
-          : model.enabledOptions.qualities[0],
-        ...keepAllowedOptions({ model, chosenOptions }),
-      }
-    : null;
-
   const shownGeneration =
     history?.generations.find((item) => item.id === shownGenerationId) ??
     (lastCreated?.id === shownGenerationId ? lastCreated : null);
   const openImage =
     shownGeneration?.images.find((image) => image.id === openImageId) ?? null;
-
-  function changeModel(modelId) {
-    setSelectedModelId(modelId);
-    setChosenOptions({});
-  }
 
   async function generate() {
     const requestedCount = options.n;
@@ -156,7 +90,9 @@ export function GeneratorView() {
 
       {isLoading ? <Skeleton className="h-96 w-full" /> : null}
 
-      {models && models.length === 0 ? <NoModels /> : null}
+      {models && models.length === 0 ? (
+        <NoModels message="An admin needs to turn on a model before you can generate images." />
+      ) : null}
 
       {model ? (
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
@@ -167,9 +103,7 @@ export function GeneratorView() {
             prompt={prompt}
             onPromptChange={setPrompt}
             options={options}
-            onOptionChange={(change) =>
-              setChosenOptions({ ...chosenOptions, ...change })
-            }
+            onOptionChange={changeOption}
             balance={wallet?.balance}
             isGenerating={pendingCount > 0}
             onGenerate={generate}

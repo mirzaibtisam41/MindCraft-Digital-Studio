@@ -3,7 +3,10 @@ import { baseApi } from '@/store/baseApi';
 export const generationsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getGenerationOptions: builder.query({
-      query: () => '/api/generations/options',
+      query: (type = 'text_to_image') => ({
+        url: '/api/generations/options',
+        params: { type },
+      }),
       transformResponse: (response) => response.data.models,
     }),
     getMyGenerations: builder.query({

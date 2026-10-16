@@ -34,8 +34,13 @@ const WORKSPACE_GROUP = {
       icon: ImagePlus,
       ready: true,
     },
-    { label: 'Image Editor', icon: Wand2 },
-    { label: 'Image to Image', icon: ImageIcon },
+    { label: 'Image Editor', href: '/app/editor', icon: Wand2, ready: true },
+    {
+      label: 'Image to Image',
+      href: '/app/image-to-image',
+      icon: ImageIcon,
+      ready: true,
+    },
     { label: 'AI Vision', icon: ScanEye },
   ],
 };

@@ -10,6 +10,16 @@ export const imagesApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Images'],
     }),
+    getImage: builder.query({
+      query: (id) => `/api/images/${id}`,
+      transformResponse: (response) => response.data.image,
+      providesTags: ['Images'],
+    }),
+    getImageHistory: builder.query({
+      query: (id) => `/api/images/${id}/history`,
+      transformResponse: (response) => response.data.steps,
+      providesTags: ['Images'],
+    }),
     uploadImage: builder.mutation({
       query: (file) => {
         const body = new FormData();
@@ -60,6 +70,8 @@ export const imagesApi = baseApi.injectEndpoints({
 
 export const {
   useGetMyImagesQuery,
+  useGetImageQuery,
+  useGetImageHistoryQuery,
   useUploadImageMutation,
   useSetImageFavoriteMutation,
   useBulkFavoriteImagesMutation,
