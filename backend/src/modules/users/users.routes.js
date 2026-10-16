@@ -4,6 +4,8 @@ import {
 } from '#src/hooks/index.js';
 import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { changeMyPasswordController } from '#src/modules/users/features/change-my-password/change-my-password.controller.js';
+import { changeMyEmailController } from '#src/modules/users/features/change-my-email/change-my-email.controller.js';
+import { changeMyEmailBodySchema } from '#src/modules/users/features/change-my-email/change-my-email.schema.js';
 import { changeMyPasswordBodySchema } from '#src/modules/users/features/change-my-password/change-my-password.schema.js';
 import { updateMyProfileController } from '#src/modules/users/features/update-my-profile/update-my-profile.controller.js';
 import { updateMyProfileBodySchema } from '#src/modules/users/features/update-my-profile/update-my-profile.schema.js';
@@ -70,5 +72,14 @@ export function myAccountRoutes(fastify) {
       config: { rateLimit: { max: 10, timeWindow: '15 minutes' } },
     },
     changeMyPasswordController,
+  );
+
+  fastify.post(
+    '/email',
+    {
+      schema: { body: changeMyEmailBodySchema },
+      config: { rateLimit: { max: 10, timeWindow: '1 hour' } },
+    },
+    changeMyEmailController,
   );
 }

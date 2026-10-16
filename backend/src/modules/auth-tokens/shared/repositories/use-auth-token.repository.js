@@ -13,7 +13,11 @@ export async function useAuthTokenRepository({ db, tokenHash, type }) {
         gt(authTokens.expiresAt, new Date()),
       ),
     )
-    .returning({ id: authTokens.id, userId: authTokens.userId });
+    .returning({
+      id: authTokens.id,
+      userId: authTokens.userId,
+      newEmail: authTokens.newEmail,
+    });
 
   return token ?? null;
 }
