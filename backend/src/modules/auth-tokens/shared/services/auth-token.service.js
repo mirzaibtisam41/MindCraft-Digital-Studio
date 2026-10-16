@@ -2,7 +2,7 @@ import { generateTokenUtil, hashTokenUtil } from '#src/utils/index.js';
 import {
   createAuthTokenRepository,
   deleteUnusedUserAuthTokensRepository,
-  findLatestUserAuthTokenRepository,
+  hasRecentUserAuthTokenRepository,
   useAuthTokenRepository,
 } from '#src/modules/auth-tokens/shared/repositories/index.js';
 
@@ -40,15 +40,11 @@ export function useAuthTokenService({ db, token, type }) {
   });
 }
 
-export async function wasAuthTokenSentRecentlyService({
+export function wasAuthTokenSentRecentlyService({
   db,
   userId,
   type,
   withinSeconds,
 }) {
-  const latest = await findLatestUserAuthTokenRepository({ db, userId, type });
-
-  return Boolean(
-    latest && Date.now() - latest.createdAt.getTime() < withinSeconds * 1000,
-  );
+  return hasRecentUserAuthTokenRepository({ db, userId, type, withinSeconds });
 }

@@ -91,7 +91,7 @@ describe('password reset', () => {
     await forgotPassword(user.email);
     const token = testApp.mailer.readTokenFromLastEmailTo(user.email);
     await testApp.runSql(
-      "UPDATE auth_tokens SET expires_at = now() - interval '1 minute' WHERE user_id = $1",
+      "UPDATE auth_tokens SET expires_at = now() - interval '1 hour' WHERE user_id = $1",
       [user.user.id],
     );
 
