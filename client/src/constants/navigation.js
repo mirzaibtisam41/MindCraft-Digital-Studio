@@ -66,7 +66,12 @@ const LIBRARY_GROUP = {
       icon: History,
       ready: true,
     },
-    { label: 'Prompt Studio', icon: NotebookPen },
+    {
+      label: 'Prompt Studio',
+      href: '/app/prompts',
+      icon: NotebookPen,
+      ready: true,
+    },
   ],
 };
 
