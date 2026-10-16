@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/Field';
 import { FormAlert } from '@/components/ui/FormAlert';
@@ -49,7 +50,18 @@ export function LoginForm() {
         />
       </Field>
 
-      <Field id="password" label="Password">
+      <Field
+        id="password"
+        label="Password"
+        aside={
+          <Link
+            href="/forgot-password"
+            className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Forgot password?
+          </Link>
+        }
+      >
         <Input
           id="password"
           type="password"

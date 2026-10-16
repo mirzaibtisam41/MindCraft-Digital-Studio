@@ -75,13 +75,6 @@ export function ProfileSettings() {
           onChange={(event) => setName(event.target.value)}
         />
       </Field>
-      <Field
-        id="profile-email"
-        label="Email"
-        hint="Changing your email needs a verification email, which is coming later."
-      >
-        <Input id="profile-email" value={user.email} disabled readOnly />
-      </Field>
     </SettingsCard>
   );
 }

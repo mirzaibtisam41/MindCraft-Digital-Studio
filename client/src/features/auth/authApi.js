@@ -1,5 +1,9 @@
 import { baseApi } from '@/store/baseApi';
-import { loggedOut, sessionStarted } from '@/features/auth/authSlice';
+import {
+  loggedOut,
+  sessionStarted,
+  userUpdated,
+} from '@/features/auth/authSlice';
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -32,6 +36,49 @@ export const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    forgotPassword: builder.mutation({
+      query: (body) => ({
+        url: '/api/auth/forgot-password',
+        method: 'POST',
+        body,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (body) => ({
+        url: '/api/auth/reset-password',
+        method: 'POST',
+        body,
+      }),
+    }),
+    verifyEmail: builder.mutation({
+      query: (token) => ({
+        url: '/api/auth/verify-email',
+        method: 'POST',
+        body: { token },
+      }),
+      transformResponse: (response) => response.data,
+      async onQueryStarted(_token, { dispatch, getState, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const user = getState().auth.user;
+
+          if (user) {
+            dispatch(
+              userUpdated({
+                ...user,
+                email: data.email,
+                emailVerifiedAt: data.emailVerifiedAt,
+              }),
+            );
+          }
+        } catch {
+          return;
+        }
+      },
+    }),
+    resendVerification: builder.mutation({
+      query: () => ({ url: '/api/auth/resend-verification', method: 'POST' }),
+    }),
     getSessions: builder.query({
       query: () => '/api/auth/sessions',
       transformResponse: (response) => response.data.sessions,
@@ -56,6 +103,10 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useLogoutMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useVerifyEmailMutation,
+  useResendVerificationMutation,
   useGetSessionsQuery,
   useRevokeSessionMutation,
   useLogoutOtherSessionsMutation,

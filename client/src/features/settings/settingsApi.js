@@ -21,6 +21,9 @@ export const settingsApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.data,
       invalidatesTags: ['Sessions'],
     }),
+    changeEmail: builder.mutation({
+      query: (body) => ({ url: '/api/me/email', method: 'POST', body }),
+    }),
     getMySettings: builder.query({
       query: () => '/api/me/settings',
       transformResponse: (response) => response.data.settings,
@@ -37,6 +40,7 @@ export const settingsApi = baseApi.injectEndpoints({
 export const {
   useUpdateProfileMutation,
   useChangePasswordMutation,
+  useChangeEmailMutation,
   useGetMySettingsQuery,
   useUpdateMySettingsMutation,
 } = settingsApi;
