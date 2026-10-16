@@ -92,6 +92,13 @@
       "when": 1792170079600,
       "tag": "0012_create_prompts",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792172557558,
+      "tag": "0013_create_user_settings",
+      "breakpoints": true
     }
   ]
 }

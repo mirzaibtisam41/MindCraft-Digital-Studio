@@ -20,6 +20,7 @@ import {
   myAccountRoutes,
 } from '#src/modules/users/users.routes.js';
 import { usageRoutes } from '#src/modules/usage/usage.routes.js';
+import { userSettingsRoutes } from '#src/modules/user-settings/user-settings.routes.js';
 
 export async function registerRoutes(fastify) {
   await fastify.register(healthRoutes, { prefix: '/health' });
@@ -32,6 +33,7 @@ export async function registerRoutes(fastify) {
   await fastify.register(promptsRoutes, { prefix: '/api/prompts' });
   await fastify.register(usageRoutes, { prefix: '/api/usage' });
   await fastify.register(myAccountRoutes, { prefix: '/api/me' });
+  await fastify.register(userSettingsRoutes, { prefix: '/api/me/settings' });
   await fastify.register(aiProvidersRoutes, { prefix: '/api/admin/providers' });
   await fastify.register(aiModelsRoutes, { prefix: '/api/admin/models' });
   await fastify.register(modelWorkflowsRoutes, {
