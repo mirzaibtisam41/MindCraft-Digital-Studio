@@ -233,6 +233,13 @@ describe('generations API', () => {
           .map((image) => `users/${user.user.id}/generations/${image.id}.png`)
           .sort(),
       );
+      assert.ok(
+        generation.images.every((image) =>
+          testApp.storage.files.has(
+            `users/${user.user.id}/thumbnails/${image.id}.webp`,
+          ),
+        ),
+      );
       assert.equal(await readBalance(user.user.id), 50);
     });
 

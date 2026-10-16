@@ -5,11 +5,12 @@ import {
   IMAGE_SOURCE,
 } from '#src/modules/images/image.constants.js';
 import { createImageRepository } from '#src/modules/images/shared/repositories/index.js';
-import { presentImageService } from '#src/modules/images/shared/services/index.js';
 import {
-  buildImageStorageKeyUtil,
-  readImageDetailsUtil,
-} from '#src/modules/images/shared/utils/index.js';
+  deleteImageFilesService,
+  presentImageService,
+  uploadImageFilesService,
+} from '#src/modules/images/shared/services/index.js';
+import { readImageDetailsUtil } from '#src/modules/images/shared/utils/index.js';
 
 export async function uploadImageService({
   db,
@@ -26,17 +27,13 @@ export async function uploadImageService({
   }
 
   const imageId = randomUUID();
-  const storageKey = buildImageStorageKeyUtil({
+  const { storageKey, thumbnailKey } = await uploadImageFilesService({
+    storage,
     userId,
     source: IMAGE_SOURCE.UPLOAD,
     imageId,
-    extension: details.extension,
-  });
-
-  await storage.uploadFile({
-    key: storageKey,
-    body: fileBuffer,
-    contentType: details.contentType,
+    fileBuffer,
+    details,
   });
 
   let image;
@@ -49,6 +46,7 @@ export async function uploadImageService({
         userId,
         source: IMAGE_SOURCE.UPLOAD,
         storageKey,
+        thumbnailKey,
         contentType: details.contentType,
         width: details.width,
         height: details.height,
@@ -58,11 +56,10 @@ export async function uploadImageService({
       },
     });
   } catch (error) {
-    await storage.deleteFile({ key: storageKey }).catch((deleteError) => {
-      log.error(
-        { err: deleteError, storageKey },
-        'Image row was not saved and its file could not be removed from storage',
-      );
+    await deleteImageFilesService({
+      storage,
+      log,
+      keys: [storageKey, thumbnailKey],
     });
     throw error;
   }

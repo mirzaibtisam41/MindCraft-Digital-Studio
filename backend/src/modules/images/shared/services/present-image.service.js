@@ -1,8 +1,12 @@
 export async function presentImageService({ storage, image }) {
-  const { storageKey, ...details } = image;
+  const { storageKey, thumbnailKey, ...details } = image;
+  const url = await storage.createSignedUrl({ key: storageKey });
 
   return {
     ...details,
-    url: await storage.createSignedUrl({ key: storageKey }),
+    url,
+    thumbnailUrl: thumbnailKey
+      ? await storage.createSignedUrl({ key: thumbnailKey })
+      : url,
   };
 }

@@ -8,6 +8,10 @@ export function createMemoryStorage() {
       files.set(key, { body, contentType });
     },
 
+    async downloadFile({ key }) {
+      return files.get(key).body;
+    },
+
     async deleteFile({ key }) {
       files.delete(key);
     },

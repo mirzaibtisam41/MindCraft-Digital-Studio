@@ -3,6 +3,7 @@ import {
   buildR2ClientIntegration,
   createR2SignedUrlIntegration,
   deleteR2FileIntegration,
+  downloadR2FileIntegration,
   uploadR2FileIntegration,
 } from '#src/integrations/index.js';
 
@@ -13,6 +14,8 @@ function buildR2Storage({ appConfig }) {
   return {
     uploadFile: (file) => uploadR2FileIntegration({ client, bucket, ...file }),
     deleteFile: ({ key }) => deleteR2FileIntegration({ client, bucket, key }),
+    downloadFile: ({ key }) =>
+      downloadR2FileIntegration({ client, bucket, key }),
     createSignedUrl: ({ key }) =>
       createR2SignedUrlIntegration({ client, bucket, key }),
     close: () => client.destroy(),

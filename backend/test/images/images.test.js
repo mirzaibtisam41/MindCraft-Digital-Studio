@@ -83,6 +83,15 @@ describe('images', () => {
       const key = `users/${user.user.id}/uploads/${image.id}.png`;
       assert.ok(testApp.storage.files.has(key));
       assert.ok(image.url.includes(key));
+
+      const thumbnailKey = `users/${user.user.id}/thumbnails/${image.id}.webp`;
+      assert.equal(
+        testApp.storage.files.get(thumbnailKey).contentType,
+        'image/webp',
+      );
+      assert.ok(image.thumbnailUrl.includes(thumbnailKey));
+      assert.equal(image.isFavorite, false);
+      assert.equal(image.thumbnailKey, undefined);
     });
 
     it('uploads a WebP with the webp extension', async () => {
@@ -207,6 +216,12 @@ describe('images', () => {
       assert.equal(response.statusCode, 200);
       assert.equal(response.body.message, 'Image deleted');
       assert.equal(testApp.storage.files.has(key), false);
+      assert.equal(
+        testApp.storage.files.has(
+          `users/${user.user.id}/thumbnails/${id}.webp`,
+        ),
+        false,
+      );
 
       const read = await send('GET', `/api/images/${id}`);
       assert.equal(read.statusCode, 404);

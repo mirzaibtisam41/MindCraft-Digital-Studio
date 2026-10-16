@@ -9,9 +9,10 @@ import {
 import { IMAGE_SOURCE } from '#src/modules/images/image.constants.js';
 import { createImageRepository } from '#src/modules/images/shared/repositories/index.js';
 import {
-  buildImageStorageKeyUtil,
-  readImageDetailsUtil,
-} from '#src/modules/images/shared/utils/index.js';
+  deleteImageFilesService,
+  uploadImageFilesService,
+} from '#src/modules/images/shared/services/index.js';
+import { readImageDetailsUtil } from '#src/modules/images/shared/utils/index.js';
 import { findUserGenerationByIdRepository } from '#src/modules/generations/shared/repositories/index.js';
 import {
   completeGenerationService,
@@ -107,19 +108,17 @@ async function saveGeneratedImages({
     });
 
     for (const file of files) {
-      file.storageKey = buildImageStorageKeyUtil({
+      const keys = await uploadImageFilesService({
+        storage,
         userId,
         source: IMAGE_SOURCE.GENERATED,
         imageId: file.id,
-        extension: file.details.extension,
+        fileBuffer: file.fileBuffer,
+        details: file.details,
       });
 
-      await storage.uploadFile({
-        key: file.storageKey,
-        body: file.fileBuffer,
-        contentType: file.details.contentType,
-      });
-      uploadedKeys.push(file.storageKey);
+      Object.assign(file, keys);
+      uploadedKeys.push(keys.storageKey, keys.thumbnailKey);
     }
 
     await db.transaction(async (tx) => {
@@ -132,6 +131,7 @@ async function saveGeneratedImages({
             source: IMAGE_SOURCE.GENERATED,
             generationId: generation.id,
             storageKey: file.storageKey,
+            thumbnailKey: file.thumbnailKey,
             contentType: file.details.contentType,
             width: file.details.width,
             height: file.details.height,
@@ -150,16 +150,7 @@ async function saveGeneratedImages({
       }
     });
   } catch (error) {
-    await Promise.all(
-      uploadedKeys.map((key) =>
-        storage.deleteFile({ key }).catch((deleteError) => {
-          log.error(
-            { err: deleteError, storageKey: key },
-            'Generated image could not be removed from storage',
-          );
-        }),
-      ),
-    );
+    await deleteImageFilesService({ storage, log, keys: uploadedKeys });
 
     throw error;
   }

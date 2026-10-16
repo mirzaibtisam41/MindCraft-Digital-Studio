@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   check,
   index,
   integer,
@@ -37,6 +38,8 @@ export const images = pgTable(
     height: integer().notNull(),
     sizeBytes: integer().notNull(),
     originalFileName: varchar({ length: IMAGE_ORIGINAL_FILE_NAME_MAX_LENGTH }),
+    thumbnailKey: varchar({ length: 512 }),
+    isFavorite: boolean().notNull().default(false),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

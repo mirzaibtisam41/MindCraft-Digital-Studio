@@ -14,3 +14,7 @@ export function buildImageStorageKeyUtil({
 }) {
   return `users/${userId}/${SOURCE_FOLDERS[source]}/${imageId}.${extension}`;
 }
+
+export function buildThumbnailStorageKeyUtil({ userId, imageId }) {
+  return `users/${userId}/thumbnails/${imageId}.webp`;
+}
