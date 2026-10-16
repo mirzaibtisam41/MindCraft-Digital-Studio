@@ -140,7 +140,14 @@ async function saveGeneratedImages({
         });
       }
 
-      await completeGenerationService({ db: tx, generationId: generation.id });
+      const completed = await completeGenerationService({
+        db: tx,
+        generationId: generation.id,
+      });
+
+      if (!completed) {
+        throw new Error('The generation was already finished and refunded');
+      }
     });
   } catch (error) {
     await Promise.all(

@@ -3,6 +3,7 @@ import { after, before, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildTestApp } from '../helpers/test-app.js';
 import { ProviderError } from '#src/utils/index.js';
+import { refundStuckGenerationsService } from '#src/modules/generations/shared/services/index.js';
 
 const UNKNOWN_ID = '00000000-0000-4000-8000-000000000000';
 
@@ -137,6 +138,16 @@ describe('generations API', () => {
     return model;
   }
 
+  async function registerUserWithCredits() {
+    const user = await testApp.registerAndLogin();
+    await testApp.runSql(
+      'UPDATE credit_wallets SET balance = 60 WHERE user_id = $1',
+      [user.user.id],
+    );
+
+    return user;
+  }
+
   function generate(user, overrides = {}) {
     return send('POST', '/api/generations', user.accessToken, {
       modelId: activeModel.id,
@@ -163,7 +174,7 @@ describe('generations API', () => {
 
   describe('GET /api/generations/options', () => {
     it('lists active models with their options and prices', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
 
       const response = await send(
         'GET',
@@ -188,7 +199,7 @@ describe('generations API', () => {
 
   describe('POST /api/generations', () => {
     it('generates images, stores them and keeps the charge', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       testApp.openai.nextImageBuffers = [PNG_1X1, PNG_1X1];
 
       const response = await generate(user);
@@ -226,7 +237,7 @@ describe('generations API', () => {
     });
 
     it('refunds the credits when the safety filter blocks the prompt', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       testApp.openai.nextError = new ProviderError({
         category: 'safety_rejected',
       });
@@ -249,7 +260,7 @@ describe('generations API', () => {
     });
 
     it('refunds and cleans up when the provider sends something that is not an image', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       testApp.openai.nextImageBuffers = [PNG_1X1, Buffer.from('not an image')];
 
       const response = await generate(user);
@@ -267,7 +278,7 @@ describe('generations API', () => {
     });
 
     it('maps a provider outage to a 503 without the provider details', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       testApp.openai.nextError = new ProviderError({
         category: 'provider_auth_failed',
         cause: new Error('Incorrect API key provided: sk-secret'),
@@ -281,8 +292,33 @@ describe('generations API', () => {
       assert.equal(await readBalance(user.user.id), 60);
     });
 
+    it('keeps no images when the generation was refunded while the provider was working', async () => {
+      const user = await registerUserWithCredits();
+      testApp.openai.nextImageBuffers = [PNG_1X1, PNG_1X1];
+      testApp.openai.duringGenerate = async () => {
+        await testApp.runSql(
+          "UPDATE generations SET created_at = now() - interval '11 minutes' WHERE user_id = $1",
+          [user.user.id],
+        );
+        await refundStuckGenerationsService({ db: testApp.app.db });
+      };
+
+      const response = await generate(user);
+
+      assert.equal(response.statusCode, 503);
+      assert.match(response.body.message, /Your 10 credits were refunded/);
+      assert.equal(await readBalance(user.user.id), 60);
+      assert.deepEqual(storedKeysFor(user.user.id), []);
+
+      const images = await testApp.runSql(
+        'SELECT id FROM images WHERE user_id = $1',
+        [user.user.id],
+      );
+      assert.equal(images.length, 0);
+    });
+
     it('does not call the provider without enough credits', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       await testApp.runSql(
         'UPDATE credit_wallets SET balance = 3 WHERE user_id = $1',
         [user.user.id],
@@ -300,7 +336,7 @@ describe('generations API', () => {
     });
 
     it('rejects options the model does not offer and inactive models', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       const callsBefore = testApp.openai.calls.length;
 
       const wrongSize = await generate(user, {
@@ -333,7 +369,7 @@ describe('generations API', () => {
 
   describe('GET /api/generations and /api/generations/:id', () => {
     it('lists only my generations, newest first, with images', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       const other = await testApp.registerAndLogin();
       testApp.openai.nextImageBuffers = [PNG_1X1];
       await generate(user, { options: { ...OPTIONS, n: 1 } });
@@ -356,7 +392,7 @@ describe('generations API', () => {
     });
 
     it('returns one of my generations and hides others', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       const other = await testApp.registerAndLogin();
       testApp.openai.nextImageBuffers = [PNG_1X1];
       const created = await generate(user, { options: { ...OPTIONS, n: 1 } });

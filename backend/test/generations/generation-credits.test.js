@@ -6,6 +6,7 @@ import {
   completeGenerationService,
   estimateGenerationCostService,
   failGenerationService,
+  refundStuckGenerationsService,
   startGenerationService,
 } from '#src/modules/generations/shared/services/index.js';
 
@@ -113,6 +114,16 @@ describe('generation credits', () => {
     return model;
   }
 
+  async function registerUserWithCredits() {
+    const user = await testApp.registerAndLogin();
+    await testApp.runSql(
+      'UPDATE credit_wallets SET balance = 60 WHERE user_id = $1',
+      [user.user.id],
+    );
+
+    return user;
+  }
+
   function estimate(overrides = {}) {
     return estimateGenerationCostService({
       db: testApp.app.db,
@@ -194,7 +205,7 @@ describe('generation credits', () => {
 
   describe('startGenerationService', () => {
     it('creates a processing generation and holds the credits', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
 
       const generation = await startFor(user);
 
@@ -213,7 +224,7 @@ describe('generation credits', () => {
     });
 
     it('refuses to start without enough credits and saves nothing', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       await testApp.runSql(
         'UPDATE credit_wallets SET balance = 4 WHERE user_id = $1',
         [user.user.id],
@@ -234,7 +245,7 @@ describe('generation credits', () => {
 
   describe('completeGenerationService', () => {
     it('marks the generation succeeded and keeps the hold', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       const generation = await startFor(user);
 
       const completed = await completeGenerationService({
@@ -248,7 +259,7 @@ describe('generation credits', () => {
     });
 
     it('does nothing for a generation that already finished', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       const generation = await startFor(user);
       await completeGenerationService({
         db: testApp.app.db,
@@ -268,7 +279,7 @@ describe('generation credits', () => {
 
   describe('failGenerationService', () => {
     it('marks the generation failed and refunds the credits once', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       const generation = await startFor(user);
 
       const failed = await failGenerationService({
@@ -289,9 +300,10 @@ describe('generation credits', () => {
       const wallet = await readWallet(user.user.id);
       assert.equal(wallet.balance, 60);
       assert.deepEqual(
-        wallet.transactions.map((entry) => [entry.type, entry.amount]),
+        wallet.transactions
+          .filter((entry) => entry.type.startsWith('generation_'))
+          .map((entry) => [entry.type, entry.amount]),
         [
-          ['signup_grant', 60],
           ['generation_hold', -10],
           ['generation_refund', 10],
         ],
@@ -303,7 +315,7 @@ describe('generation credits', () => {
     });
 
     it('refunds only once when two failures race', async () => {
-      const user = await testApp.registerAndLogin();
+      const user = await registerUserWithCredits();
       const generation = await startFor(user);
 
       const results = await Promise.all([
@@ -321,6 +333,35 @@ describe('generation credits', () => {
 
       assert.equal(results.filter(Boolean).length, 1);
       assert.equal((await readWallet(user.user.id)).balance, 60);
+    });
+  });
+
+  describe('refundStuckGenerationsService', () => {
+    it('refunds generations stuck in processing for over 10 minutes', async () => {
+      const user = await registerUserWithCredits();
+      const stuck = await startFor(user, { ...OPTIONS, n: 1 });
+      const recent = await startFor(user, { ...OPTIONS, n: 1 });
+      await testApp.runSql(
+        "UPDATE generations SET created_at = now() - interval '11 minutes' WHERE id = $1",
+        [stuck.id],
+      );
+
+      await refundStuckGenerationsService({ db: testApp.app.db });
+      const secondRun = await refundStuckGenerationsService({
+        db: testApp.app.db,
+      });
+
+      const rows = await testApp.runSql(
+        'SELECT id, status, error_category FROM generations WHERE user_id = $1',
+        [user.user.id],
+      );
+      const byId = Object.fromEntries(rows.map((row) => [row.id, row]));
+
+      assert.equal(byId[stuck.id].status, 'failed');
+      assert.equal(byId[stuck.id].error_category, 'timeout');
+      assert.equal(byId[recent.id].status, 'processing');
+      assert.equal(secondRun, 0);
+      assert.equal((await readWallet(user.user.id)).balance, 55);
     });
   });
 });

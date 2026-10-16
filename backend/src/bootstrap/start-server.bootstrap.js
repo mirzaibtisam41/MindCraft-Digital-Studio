@@ -1,5 +1,6 @@
 import { shutdownServer } from '#src/bootstrap/shutdown-server.bootstrap.js';
 import { buildApp } from '#src/bootstrap/build-app.bootstrap.js';
+import { startJobs } from '#src/bootstrap/start-jobs.bootstrap.js';
 
 export async function startServer() {
   const fastify = buildApp();
@@ -11,6 +12,8 @@ export async function startServer() {
       port: fastify.config.PORT,
       host: '0.0.0.0',
     });
+
+    startJobs({ fastify });
 
     for (const signal of ['SIGINT', 'SIGTERM']) {
       process.once(signal, () => shutdownServer({ fastify, signal }));

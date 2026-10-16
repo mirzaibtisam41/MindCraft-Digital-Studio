@@ -5,9 +5,16 @@ export function createFakeOpenAi() {
     calls,
     nextError: null,
     nextImageBuffers: null,
+    duringGenerate: null,
 
     async generateImages(request) {
       calls.push(request);
+
+      if (this.duringGenerate) {
+        const hook = this.duringGenerate;
+        this.duringGenerate = null;
+        await hook(request);
+      }
 
       if (this.nextError) {
         const error = this.nextError;

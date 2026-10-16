@@ -29,7 +29,8 @@ backend/
     ├── bootstrap/           how the app starts, in order: load-env.bootstrap.js (loads .env, runs first),
     │                        build-app.bootstrap.js (buildApp(): Fastify + plugins in order + routes, used by tests),
     │                        start-server.bootstrap.js (startServer(): ready, listen, shutdown signals),
-    │                        shutdown-server.bootstrap.js (shutdownServer(): close on SIGINT/SIGTERM), index.js
+    │                        shutdown-server.bootstrap.js (shutdownServer(): close on SIGINT/SIGTERM),
+    │                        start-jobs.bootstrap.js (startJobs(): repeating background jobs, real server only), index.js
     ├── config/              only settings that are big or used in several places: env.config.js (env schema +
     │                        buildAppConfig), pino.config.js, refresh-cookie.config.js; index.js re-exports
     ├── constants/           *.constants.js; index.js re-exports
