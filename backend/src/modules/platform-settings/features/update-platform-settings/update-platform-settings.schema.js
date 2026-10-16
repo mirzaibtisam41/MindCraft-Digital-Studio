@@ -7,6 +7,7 @@ export const updatePlatformSettingsBodySchema = {
     signupCredits: { type: 'integer', minimum: 0, maximum: 10000 },
     visionModel: { type: 'string', enum: CHAT_MODELS },
     visionCredits: { type: 'integer', minimum: 0, maximum: 100 },
+    promptModel: { type: 'string', enum: CHAT_MODELS },
   },
   additionalProperties: false,
 };

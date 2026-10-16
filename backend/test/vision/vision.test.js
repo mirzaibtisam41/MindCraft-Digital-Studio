@@ -218,7 +218,7 @@ describe('AI Vision', () => {
   it('lets an admin change the vision model and price', async () => {
     const admin = await testApp.registerAndLoginAsAdmin();
     const saved = await testApp.runSql(
-      "SELECT key, value FROM platform_settings WHERE key IN ('vision_model', 'vision_credits')",
+      "SELECT key, value FROM platform_settings WHERE key IN ('vision_model', 'vision_credits', 'prompt_model')",
     );
 
     try {
@@ -231,7 +231,11 @@ describe('AI Vision', () => {
         method: 'PATCH',
         url: '/api/admin/settings',
         accessToken: admin.accessToken,
-        payload: { visionModel: 'gpt-4.1-nano', visionCredits: 3 },
+        payload: {
+          visionModel: 'gpt-4.1-nano',
+          visionCredits: 3,
+          promptModel: 'gpt-4o-mini',
+        },
       });
       const options = await testApp.sendRequest({
         method: 'GET',
@@ -245,7 +249,8 @@ describe('AI Vision', () => {
         payload: { visionModel: 'not-a-model' },
       });
 
-      assert.ok(settings.body.data.visionModels.includes('gpt-4.1-mini'));
+      assert.ok(settings.body.data.chatModels.includes('gpt-4.1-mini'));
+      assert.equal(changed.body.data.settings.promptModel, 'gpt-4o-mini');
       assert.equal(changed.body.data.settings.visionModel, 'gpt-4.1-nano');
       assert.equal(changed.body.data.settings.visionCredits, 3);
       assert.equal(typeof changed.body.data.settings.signupCredits, 'number');

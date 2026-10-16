@@ -101,8 +101,28 @@ function SignupCreditsForm({ settings }) {
   );
 }
 
-function VisionSettingsForm({ settings }) {
+function ModelSelect({ id, label, value, onChange, models }) {
+  return (
+    <Field id={id} label={label} className="sm:w-56">
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger id={id} aria-label={label}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {models.map((model) => (
+            <SelectItem key={model} value={model}>
+              {model}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </Field>
+  );
+}
+
+function AiSettingsForm({ settings }) {
   const [visionModel, setVisionModel] = useState(settings.visionModel);
+  const [promptModel, setPromptModel] = useState(settings.promptModel);
   const [visionCredits, setVisionCredits] = useState(
     String(settings.visionCredits),
   );
@@ -126,8 +146,9 @@ function VisionSettingsForm({ settings }) {
       await updatePlatformSettings({
         visionModel,
         visionCredits: value,
+        promptModel,
       }).unwrap();
-      toast.success('AI Vision settings saved');
+      toast.success('AI settings saved');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -137,48 +158,51 @@ function VisionSettingsForm({ settings }) {
     <form onSubmit={handleSubmit} noValidate>
       <Card>
         <CardHeader>
-          <CardTitle>AI Vision</CardTitle>
+          <CardTitle>AI Vision &amp; Prompt Studio</CardTitle>
           <CardDescription>
-            The model that analyzes images and what one analysis costs.
+            The models that analyze images and improve prompts, and what one
+            image analysis costs. Improving prompts is free.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4 sm:flex-row">
+        <CardContent className="flex flex-col gap-4">
           <FormAlert>{errorMessage}</FormAlert>
-          <Field id="vision-model" label="Model" className="sm:w-60">
-            <Select value={visionModel} onValueChange={setVisionModel}>
-              <SelectTrigger id="vision-model" aria-label="Vision model">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {settings.visionModels.map((model) => (
-                  <SelectItem key={model} value={model}>
-                    {model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field
-            id="vision-credits"
-            label="Credits per analysis"
-            error={fieldError}
-            hint="Set 0 to make analyses free."
-            className="sm:w-60"
-          >
-            <Input
-              id="vision-credits"
-              type="number"
-              min="0"
-              value={visionCredits}
-              onChange={(event) => setVisionCredits(event.target.value)}
-              aria-invalid={Boolean(fieldError)}
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+            <ModelSelect
+              id="vision-model"
+              label="Vision model"
+              value={visionModel}
+              onChange={setVisionModel}
+              models={settings.chatModels}
             />
-          </Field>
+            <Field
+              id="vision-credits"
+              label="Credits per analysis"
+              error={fieldError}
+              hint="Set 0 to make analyses free."
+              className="sm:w-56"
+            >
+              <Input
+                id="vision-credits"
+                type="number"
+                min="0"
+                value={visionCredits}
+                onChange={(event) => setVisionCredits(event.target.value)}
+                aria-invalid={Boolean(fieldError)}
+              />
+            </Field>
+            <ModelSelect
+              id="prompt-model"
+              label="Prompt model"
+              value={promptModel}
+              onChange={setPromptModel}
+              models={settings.chatModels}
+            />
+          </div>
         </CardContent>
         <CardFooter className="justify-end">
           <Button type="submit" disabled={isLoading}>
             {isLoading ? <Spinner /> : null}
-            Save AI Vision
+            Save AI settings
           </Button>
         </CardFooter>
       </Card>
@@ -206,8 +230,8 @@ export function PlatformSettingsView() {
         <SignupCreditsForm key={settings.signupCredits} settings={settings} />
       ) : null}
       {settings ? (
-        <VisionSettingsForm
-          key={`${settings.visionModel}-${settings.visionCredits}`}
+        <AiSettingsForm
+          key={`${settings.visionModel}-${settings.visionCredits}-${settings.promptModel}`}
           settings={settings}
         />
       ) : null}

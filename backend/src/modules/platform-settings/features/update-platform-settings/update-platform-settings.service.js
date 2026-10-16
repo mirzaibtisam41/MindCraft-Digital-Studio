@@ -6,6 +6,7 @@ const KEYS_BY_FIELD = {
   signupCredits: PLATFORM_SETTING_KEY.SIGNUP_CREDITS,
   visionModel: PLATFORM_SETTING_KEY.VISION_MODEL,
   visionCredits: PLATFORM_SETTING_KEY.VISION_CREDITS,
+  promptModel: PLATFORM_SETTING_KEY.PROMPT_MODEL,
 };
 
 export async function updatePlatformSettingsService({ db, data, adminId }) {

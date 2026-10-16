@@ -4,5 +4,5 @@ import { readPlatformSettingsService } from '#src/modules/platform-settings/shar
 export async function getPlatformSettingsController(request, reply) {
   const settings = await readPlatformSettingsService({ db: request.server.db });
 
-  return reply.success({ data: { settings, visionModels: CHAT_MODELS } });
+  return reply.success({ data: { settings, chatModels: CHAT_MODELS } });
 }

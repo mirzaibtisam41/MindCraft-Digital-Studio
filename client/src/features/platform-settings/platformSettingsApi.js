@@ -6,7 +6,7 @@ export const platformSettingsApi = baseApi.injectEndpoints({
       query: () => '/api/admin/settings',
       transformResponse: (response) => ({
         ...response.data.settings,
-        visionModels: response.data.visionModels,
+        chatModels: response.data.chatModels,
       }),
       providesTags: ['PlatformSettings'],
     }),
