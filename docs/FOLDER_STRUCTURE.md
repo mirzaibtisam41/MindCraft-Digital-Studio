@@ -38,7 +38,7 @@ backend/
     ├── handlers/            request handlers Fastify calls: error, not-found (*.handler.js → errorHandler, notFoundHandler)
     ├── hooks/               *.hook.js (auth check, ownership/access checks, rate limits)
     ├── integrations/        third-party services the app talks to (no routes, no tables): <service>.integration.js,
-    │                        e.g. resend-mail.integration.js, r2/ (build-r2-client, upload-r2-file, delete-r2-file,
+    │                        e.g. brevo/ (send-brevo-email), r2/ (build-r2-client, upload-r2-file, delete-r2-file,
     │                        create-r2-signed-url, download-r2-file), openai/ (build-openai-client,
     │                        request-openai-images, generate-openai-images, edit-openai-images, map-openai-error),
     │                        langchain/ (vision-tasks, build-chat-model, analyze-image, enhance-prompt, map-langchain-error); one file per action; provider errors become a ProviderError
@@ -81,7 +81,8 @@ Prefixes are set in `src/modules/index.js`. Three modules share `/api/admin/mode
 | `GET /api/generations/options?type=` · `POST · GET /api/generations` (type text_to_image, image_to_image or image_edit) · `GET /api/generations/:id` | `generations` | `get-generation-options` · `create-generation` · `list-my-generations` · `get-my-generation` | logged in, own generations only |
 | `POST /api/prompts/enhance` (20/min) · `GET /api/prompts/options` · `POST · GET /api/prompts` · `PATCH · DELETE /api/prompts/:id` · `POST /api/prompts/:id/use` | `prompts` | `enhance-prompt` · `get-prompt-options` · `create-prompt` · `list-my-prompts` · `update-my-prompt` · `delete-my-prompt` · `use-my-prompt` | logged in, own prompts only |
 | `GET /api/usage?month=&timezone=` | `usage` | `get-my-usage` | logged in, own usage only |
-| `PATCH /api/me/profile` · `POST /api/me/password` | `users` (`myAccountRoutes`) | `update-my-profile` · `change-my-password` | logged in |
+| `PATCH /api/me/profile` · `POST /api/me/password` · `POST /api/me/email` | `users` (`myAccountRoutes`) | `update-my-profile` · `change-my-password` · `change-my-email` | logged in |
+| `POST /api/auth/forgot-password` · `reset-password` · `verify-email` · `resend-verification` | `auth` (tokens in `auth-tokens`) | `forgot-password` · `reset-password` · `verify-email` · `resend-verification` | anyone (resend: logged in) |
 | `GET · PATCH /api/me/settings` | `user-settings` | `get-my-settings` · `update-my-settings` | logged in |
 | `GET /api/notifications` · `POST /api/notifications/:id/read` · `POST /api/notifications/read-all` | `notifications` | `list-my-notifications` · `mark-notification-read` · `mark-all-notifications-read` | logged in, own notifications only |
 | `GET /api/vision/options` · `POST · GET /api/vision/analyses` | `image-analyses` (`visionRoutes`) | `get-vision-options` · `create-image-analysis` · `list-image-analyses` | logged in, own images only |

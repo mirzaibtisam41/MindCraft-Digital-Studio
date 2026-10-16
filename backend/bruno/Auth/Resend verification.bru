@@ -1,0 +1,15 @@
+meta {
+  name: Resend verification
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{baseUrl}}/api/auth/resend-verification
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
