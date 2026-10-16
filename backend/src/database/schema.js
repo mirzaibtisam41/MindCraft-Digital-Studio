@@ -17,3 +17,4 @@ export * from '#src/modules/projects/project-image.table.js';
 export * from '#src/modules/image-analyses/image-analysis.table.js';
 export * from '#src/modules/prompts/prompt.table.js';
 export * from '#src/modules/user-settings/user-setting.table.js';
+export * from '#src/modules/notifications/notification.table.js';

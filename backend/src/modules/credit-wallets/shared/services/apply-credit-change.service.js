@@ -7,6 +7,7 @@ import {
   createCreditTransactionRepository,
   findCreditTransactionByIdempotencyKeyRepository,
 } from '#src/modules/credit-transactions/shared/repositories/index.js';
+import { notifyIfCreditsRanLowService } from '#src/modules/notifications/shared/services/index.js';
 
 export async function applyCreditChangeService({
   db,
@@ -63,6 +64,15 @@ export async function applyCreditChangeService({
       idempotencyKey,
     },
   });
+
+  if (amount < 0) {
+    await notifyIfCreditsRanLowService({
+      db,
+      userId,
+      balanceBefore: wallet.balance,
+      balanceAfter,
+    });
+  }
 
   return { transaction, balance: balanceAfter };
 }

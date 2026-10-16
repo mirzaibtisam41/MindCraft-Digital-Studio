@@ -2,6 +2,8 @@ import { GENERATION_STATUS } from '#src/modules/generations/generation.constants
 import { finishProcessingGenerationRepository } from '#src/modules/generations/shared/repositories/index.js';
 import { CREDIT_TRANSACTION_TYPE } from '#src/modules/credit-transactions/credit-transaction.constants.js';
 import { applyCreditChangeService } from '#src/modules/credit-wallets/shared/services/index.js';
+import { NOTIFICATION_TYPE } from '#src/modules/notifications/notification.constants.js';
+import { notifyCreditsRefundedService } from '#src/modules/notifications/shared/services/index.js';
 
 export function failGenerationService({ db, generationId, errorCategory }) {
   return db.transaction(async (tx) => {
@@ -20,6 +22,15 @@ export function failGenerationService({ db, generationId, errorCategory }) {
       type: CREDIT_TRANSACTION_TYPE.GENERATION_REFUND,
       reason: 'Refund for a failed generation',
       idempotencyKey: `generation:${generation.id}:refund`,
+    });
+
+    await notifyCreditsRefundedService({
+      db: tx,
+      userId: generation.userId,
+      type: NOTIFICATION_TYPE.GENERATION_FAILED,
+      credits: generation.totalCredits,
+      what: 'Image generation',
+      link: '/app/history',
     });
 
     return generation;

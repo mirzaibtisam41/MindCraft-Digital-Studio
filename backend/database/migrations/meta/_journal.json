@@ -99,6 +99,13 @@
       "when": 1792172557558,
       "tag": "0013_create_user_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792172770157,
+      "tag": "0014_create_notifications",
+      "breakpoints": true
     }
   ]
 }
