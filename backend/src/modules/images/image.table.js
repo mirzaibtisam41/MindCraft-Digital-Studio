@@ -10,6 +10,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { users } from '#src/modules/users/user.table.js';
+import { generations } from '#src/modules/generations/generation.table.js';
 import {
   IMAGE_ORIGINAL_FILE_NAME_MAX_LENGTH,
   IMAGE_SOURCES,
@@ -25,6 +26,9 @@ export const images = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     source: imageSourceEnum().notNull(),
+    generationId: uuid().references(() => generations.id, {
+      onDelete: 'set null',
+    }),
     storageKey: varchar({ length: 512 })
       .notNull()
       .unique('images_storage_key_unique'),
@@ -37,6 +41,7 @@ export const images = pgTable(
   },
   (table) => [
     index('images_user_id_created_at_idx').on(table.userId, table.createdAt),
+    index('images_generation_id_idx').on(table.generationId),
     check(
       'images_dimensions_positive',
       sql`${table.width} > 0 AND ${table.height} > 0`,
