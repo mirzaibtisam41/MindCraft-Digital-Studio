@@ -1,0 +1,15 @@
+meta {
+  name: Image edit history
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/images/{{imageId}}/history
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

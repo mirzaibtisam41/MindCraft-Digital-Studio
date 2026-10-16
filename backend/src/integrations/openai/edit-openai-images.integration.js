@@ -31,6 +31,7 @@ export function editOpenAiImagesIntegration({
           : {}),
         size,
         quality,
+        background: 'opaque',
         output_format: outputFormat,
         n,
       }),

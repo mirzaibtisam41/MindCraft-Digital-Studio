@@ -1,0 +1,31 @@
+meta {
+  name: Edit image with mask
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/generations
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "type": "image_edit",
+    "modelId": "{{modelId}}",
+    "sourceImageId": "{{imageId}}",
+    "mask": "data:image/png;base64,PASTE_A_PNG_MASK_THE_SAME_SIZE_AS_THE_IMAGE",
+    "prompt": "Add a red hat",
+    "options": {
+      "size": "1024x1024",
+      "quality": "low",
+      "outputFormat": "png",
+      "n": 1
+    }
+  }
+}

@@ -23,13 +23,13 @@ export function buildMaskDataUrl({ width, height, strokes }) {
   canvas.height = height;
   const context = canvas.getContext('2d');
 
-  context.fillStyle = '#000000';
+  context.fillStyle = '#ffffff';
   context.fillRect(0, 0, width, height);
 
   for (const stroke of strokes) {
     context.globalCompositeOperation =
       stroke.mode === 'paint' ? 'destination-out' : 'source-over';
-    context.strokeStyle = '#000000';
+    context.strokeStyle = '#ffffff';
     drawStroke(context, stroke);
   }
 

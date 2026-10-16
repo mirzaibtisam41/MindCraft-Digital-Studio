@@ -173,6 +173,7 @@ describe('OpenAI integration', () => {
       assert.equal(sent.model, 'gpt-image-1-mini');
       assert.equal(sent.prompt, 'add a hat');
       assert.equal(sent.output_format, 'png');
+      assert.equal(sent.background, 'opaque');
       assert.equal(sent.imageName, 'source.png');
       assert.equal(sent.imageType, 'image/png');
       assert.equal(sent.imageText, 'source');

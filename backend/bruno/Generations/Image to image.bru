@@ -1,0 +1,30 @@
+meta {
+  name: Image to image
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/generations
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "type": "image_to_image",
+    "modelId": "{{modelId}}",
+    "sourceImageId": "{{imageId}}",
+    "prompt": "Turn it into a soft watercolor painting",
+    "options": {
+      "size": "1024x1024",
+      "quality": "low",
+      "outputFormat": "png",
+      "n": 2
+    }
+  }
+}
