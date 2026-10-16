@@ -11,6 +11,7 @@ export function startGenerationService({
   estimate,
   prompt,
   options,
+  sourceImageId = null,
 }) {
   return db.transaction(async (tx) => {
     const wallet = await findCreditWalletByUserIdRepository({
@@ -31,6 +32,7 @@ export function startGenerationService({
         userId,
         modelId: estimate.model.id,
         modelWorkflowId: estimate.modelWorkflowId,
+        sourceImageId,
         prompt,
         options,
         status: GENERATION_STATUS.PROCESSING,

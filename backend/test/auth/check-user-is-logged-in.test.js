@@ -40,9 +40,14 @@ describe('checkUserIsLoggedInHook (GET /api/auth/me)', () => {
 
   it('rejects a token with a changed signature', async () => {
     const { accessToken } = await testApp.registerAndLogin();
-    const lastCharacter = accessToken.at(-1) === 'A' ? 'B' : 'A';
+    const signatureStart = accessToken.lastIndexOf('.') + 1;
+    const changedCharacter = accessToken[signatureStart] === 'A' ? 'B' : 'A';
+    const changedToken =
+      accessToken.slice(0, signatureStart) +
+      changedCharacter +
+      accessToken.slice(signatureStart + 1);
 
-    const response = await getMe(accessToken.slice(0, -1) + lastCharacter);
+    const response = await getMe(changedToken);
 
     assert.equal(response.statusCode, 401);
   });

@@ -7,12 +7,16 @@ import {
   ServiceUnavailableError,
 } from '#src/utils/index.js';
 import { IMAGE_SOURCE } from '#src/modules/images/image.constants.js';
-import { createImageRepository } from '#src/modules/images/shared/repositories/index.js';
+import {
+  createImageRepository,
+  findUserImageByIdRepository,
+} from '#src/modules/images/shared/repositories/index.js';
 import {
   deleteImageFilesService,
   uploadImageFilesService,
 } from '#src/modules/images/shared/services/index.js';
 import { readImageDetailsUtil } from '#src/modules/images/shared/utils/index.js';
+import { GENERATION_TYPE_CODE } from '#src/modules/generations/generation.constants.js';
 import { findUserGenerationByIdRepository } from '#src/modules/generations/shared/repositories/index.js';
 import {
   completeGenerationService,
@@ -27,6 +31,12 @@ const CATEGORIES_THAT_NEED_AN_ADMIN = [
   PROVIDER_ERROR_CATEGORY.PROVIDER_AUTH_FAILED,
   PROVIDER_ERROR_CATEGORY.UNKNOWN,
 ];
+
+const EXTENSIONS = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/webp': 'webp',
+};
 
 function buildFailureError({ category, refundedCredits }) {
   const refund = `Your ${refundedCredits} credits were refunded.`;
@@ -86,6 +96,76 @@ async function failAndThrow({ db, log, generation, error }) {
   });
 }
 
+async function readSourceImage({ db, storage, userId, data, type }) {
+  if (type === GENERATION_TYPE_CODE.TEXT_TO_IMAGE) {
+    if (data.sourceImageId || data.mask) {
+      throw new BadRequestError(
+        'A starting image and a mask are only used for image to image and edits',
+      );
+    }
+
+    return null;
+  }
+
+  if (!data.sourceImageId) {
+    throw new BadRequestError('Choose an image to start from');
+  }
+
+  const image = await findUserImageByIdRepository({
+    db,
+    id: data.sourceImageId,
+    userId,
+  });
+
+  if (!image) {
+    throw new NotFoundError('Image not found');
+  }
+
+  return {
+    id: image.id,
+    width: image.width,
+    height: image.height,
+    contentType: image.contentType,
+    extension: EXTENSIONS[image.contentType] ?? 'png',
+    buffer: await storage.downloadFile({ key: image.storageKey }),
+  };
+}
+
+function readMask({ data, type, sourceImage }) {
+  if (type !== GENERATION_TYPE_CODE.IMAGE_EDIT) {
+    if (data.mask) {
+      throw new BadRequestError('A mask is only used for image edits');
+    }
+
+    return null;
+  }
+
+  if (!data.mask) {
+    throw new BadRequestError(
+      'Paint over the part of the image you want to change',
+    );
+  }
+
+  const maskBuffer = Buffer.from(
+    data.mask.slice(data.mask.indexOf(',') + 1),
+    'base64',
+  );
+  const details = readImageDetailsUtil({ fileBuffer: maskBuffer });
+
+  if (
+    !details ||
+    details.contentType !== 'image/png' ||
+    details.width !== sourceImage.width ||
+    details.height !== sourceImage.height
+  ) {
+    throw new BadRequestError(
+      'The mask must be a PNG the same size as the image',
+    );
+  }
+
+  return maskBuffer;
+}
+
 async function saveGeneratedImages({
   db,
   storage,
@@ -93,6 +173,7 @@ async function saveGeneratedImages({
   userId,
   generation,
   imageBuffers,
+  source,
 }) {
   const uploadedKeys = [];
 
@@ -111,7 +192,7 @@ async function saveGeneratedImages({
       const keys = await uploadImageFilesService({
         storage,
         userId,
-        source: IMAGE_SOURCE.GENERATED,
+        source,
         imageId: file.id,
         fileBuffer: file.fileBuffer,
         details: file.details,
@@ -128,7 +209,7 @@ async function saveGeneratedImages({
           data: {
             id: file.id,
             userId,
-            source: IMAGE_SOURCE.GENERATED,
+            source,
             generationId: generation.id,
             storageKey: file.storageKey,
             thumbnailKey: file.thumbnailKey,
@@ -156,15 +237,38 @@ async function saveGeneratedImages({
   }
 }
 
+function requestImages({
+  openai,
+  model,
+  prompt,
+  options,
+  sourceImage,
+  maskImage,
+}) {
+  const request = {
+    model,
+    prompt,
+    size: options.size,
+    quality: options.quality,
+    outputFormat: options.outputFormat,
+    n: options.n,
+  };
+
+  if (!sourceImage) return openai.generateImages(request);
+
+  return openai.editImages({ ...request, sourceImage, maskImage });
+}
+
 export async function createGenerationService({ server, log, userId, data }) {
   const { db, storage, openai } = server;
+  const type = data.type ?? GENERATION_TYPE_CODE.TEXT_TO_IMAGE;
   const prompt = data.prompt.trim();
   const { options } = data;
 
   const estimate = await estimateGenerationCostService({
     db,
     modelId: data.modelId,
-    generationTypeCode: 'text_to_image',
+    generationTypeCode: type,
     options,
   });
 
@@ -172,25 +276,33 @@ export async function createGenerationService({ server, log, userId, data }) {
     throw new BadRequestError('This model cannot generate images yet');
   }
 
+  const sourceImage = await readSourceImage({
+    db,
+    storage,
+    userId,
+    data,
+    type,
+  });
+  const maskImage = readMask({ data, type, sourceImage });
+
   const generation = await startGenerationService({
     db,
     userId,
     estimate,
     prompt,
-    options,
+    options: maskImage ? { ...options, hasMask: true } : options,
+    sourceImageId: sourceImage?.id ?? null,
   });
 
-  let imageBuffers;
-
   try {
-    ({ imageBuffers } = await openai.generateImages({
+    const { imageBuffers } = await requestImages({
+      openai,
       model: estimate.model.providerModelId,
       prompt,
-      size: options.size,
-      quality: options.quality,
-      outputFormat: options.outputFormat,
-      n: options.n,
-    }));
+      options,
+      sourceImage,
+      maskImage,
+    });
 
     await saveGeneratedImages({
       db,
@@ -199,6 +311,10 @@ export async function createGenerationService({ server, log, userId, data }) {
       userId,
       generation,
       imageBuffers,
+      source:
+        type === GENERATION_TYPE_CODE.IMAGE_EDIT
+          ? IMAGE_SOURCE.EDITED
+          : IMAGE_SOURCE.GENERATED,
     });
   } catch (error) {
     await failAndThrow({ db, log, generation, error });

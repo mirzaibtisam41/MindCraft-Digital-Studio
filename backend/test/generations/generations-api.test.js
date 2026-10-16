@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { after, before, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import sharp from 'sharp';
 import { buildTestApp } from '../helpers/test-app.js';
 import { ProviderError } from '#src/utils/index.js';
 import { refundStuckGenerationsService } from '#src/modules/generations/shared/services/index.js';
@@ -12,6 +13,19 @@ const PNG_1X1 = Buffer.from(
   'base64',
 );
 
+function sharpPng(width, height) {
+  return sharp({
+    create: {
+      width,
+      height,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
+  })
+    .png()
+    .toBuffer();
+}
+
 const OPTIONS = {
   size: '1024x1024',
   quality: 'medium',
@@ -22,7 +36,7 @@ const OPTIONS = {
 describe('generations API', () => {
   let testApp;
   let admin;
-  let textToImageId;
+  let typeIds;
   let provider;
   let createdProvider = false;
   let providerWasActive = true;
@@ -33,10 +47,10 @@ describe('generations API', () => {
     testApp = await buildTestApp();
     admin = await testApp.registerAndLoginAsAdmin();
 
-    const [type] = await testApp.runSql(
-      "SELECT id FROM generation_types WHERE code = 'text_to_image'",
+    const types = await testApp.runSql(
+      "SELECT id, code FROM generation_types WHERE code IN ('text_to_image', 'image_to_image', 'image_edit')",
     );
-    textToImageId = type.id;
+    typeIds = types.map((type) => type.id);
 
     [provider] = await testApp.runSql(
       "SELECT id, is_active FROM ai_providers WHERE code = 'openai'",
@@ -110,30 +124,32 @@ describe('generations API', () => {
     });
     const model = created.body.data.model;
 
-    await adminSend(
-      'PUT',
-      `/api/admin/models/${model.id}/workflows/${textToImageId}`,
-      {
-        isEnabled: true,
-        enabledOptions: {
-          sizes: ['1024x1024'],
-          qualities: ['low', 'medium'],
-          outputFormats: ['png'],
-          maxImagesPerRequest: 3,
+    for (const typeId of typeIds) {
+      await adminSend(
+        'PUT',
+        `/api/admin/models/${model.id}/workflows/${typeId}`,
+        {
+          isEnabled: true,
+          enabledOptions: {
+            sizes: ['1024x1024'],
+            qualities: ['low', 'medium'],
+            outputFormats: ['png'],
+            maxImagesPerRequest: 3,
+          },
+          defaultOptions: {
+            size: '1024x1024',
+            quality: 'low',
+            outputFormat: 'png',
+            n: 1,
+          },
         },
-        defaultOptions: {
-          size: '1024x1024',
-          quality: 'low',
-          outputFormat: 'png',
-          n: 1,
-        },
-      },
-    );
-    await adminSend(
-      'PUT',
-      `/api/admin/models/${model.id}/workflows/${textToImageId}/prices`,
-      { prices: { low: 2, medium: 5 } },
-    );
+      );
+      await adminSend(
+        'PUT',
+        `/api/admin/models/${model.id}/workflows/${typeId}/prices`,
+        { prices: { low: 2, medium: 5 } },
+      );
+    }
 
     return model;
   }
@@ -482,6 +498,157 @@ describe('generations API', () => {
       assert.equal(theirs.statusCode, 404);
       assert.equal(unknown.statusCode, 404);
       assert.equal(unknown.body.message, 'Generation not found');
+    });
+  });
+  describe('image to image and edits', () => {
+    const MASK = `data:image/png;base64,${PNG_1X1.toString('base64')}`;
+
+    async function makeSourceImage(user) {
+      testApp.openai.nextImageBuffers = [PNG_1X1];
+      const created = await generate(user, { options: { ...OPTIONS, n: 1 } });
+
+      return created.body.data.generation.images[0];
+    }
+
+    it('lists models by generation type', async () => {
+      const user = await registerUserWithCredits();
+
+      const response = await send(
+        'GET',
+        '/api/generations/options?type=image_edit',
+        user.accessToken,
+      );
+      const wrongType = await send(
+        'GET',
+        '/api/generations/options?type=video',
+        user.accessToken,
+      );
+
+      assert.ok(
+        response.body.data.models.some((model) => model.id === activeModel.id),
+      );
+      assert.equal(wrongType.statusCode, 400);
+    });
+
+    it('creates variations from a starting image', async () => {
+      const user = await registerUserWithCredits();
+      const source = await makeSourceImage(user);
+      testApp.openai.nextImageBuffers = [PNG_1X1, PNG_1X1];
+
+      const response = await generate(user, {
+        type: 'image_to_image',
+        sourceImageId: source.id,
+        prompt: 'make it a watercolor',
+        options: { ...OPTIONS, n: 2 },
+      });
+
+      assert.equal(response.statusCode, 201);
+      const { generation } = response.body.data;
+      assert.equal(generation.sourceImageId, source.id);
+      assert.equal(generation.images.length, 2);
+      assert.ok(
+        generation.images.every((image) => image.source === 'generated'),
+      );
+
+      const call = testApp.openai.calls.at(-1);
+      assert.equal(call.isEdit, true);
+      assert.equal(call.maskImage, null);
+      assert.deepEqual(call.sourceImage.buffer, PNG_1X1);
+      assert.equal(call.sourceImage.extension, 'png');
+      assert.equal(await readBalance(user.user.id), 60 - 5 - 10);
+    });
+
+    it('edits the masked part and saves the result in the edits folder', async () => {
+      const user = await registerUserWithCredits();
+      const source = await makeSourceImage(user);
+      testApp.openai.nextImageBuffers = [PNG_1X1];
+
+      const response = await generate(user, {
+        type: 'image_edit',
+        sourceImageId: source.id,
+        mask: MASK,
+        prompt: 'add a red hat',
+        options: { ...OPTIONS, n: 1 },
+      });
+
+      assert.equal(response.statusCode, 201);
+      const [image] = response.body.data.generation.images;
+      assert.equal(image.source, 'edited');
+      assert.ok(
+        testApp.storage.files.has(
+          `users/${user.user.id}/edits/${image.id}.png`,
+        ),
+      );
+      assert.deepEqual(testApp.openai.calls.at(-1).maskImage, PNG_1X1);
+
+      const [saved] = await testApp.runSql(
+        'SELECT options FROM generations WHERE id = $1',
+        [response.body.data.generation.id],
+      );
+      assert.equal(saved.options.hasMask, true);
+    });
+
+    it('checks the starting image and the mask before charging', async () => {
+      const user = await registerUserWithCredits();
+      const other = await registerUserWithCredits();
+      const source = await makeSourceImage(user);
+      const theirs = await makeSourceImage(other);
+      const balance = await readBalance(user.user.id);
+      const callsBefore = testApp.openai.calls.length;
+      const twoByOne = await sharpPng(2, 1);
+
+      const noSource = await generate(user, { type: 'image_to_image' });
+      const notMine = await generate(user, {
+        type: 'image_to_image',
+        sourceImageId: theirs.id,
+      });
+      const noMask = await generate(user, {
+        type: 'image_edit',
+        sourceImageId: source.id,
+      });
+      const wrongSizeMask = await generate(user, {
+        type: 'image_edit',
+        sourceImageId: source.id,
+        mask: `data:image/png;base64,${twoByOne.toString('base64')}`,
+      });
+      const maskOnTextToImage = await generate(user, { mask: MASK });
+
+      assert.equal(noSource.statusCode, 400);
+      assert.equal(noSource.body.message, 'Choose an image to start from');
+      assert.equal(notMine.statusCode, 404);
+      assert.equal(noMask.statusCode, 400);
+      assert.equal(
+        noMask.body.message,
+        'Paint over the part of the image you want to change',
+      );
+      assert.equal(wrongSizeMask.statusCode, 400);
+      assert.equal(
+        wrongSizeMask.body.message,
+        'The mask must be a PNG the same size as the image',
+      );
+      assert.equal(maskOnTextToImage.statusCode, 400);
+      assert.equal(testApp.openai.calls.length, callsBefore);
+      assert.equal(await readBalance(user.user.id), balance);
+    });
+
+    it('refunds a failed edit', async () => {
+      const user = await registerUserWithCredits();
+      const source = await makeSourceImage(user);
+      const balance = await readBalance(user.user.id);
+      testApp.openai.nextError = new ProviderError({
+        category: 'safety_rejected',
+      });
+
+      const response = await generate(user, {
+        type: 'image_edit',
+        sourceImageId: source.id,
+        mask: MASK,
+        options: { ...OPTIONS, n: 1 },
+      });
+
+      assert.equal(response.statusCode, 400);
+      assert.match(response.body.message, /refunded/);
+      assert.equal(await readBalance(user.user.id), balance);
     });
   });
 });
