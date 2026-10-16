@@ -7,6 +7,7 @@ import {
 } from '#src/hooks/index.js';
 import { createMemoryStorage } from './memory-storage.js';
 import { createFakeOpenAi } from './fake-openai.js';
+import { createFakeVision } from './fake-vision.js';
 
 export const TEST_PASSWORD = 'secret123';
 
@@ -27,7 +28,8 @@ export async function buildTestApp({ env = {} } = {}) {
 
   const storage = createMemoryStorage();
   const openai = createFakeOpenAi();
-  const app = buildApp({ storage, openai });
+  const vision = createFakeVision();
+  const app = buildApp({ storage, openai, vision });
   const createdEmails = [];
 
   app.register(
@@ -135,6 +137,7 @@ export async function buildTestApp({ env = {} } = {}) {
     app,
     storage,
     openai,
+    vision,
     sendRequest,
     makeEmail,
     registerUser,

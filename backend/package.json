@@ -34,6 +34,8 @@
     "@fastify/multipart": "^10.1.4",
     "@fastify/postgres": "^6.1.1",
     "@fastify/rate-limit": "^11.2.1",
+    "@langchain/core": "^1.2.18",
+    "@langchain/openai": "^1.6.2",
     "argon2": "^0.45.1",
     "drizzle-orm": "^0.45.4",
     "env-schema": "^8.0.1",

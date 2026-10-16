@@ -9,12 +9,20 @@ import { openAiPlugin } from '#src/plugins/openai.plugin.js';
 import { rateLimitPlugin } from '#src/plugins/rate-limit.plugin.js';
 import { replySuccessPlugin } from '#src/plugins/reply-success.plugin.js';
 import { storagePlugin } from '#src/plugins/storage.plugin.js';
+import { visionPlugin } from '#src/plugins/vision.plugin.js';
 
-export function registerPlugins({ fastify, appConfig, storage, openai }) {
+export function registerPlugins({
+  fastify,
+  appConfig,
+  storage,
+  openai,
+  vision,
+}) {
   fastify.register(configPlugin, { appConfig });
   fastify.register(databasePlugin);
   fastify.register(storagePlugin, { storage });
   fastify.register(openAiPlugin, { openai });
+  fastify.register(visionPlugin, { vision });
   fastify.register(helmetPlugin);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);
