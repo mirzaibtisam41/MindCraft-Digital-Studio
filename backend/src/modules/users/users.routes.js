@@ -4,6 +4,7 @@ import {
 } from '#src/hooks/index.js';
 import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
 import { changeMyPasswordController } from '#src/modules/users/features/change-my-password/change-my-password.controller.js';
+import { completeMyOnboardingController } from '#src/modules/users/features/complete-my-onboarding/complete-my-onboarding.controller.js';
 import { changeMyEmailController } from '#src/modules/users/features/change-my-email/change-my-email.controller.js';
 import { changeMyEmailBodySchema } from '#src/modules/users/features/change-my-email/change-my-email.schema.js';
 import { changeMyPasswordBodySchema } from '#src/modules/users/features/change-my-password/change-my-password.schema.js';
@@ -82,4 +83,6 @@ export function myAccountRoutes(fastify) {
     },
     changeMyEmailController,
   );
+
+  fastify.post('/onboarding/complete', completeMyOnboardingController);
 }

@@ -8,6 +8,7 @@ export const USER_COLUMNS = {
   role: users.role,
   status: users.status,
   emailVerifiedAt: users.emailVerifiedAt,
+  onboardingCompletedAt: users.onboardingCompletedAt,
   createdAt: users.createdAt,
 };
 

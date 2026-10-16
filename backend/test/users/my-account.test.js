@@ -112,4 +112,34 @@ describe('my account API', () => {
     assert.equal(same.statusCode, 400);
     assert.equal(short.statusCode, 400);
   });
+
+  it('marks onboarding as done once and keeps the first time', async () => {
+    const user = await testApp.registerAndLogin();
+
+    const first = await send(
+      'POST',
+      '/api/me/onboarding/complete',
+      user.accessToken,
+    );
+    const second = await send(
+      'POST',
+      '/api/me/onboarding/complete',
+      user.accessToken,
+    );
+    const me = await send('GET', '/api/auth/me', user.accessToken);
+    const anonymous = await send('POST', '/api/me/onboarding/complete');
+
+    assert.equal(user.user.onboardingCompletedAt, null);
+    assert.equal(first.statusCode, 200);
+    assert.ok(first.body.data.user.onboardingCompletedAt);
+    assert.equal(
+      second.body.data.user.onboardingCompletedAt,
+      first.body.data.user.onboardingCompletedAt,
+    );
+    assert.equal(
+      me.body.data.user.onboardingCompletedAt,
+      first.body.data.user.onboardingCompletedAt,
+    );
+    assert.equal(anonymous.statusCode, 401);
+  });
 });

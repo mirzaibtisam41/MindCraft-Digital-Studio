@@ -113,6 +113,13 @@
       "when": 1792174475948,
       "tag": "0015_add_email_change_tokens",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792175793366,
+      "tag": "0016_add_onboarding_and_confirm_old_emails",
+      "breakpoints": true
     }
   ]
 }
