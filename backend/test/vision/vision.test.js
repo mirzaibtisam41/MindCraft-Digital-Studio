@@ -227,7 +227,7 @@ describe('AI Vision', () => {
       credits: 2,
     });
     await testApp.runSql(
-      "UPDATE image_analyses SET created_at = now() - interval '11 minutes' WHERE id = ",
+      "UPDATE image_analyses SET created_at = now() - interval '11 minutes' WHERE id = $1",
       [stuck.id],
     );
 
