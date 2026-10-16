@@ -4,7 +4,10 @@ export const platformSettingsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getPlatformSettings: builder.query({
       query: () => '/api/admin/settings',
-      transformResponse: (response) => response.data.settings,
+      transformResponse: (response) => ({
+        ...response.data.settings,
+        visionModels: response.data.visionModels,
+      }),
       providesTags: ['PlatformSettings'],
     }),
     updatePlatformSettings: builder.mutation({

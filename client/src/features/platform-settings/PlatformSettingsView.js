@@ -14,6 +14,13 @@ import {
 import { Field } from '@/components/ui/Field';
 import { FormAlert } from '@/components/ui/FormAlert';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/Spinner';
 import {
@@ -94,6 +101,91 @@ function SignupCreditsForm({ settings }) {
   );
 }
 
+function VisionSettingsForm({ settings }) {
+  const [visionModel, setVisionModel] = useState(settings.visionModel);
+  const [visionCredits, setVisionCredits] = useState(
+    String(settings.visionCredits),
+  );
+  const [fieldError, setFieldError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [updatePlatformSettings, { isLoading }] =
+    useUpdatePlatformSettingsMutation();
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setErrorMessage('');
+
+    const value = Number(visionCredits);
+    const isValid = /^\d+$/.test(visionCredits) && value <= 100;
+
+    setFieldError(isValid ? '' : 'Use a whole number from 0 to 100.');
+
+    if (!isValid) return;
+
+    try {
+      await updatePlatformSettings({
+        visionModel,
+        visionCredits: value,
+      }).unwrap();
+      toast.success('AI Vision settings saved');
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} noValidate>
+      <Card>
+        <CardHeader>
+          <CardTitle>AI Vision</CardTitle>
+          <CardDescription>
+            The model that analyzes images and what one analysis costs.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4 sm:flex-row">
+          <FormAlert>{errorMessage}</FormAlert>
+          <Field id="vision-model" label="Model" className="sm:w-60">
+            <Select value={visionModel} onValueChange={setVisionModel}>
+              <SelectTrigger id="vision-model" aria-label="Vision model">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {settings.visionModels.map((model) => (
+                  <SelectItem key={model} value={model}>
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field
+            id="vision-credits"
+            label="Credits per analysis"
+            error={fieldError}
+            hint="Set 0 to make analyses free."
+            className="sm:w-60"
+          >
+            <Input
+              id="vision-credits"
+              type="number"
+              min="0"
+              value={visionCredits}
+              onChange={(event) => setVisionCredits(event.target.value)}
+              aria-invalid={Boolean(fieldError)}
+            />
+          </Field>
+        </CardContent>
+        <CardFooter className="justify-end">
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? <Spinner /> : null}
+            Save AI Vision
+          </Button>
+        </CardFooter>
+      </Card>
+    </form>
+  );
+}
+
 export function PlatformSettingsView() {
   const { data: settings, isLoading, error } = useGetPlatformSettingsQuery();
 
@@ -112,6 +204,12 @@ export function PlatformSettingsView() {
       {isLoading ? <Skeleton className="h-48 w-full" /> : null}
       {settings ? (
         <SignupCreditsForm key={settings.signupCredits} settings={settings} />
+      ) : null}
+      {settings ? (
+        <VisionSettingsForm
+          key={`${settings.visionModel}-${settings.visionCredits}`}
+          settings={settings}
+        />
       ) : null}
     </div>
   );

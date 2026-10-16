@@ -1,8 +1,12 @@
+import { VISION_MODELS } from '#src/modules/platform-settings/platform-setting.constants.js';
+
 export const updatePlatformSettingsBodySchema = {
   type: 'object',
-  required: ['signupCredits'],
+  minProperties: 1,
   properties: {
     signupCredits: { type: 'integer', minimum: 0, maximum: 10000 },
+    visionModel: { type: 'string', enum: VISION_MODELS },
+    visionCredits: { type: 'integer', minimum: 0, maximum: 100 },
   },
   additionalProperties: false,
 };

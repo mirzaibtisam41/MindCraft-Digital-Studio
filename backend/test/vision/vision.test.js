@@ -215,6 +215,53 @@ describe('AI Vision', () => {
     assert.equal(unknown.statusCode, 404);
   });
 
+  it('lets an admin change the vision model and price', async () => {
+    const admin = await testApp.registerAndLoginAsAdmin();
+    const saved = await testApp.runSql(
+      "SELECT key, value FROM platform_settings WHERE key IN ('vision_model', 'vision_credits')",
+    );
+
+    try {
+      const settings = await testApp.sendRequest({
+        method: 'GET',
+        url: '/api/admin/settings',
+        accessToken: admin.accessToken,
+      });
+      const changed = await testApp.sendRequest({
+        method: 'PATCH',
+        url: '/api/admin/settings',
+        accessToken: admin.accessToken,
+        payload: { visionModel: 'gpt-4.1-nano', visionCredits: 3 },
+      });
+      const options = await testApp.sendRequest({
+        method: 'GET',
+        url: '/api/vision/options',
+        accessToken: admin.accessToken,
+      });
+      const invalid = await testApp.sendRequest({
+        method: 'PATCH',
+        url: '/api/admin/settings',
+        accessToken: admin.accessToken,
+        payload: { visionModel: 'not-a-model' },
+      });
+
+      assert.ok(settings.body.data.visionModels.includes('gpt-4.1-mini'));
+      assert.equal(changed.body.data.settings.visionModel, 'gpt-4.1-nano');
+      assert.equal(changed.body.data.settings.visionCredits, 3);
+      assert.equal(typeof changed.body.data.settings.signupCredits, 'number');
+      assert.equal(options.body.data.model, 'gpt-4.1-nano');
+      assert.equal(options.body.data.creditsPerAnalysis, 3);
+      assert.equal(invalid.statusCode, 400);
+    } finally {
+      for (const row of saved) {
+        await testApp.runSql(
+          'UPDATE platform_settings SET value = $2::jsonb WHERE key = $1',
+          [row.key, JSON.stringify(row.value)],
+        );
+      }
+    }
+  });
+
   it('refunds analyses stuck in processing', async () => {
     const { user, image } = await userWithImage();
     const stuck = await startImageAnalysisService({
