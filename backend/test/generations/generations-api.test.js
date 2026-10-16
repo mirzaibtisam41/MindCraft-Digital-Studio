@@ -407,6 +407,53 @@ describe('generations API', () => {
       assert.equal(theirs.body.data.generations.length, 0);
     });
 
+    it('filters history by status and search and counts each status', async () => {
+      const user = await registerUserWithCredits();
+      testApp.openai.nextImageBuffers = [PNG_1X1];
+      await generate(user, {
+        prompt: 'a blue whale',
+        options: { ...OPTIONS, n: 1 },
+      });
+      testApp.openai.nextError = new ProviderError({ category: 'timeout' });
+      await generate(user, {
+        prompt: 'a green forest',
+        options: { ...OPTIONS, n: 1 },
+      });
+
+      const failed = await send(
+        'GET',
+        '/api/generations?status=failed',
+        user.accessToken,
+      );
+      const whale = await send(
+        'GET',
+        '/api/generations?search=whale',
+        user.accessToken,
+      );
+      const wrongStatus = await send(
+        'GET',
+        '/api/generations?status=lost',
+        user.accessToken,
+      );
+
+      assert.deepEqual(
+        failed.body.data.generations.map((item) => item.prompt),
+        ['a green forest'],
+      );
+      assert.deepEqual(failed.body.meta.statusCounts, {
+        all: 2,
+        processing: 0,
+        succeeded: 1,
+        failed: 1,
+      });
+      assert.deepEqual(
+        whale.body.data.generations.map((item) => item.prompt),
+        ['a blue whale'],
+      );
+      assert.equal(whale.body.meta.statusCounts.all, 1);
+      assert.equal(wrongStatus.statusCode, 400);
+    });
+
     it('returns one of my generations and hides others', async () => {
       const user = await registerUserWithCredits();
       const other = await testApp.registerAndLogin();
