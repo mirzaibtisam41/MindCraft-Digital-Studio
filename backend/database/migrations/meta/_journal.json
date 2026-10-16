@@ -85,6 +85,13 @@
       "when": 1792167842745,
       "tag": "0011_create_image_analyses",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792170079600,
+      "tag": "0012_create_prompts",
+      "breakpoints": true
     }
   ]
 }
