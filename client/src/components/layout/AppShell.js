@@ -2,6 +2,7 @@ import { MobileNav } from '@/components/layout/MobileNav';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 import { VerifyEmailBanner } from '@/features/auth/VerifyEmailBanner';
+import { OnboardingDialog } from '@/features/onboarding/OnboardingDialog';
 
 export function AppShell({ children }) {
   return (
@@ -15,6 +16,7 @@ export function AppShell({ children }) {
         </main>
       </div>
       <MobileNav />
+      <OnboardingDialog />
     </div>
   );
 }

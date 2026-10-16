@@ -21,6 +21,19 @@ export const settingsApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.data,
       invalidatesTags: ['Sessions'],
     }),
+    completeOnboarding: builder.mutation({
+      query: () => ({ url: '/api/me/onboarding/complete', method: 'POST' }),
+      transformResponse: (response) => response.data.user,
+      async onQueryStarted(_body, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+
+          dispatch(userUpdated(data));
+        } catch {
+          return;
+        }
+      },
+    }),
     changeEmail: builder.mutation({
       query: (body) => ({ url: '/api/me/email', method: 'POST', body }),
     }),
@@ -41,6 +54,7 @@ export const {
   useUpdateProfileMutation,
   useChangePasswordMutation,
   useChangeEmailMutation,
+  useCompleteOnboardingMutation,
   useGetMySettingsQuery,
   useUpdateMySettingsMutation,
 } = settingsApi;
