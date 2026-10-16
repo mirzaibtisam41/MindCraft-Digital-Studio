@@ -11,9 +11,12 @@ import { logoutOtherSessionsController } from '#src/modules/auth/features/logout
 import { refreshSessionController } from '#src/modules/auth/features/refresh-session/refresh-session.controller.js';
 import { registerController } from '#src/modules/auth/features/register/register.controller.js';
 import { registerBodySchema } from '#src/modules/auth/features/register/register.schema.js';
+import { resendVerificationController } from '#src/modules/auth/features/resend-verification/resend-verification.controller.js';
 import { resetPasswordController } from '#src/modules/auth/features/reset-password/reset-password.controller.js';
 import { resetPasswordBodySchema } from '#src/modules/auth/features/reset-password/reset-password.schema.js';
 import { revokeSessionController } from '#src/modules/auth/features/revoke-session/revoke-session.controller.js';
+import { verifyEmailController } from '#src/modules/auth/features/verify-email/verify-email.controller.js';
+import { verifyEmailBodySchema } from '#src/modules/auth/features/verify-email/verify-email.schema.js';
 
 export function authRoutes(fastify) {
   fastify.post(
@@ -56,6 +59,24 @@ export function authRoutes(fastify) {
       config: { rateLimit: { max: 10, timeWindow: '15 minutes' } },
     },
     resetPasswordController,
+  );
+
+  fastify.post(
+    '/verify-email',
+    {
+      schema: { body: verifyEmailBodySchema },
+      config: { rateLimit: { max: 20, timeWindow: '15 minutes' } },
+    },
+    verifyEmailController,
+  );
+
+  fastify.post(
+    '/resend-verification',
+    {
+      onRequest: [checkUserIsLoggedInHook],
+      config: { rateLimit: { max: 5, timeWindow: '1 hour' } },
+    },
+    resendVerificationController,
   );
 
   fastify.post('/logout', logoutController);
