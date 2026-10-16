@@ -86,7 +86,8 @@ const ACCOUNT_GROUP = {
     },
     {
       label: 'Settings',
-      href: '/app/settings/security',
+      href: '/app/settings/profile',
+      match: '/app/settings',
       icon: Settings,
       ready: true,
     },
@@ -154,7 +155,7 @@ export function isNavItemActive(item, pathname) {
   if (!item.href) return false;
   if (item.exact) return pathname === item.href;
 
-  return pathname.startsWith(item.href);
+  return pathname.startsWith(item.match ?? item.href);
 }
 
 export function findActiveNavItem(groups, pathname) {

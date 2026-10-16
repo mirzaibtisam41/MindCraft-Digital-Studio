@@ -7,9 +7,8 @@ import { FormAlert } from '@/components/ui/FormAlert';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/Spinner';
 import { useLoginMutation, useRegisterMutation } from '@/features/auth/authApi';
+import { PASSWORD_MIN_LENGTH } from '@/constants/auth';
 import { getErrorMessage } from '@/lib/apiError';
-
-const PASSWORD_MIN_LENGTH = 8;
 
 function validate({ name, email, password }) {
   const errors = {};
