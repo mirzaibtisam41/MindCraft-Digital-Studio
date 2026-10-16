@@ -107,6 +107,7 @@ export const baseApi = createApi({
     'Generations',
     'Projects',
     'ProjectImages',
+    'ImageAnalyses',
   ],
   endpoints: () => ({}),
 });

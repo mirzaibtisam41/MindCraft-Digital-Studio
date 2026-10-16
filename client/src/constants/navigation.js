@@ -41,7 +41,7 @@ const WORKSPACE_GROUP = {
       icon: ImageIcon,
       ready: true,
     },
-    { label: 'AI Vision', icon: ScanEye },
+    { label: 'AI Vision', href: '/app/vision', icon: ScanEye, ready: true },
   ],
 };
 
