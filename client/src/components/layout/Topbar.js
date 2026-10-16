@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { selectCurrentUser } from '@/features/auth/authSlice';
 import { CreditBalancePill } from '@/features/credits/CreditBalancePill';
+import { NotificationBell } from '@/features/notifications/NotificationBell';
 import { LogoutConfirmDialog } from '@/features/auth/LogoutConfirmDialog';
 import { findActiveNavItem, getNavGroups } from '@/constants/navigation';
 
@@ -36,6 +37,7 @@ export function Topbar() {
       </p>
 
       <div className="flex items-center gap-2.5">
+        <NotificationBell />
         <CreditBalancePill />
         {isAdmin ? <Badge tone="brand">Admin</Badge> : null}
         <span className="hidden max-w-40 truncate text-[13px] font-medium sm:block">

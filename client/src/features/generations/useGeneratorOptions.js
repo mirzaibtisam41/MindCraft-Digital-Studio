@@ -41,6 +41,7 @@ export function readOptionsFromUrl(searchParams) {
 export function useGeneratorOptions({
   models,
   initialModelId = null,
+  preferredModelId = null,
   initialOptions = {},
   preferredOptions = {},
 }) {
@@ -48,7 +49,10 @@ export function useGeneratorOptions({
   const [chosenOptions, setChosenOptions] = useState(initialOptions);
 
   const model =
-    models?.find((item) => item.id === selectedModelId) ?? models?.[0] ?? null;
+    models?.find((item) => item.id === selectedModelId) ??
+    models?.find((item) => item.id === preferredModelId) ??
+    models?.[0] ??
+    null;
   const options = model
     ? {
         ...model.defaultOptions,

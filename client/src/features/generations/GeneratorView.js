@@ -20,10 +20,13 @@ import {
   useGetGenerationOptionsQuery,
   useGetMyGenerationsQuery,
 } from '@/features/generations/generationsApi';
+import { useGetMySettingsQuery } from '@/features/settings/settingsApi';
 import { getErrorMessage } from '@/lib/apiError';
 
 export function GeneratorView() {
   const { data: models, isLoading, error } = useGetGenerationOptionsQuery();
+  const { data: settings, isLoading: isLoadingSettings } =
+    useGetMySettingsQuery();
   const { data: wallet } = useGetMyWalletQuery();
   const { data: history } = useGetMyGenerationsQuery({ page: 1, limit: 10 });
   const [createGeneration] = useCreateGenerationMutation();
@@ -35,7 +38,13 @@ export function GeneratorView() {
   const { model, options, changeModel, changeOption } = useGeneratorOptions({
     models,
     initialModelId: searchParams.get('modelId'),
+    preferredModelId: settings?.defaultModelId,
     initialOptions: readOptionsFromUrl(searchParams),
+    preferredOptions: {
+      size: settings?.defaultSize,
+      quality: settings?.defaultQuality,
+      n: settings?.defaultImageCount,
+    },
   });
   const [pendingCount, setPendingCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
@@ -88,13 +97,15 @@ export function GeneratorView() {
 
       {error ? <FormAlert>{getErrorMessage(error)}</FormAlert> : null}
 
-      {isLoading ? <Skeleton className="h-96 w-full" /> : null}
+      {isLoading || isLoadingSettings ? (
+        <Skeleton className="h-96 w-full" />
+      ) : null}
 
       {models && models.length === 0 ? (
         <NoModels message="An admin needs to turn on a model before you can generate images." />
       ) : null}
 
-      {model ? (
+      {model && !isLoadingSettings ? (
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
           <GeneratorForm
             models={models}
