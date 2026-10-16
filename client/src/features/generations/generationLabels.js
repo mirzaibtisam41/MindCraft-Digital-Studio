@@ -16,6 +16,12 @@ export const FORMAT_LABELS = {
   webp: 'WebP',
 };
 
+export const TYPE_LABELS = {
+  text_to_image: 'Generate',
+  image_to_image: 'Img2Img',
+  image_edit: 'Edit',
+};
+
 export const STATUS_BADGES = {
   succeeded: { label: 'Completed', tone: 'success' },
   failed: { label: 'Failed', tone: 'danger' },

@@ -32,6 +32,7 @@ import {
 import { GenerationDetailsDialog } from '@/features/generations/GenerationDetailsDialog';
 import {
   STATUS_BADGES,
+  TYPE_LABELS,
   buildReuseUrl,
   describeFailure,
 } from '@/features/generations/generationLabels';
@@ -184,6 +185,7 @@ export function GenerationHistoryView() {
               <TableRow>
                 <TableHead className="w-16">Image</TableHead>
                 <TableHead>Prompt</TableHead>
+                <TableHead className="hidden sm:table-cell">Type</TableHead>
                 <TableHead className="hidden md:table-cell">Model</TableHead>
                 <TableHead className="hidden lg:table-cell">Date</TableHead>
                 <TableHead>Status</TableHead>
@@ -222,6 +224,9 @@ export function GenerationHistoryView() {
                           {describeFailure(generation.errorCategory)}
                         </p>
                       ) : null}
+                    </TableCell>
+                    <TableCell className="hidden text-muted-foreground sm:table-cell">
+                      {TYPE_LABELS[generation.type] ?? generation.type}
                     </TableCell>
                     <TableCell className="hidden text-muted-foreground md:table-cell">
                       {generation.model.name}

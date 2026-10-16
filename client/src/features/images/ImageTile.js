@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Download, Heart, Wand2 } from 'lucide-react';
+import { Brush, Check, Download, Heart, Wand2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function TileAction({ label, onClick, children, isActive }) {
@@ -86,6 +86,9 @@ export function ImageTile({
               onClick={() => actions.download(image)}
             >
               <Download className="size-4" />
+            </TileAction>
+            <TileAction label="Edit" onClick={() => actions.editImage(image)}>
+              <Brush className="size-4" />
             </TileAction>
             {image.prompt ? (
               <TileAction

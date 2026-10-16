@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Download, Heart, Trash2, Wand2 } from 'lucide-react';
+import { Brush, Copy, Download, Heart, Trash2, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -110,6 +110,20 @@ export function ImagePreviewDialog({ image, onOpenChange }) {
                     )}
                   />
                   {image.isFavorite ? 'Favorited' : 'Favorite'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => actions.makeVariations(image)}
+                >
+                  <Copy />
+                  Variations
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => actions.editImage(image)}
+                >
+                  <Brush />
+                  Edit
                 </Button>
                 {image.prompt ? (
                   <Button

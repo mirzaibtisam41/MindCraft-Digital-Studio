@@ -41,5 +41,13 @@ export function useImageActions() {
     router.push(`/app/generate?${params}`);
   }
 
-  return { toggleFavorite, download, reusePrompt };
+  function editImage(image) {
+    router.push(`/app/editor?imageId=${image.id}`);
+  }
+
+  function makeVariations(image) {
+    router.push(`/app/image-to-image?imageId=${image.id}`);
+  }
+
+  return { toggleFavorite, download, reusePrompt, editImage, makeVariations };
 }
