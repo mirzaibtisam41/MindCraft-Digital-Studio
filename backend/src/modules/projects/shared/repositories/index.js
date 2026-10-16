@@ -13,3 +13,4 @@ export * from '#src/modules/projects/shared/repositories/list-project-collection
 export * from '#src/modules/projects/shared/repositories/find-project-collection.repository.js';
 export * from '#src/modules/projects/shared/repositories/rename-project-collection.repository.js';
 export * from '#src/modules/projects/shared/repositories/delete-project-collection.repository.js';
+export * from '#src/modules/projects/shared/repositories/list-project-image-ids.repository.js';
