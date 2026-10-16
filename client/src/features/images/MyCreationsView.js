@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import {
   CheckSquare,
+  FolderPlus,
   ChevronLeft,
   ChevronRight,
   Heart,
@@ -27,6 +28,7 @@ import { ImageTile } from '@/features/images/ImageTile';
 import { ImageUploadDropzone } from '@/features/images/ImageUploadDropzone';
 import { useGetMyImagesQuery } from '@/features/images/imagesApi';
 import { useImageActions } from '@/features/images/useImageActions';
+import { AddToProjectDialog } from '@/features/projects/AddToProjectDialog';
 import { getErrorMessage } from '@/lib/apiError';
 import { cn } from '@/lib/utils';
 
@@ -73,6 +75,7 @@ export function MyCreationsView() {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [openImageId, setOpenImageId] = useState(null);
+  const [isAddingToProject, setIsAddingToProject] = useState(false);
   const actions = useImageActions();
 
   useEffect(() => {
@@ -272,6 +275,22 @@ export function MyCreationsView() {
       <BulkActionBar
         selectedIds={selectedIds}
         onClear={() => setSelectedIds([])}
+      >
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsAddingToProject(true)}
+        >
+          <FolderPlus />
+          Add to project
+        </Button>
+      </BulkActionBar>
+
+      <AddToProjectDialog
+        open={isAddingToProject}
+        imageIds={selectedIds}
+        onOpenChange={setIsAddingToProject}
+        onAdded={stopSelecting}
       />
 
       <ImagePreviewDialog

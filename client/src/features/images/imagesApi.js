@@ -27,7 +27,7 @@ export const imagesApi = baseApi.injectEndpoints({
         body: { isFavorite },
       }),
       transformResponse: (response) => response.data.image,
-      invalidatesTags: ['Images', 'Generations'],
+      invalidatesTags: ['Images', 'Generations', 'Projects', 'ProjectImages'],
     }),
     bulkFavoriteImages: builder.mutation({
       query: ({ ids, isFavorite }) => ({
@@ -36,7 +36,7 @@ export const imagesApi = baseApi.injectEndpoints({
         body: { ids, isFavorite },
       }),
       transformResponse: (response) => response.data.updatedIds,
-      invalidatesTags: ['Images'],
+      invalidatesTags: ['Images', 'ProjectImages'],
     }),
     bulkDeleteImages: builder.mutation({
       query: (ids) => ({
@@ -45,11 +45,11 @@ export const imagesApi = baseApi.injectEndpoints({
         body: { ids },
       }),
       transformResponse: (response) => response.data.deletedIds,
-      invalidatesTags: ['Images', 'Generations'],
+      invalidatesTags: ['Images', 'Generations', 'Projects', 'ProjectImages'],
     }),
     deleteImage: builder.mutation({
       query: (id) => ({ url: `/api/images/${id}`, method: 'DELETE' }),
-      invalidatesTags: ['Images', 'Generations'],
+      invalidatesTags: ['Images', 'Generations', 'Projects', 'ProjectImages'],
     }),
     getImageDownloadUrl: builder.mutation({
       query: (id) => `/api/images/${id}/download`,

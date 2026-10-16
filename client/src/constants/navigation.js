@@ -49,7 +49,12 @@ const LIBRARY_GROUP = {
       icon: Images,
       ready: true,
     },
-    { label: 'Projects', icon: FolderKanban },
+    {
+      label: 'Projects',
+      href: '/app/projects',
+      icon: FolderKanban,
+      ready: true,
+    },
     {
       label: 'Generation History',
       href: '/app/history',
