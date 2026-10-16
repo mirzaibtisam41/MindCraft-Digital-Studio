@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ImagePlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormAlert } from '@/components/ui/FormAlert';
@@ -16,6 +17,40 @@ import {
   useGetMyGenerationsQuery,
 } from '@/features/generations/generationsApi';
 import { getErrorMessage } from '@/lib/apiError';
+
+const OPTION_LISTS = {
+  size: 'sizes',
+  quality: 'qualities',
+  outputFormat: 'outputFormats',
+};
+
+function readOptionsFromUrl(searchParams) {
+  const options = {};
+
+  for (const key of ['size', 'quality', 'outputFormat']) {
+    if (searchParams.get(key)) options[key] = searchParams.get(key);
+  }
+
+  if (searchParams.get('n')) options.n = Number(searchParams.get('n'));
+
+  return options;
+}
+
+function keepAllowedOptions({ model, chosenOptions }) {
+  const allowed = {};
+
+  for (const [key, value] of Object.entries(chosenOptions)) {
+    if (key === 'n') {
+      if (value >= 1 && value <= model.enabledOptions.maxImagesPerRequest) {
+        allowed.n = value;
+      }
+    } else if (model.enabledOptions[OPTION_LISTS[key]]?.includes(value)) {
+      allowed[key] = value;
+    }
+  }
+
+  return allowed;
+}
 
 function NoModels() {
   return (
@@ -39,14 +74,21 @@ export function GeneratorView() {
   const { data: history } = useGetMyGenerationsQuery({ page: 1, limit: 10 });
   const [createGeneration] = useCreateGenerationMutation();
 
-  const [selectedModelId, setSelectedModelId] = useState(null);
-  const [prompt, setPrompt] = useState('');
-  const [chosenOptions, setChosenOptions] = useState({});
+  const searchParams = useSearchParams();
+  const [selectedModelId, setSelectedModelId] = useState(() =>
+    searchParams.get('modelId'),
+  );
+  const [prompt, setPrompt] = useState(
+    () => searchParams.get('prompt')?.slice(0, 2000) ?? '',
+  );
+  const [chosenOptions, setChosenOptions] = useState(() =>
+    readOptionsFromUrl(searchParams),
+  );
   const [pendingCount, setPendingCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [shownGenerationId, setShownGenerationId] = useState(null);
   const [lastCreated, setLastCreated] = useState(null);
-  const [openImage, setOpenImage] = useState(null);
+  const [openImageId, setOpenImageId] = useState(null);
 
   const model =
     models?.find((item) => item.id === selectedModelId) ?? models?.[0];
@@ -58,13 +100,15 @@ export function GeneratorView() {
         )
           ? model.defaultOptions.quality
           : model.enabledOptions.qualities[0],
-        ...chosenOptions,
+        ...keepAllowedOptions({ model, chosenOptions }),
       }
     : null;
 
   const shownGeneration =
     history?.generations.find((item) => item.id === shownGenerationId) ??
     (lastCreated?.id === shownGenerationId ? lastCreated : null);
+  const openImage =
+    shownGeneration?.images.find((image) => image.id === openImageId) ?? null;
 
   function changeModel(modelId) {
     setSelectedModelId(modelId);
@@ -136,7 +180,7 @@ export function GeneratorView() {
               generation={shownGeneration}
               pendingCount={pendingCount}
               errorMessage={errorMessage}
-              onOpenImage={setOpenImage}
+              onOpenImage={(image) => setOpenImageId(image.id)}
               onClose={() => {
                 setErrorMessage('');
                 setShownGenerationId(null);
@@ -156,7 +200,7 @@ export function GeneratorView() {
       <ImagePreviewDialog
         image={openImage}
         onOpenChange={(open) => {
-          if (!open) setOpenImage(null);
+          if (!open) setOpenImageId(null);
         }}
       />
     </div>

@@ -55,7 +55,7 @@ export function GenerationHistory({ selectedId, onSelect }) {
             <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted text-ink-3">
               {cover ? (
                 <img
-                  src={cover.url}
+                  src={cover.thumbnailUrl}
                   alt=""
                   loading="lazy"
                   className="size-full object-cover"

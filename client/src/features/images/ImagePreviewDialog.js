@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, Trash2 } from 'lucide-react';
+import { Download, Heart, Trash2, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -20,7 +20,9 @@ import {
 } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/Spinner';
 import { useDeleteImageMutation } from '@/features/images/imagesApi';
+import { useImageActions } from '@/features/images/useImageActions';
 import { getErrorMessage } from '@/lib/apiError';
+import { cn } from '@/lib/utils';
 
 const SOURCE_LABELS = {
   upload: 'Uploaded',
@@ -34,9 +36,25 @@ function formatSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function describeImage(image) {
+  const parts = [
+    SOURCE_LABELS[image.source],
+    image.model?.name,
+    `${image.width} × ${image.height}`,
+    formatSize(image.sizeBytes),
+    new Date(image.createdAt).toLocaleString(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }),
+  ];
+
+  return parts.filter(Boolean).join(' · ');
+}
+
 export function ImagePreviewDialog({ image, onOpenChange }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteImage, { isLoading }] = useDeleteImageMutation();
+  const actions = useImageActions();
 
   async function handleDelete() {
     try {
@@ -49,7 +67,8 @@ export function ImagePreviewDialog({ image, onOpenChange }) {
     }
   }
 
-  const title = image?.originalFileName ?? 'Image';
+  const title =
+    image?.originalFileName ?? (image?.prompt ? 'Generated image' : 'Image');
 
   return (
     <>
@@ -57,29 +76,57 @@ export function ImagePreviewDialog({ image, onOpenChange }) {
         <DialogContent className="max-w-3xl">
           <DialogTitle className="truncate pr-8">{title}</DialogTitle>
           <DialogDescription>
-            {image
-              ? `${SOURCE_LABELS[image.source]} · ${image.width} × ${image.height} · ${formatSize(image.sizeBytes)} · ${new Date(image.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}`
-              : null}
+            {image ? describeImage(image) : null}
           </DialogDescription>
           {image ? (
             <img
               src={image.url}
-              alt={title}
+              alt={image.prompt ?? title}
               className="max-h-[60vh] w-full rounded-lg bg-muted object-contain"
             />
           ) : null}
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
-              <Trash2 />
-              Delete
-            </Button>
-            <Button asChild>
-              <a href={image?.url} target="_blank" rel="noreferrer">
-                <ExternalLink />
-                Open full size
-              </a>
-            </Button>
-          </div>
+          {image?.prompt ? (
+            <p className="rounded-lg border bg-background p-3 text-sm text-muted-foreground">
+              {image.prompt}
+            </p>
+          ) : null}
+          {image ? (
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+              <Button
+                variant="destructive"
+                onClick={() => setConfirmOpen(true)}
+              >
+                <Trash2 />
+                Delete
+              </Button>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row">
+                <Button
+                  variant="outline"
+                  onClick={() => actions.toggleFavorite(image)}
+                >
+                  <Heart
+                    className={cn(
+                      image.isFavorite && 'fill-danger text-danger',
+                    )}
+                  />
+                  {image.isFavorite ? 'Favorited' : 'Favorite'}
+                </Button>
+                {image.prompt ? (
+                  <Button
+                    variant="outline"
+                    onClick={() => actions.reusePrompt(image)}
+                  >
+                    <Wand2 />
+                    Reuse prompt
+                  </Button>
+                ) : null}
+                <Button onClick={() => actions.download(image)}>
+                  <Download />
+                  Download
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </DialogContent>
       </Dialog>
 
