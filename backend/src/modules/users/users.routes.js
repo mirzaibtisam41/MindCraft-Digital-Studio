@@ -3,6 +3,10 @@ import {
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
 import { uuidParamsSchema } from '#src/shared/schemas/uuid-params.schema.js';
+import { changeMyPasswordController } from '#src/modules/users/features/change-my-password/change-my-password.controller.js';
+import { changeMyPasswordBodySchema } from '#src/modules/users/features/change-my-password/change-my-password.schema.js';
+import { updateMyProfileController } from '#src/modules/users/features/update-my-profile/update-my-profile.controller.js';
+import { updateMyProfileBodySchema } from '#src/modules/users/features/update-my-profile/update-my-profile.schema.js';
 import { getUserController } from '#src/modules/users/features/get-user/get-user.controller.js';
 import { listUsersController } from '#src/modules/users/features/list-users/list-users.controller.js';
 import { listUsersQuerySchema } from '#src/modules/users/features/list-users/list-users.schema.js';
@@ -47,5 +51,24 @@ export function adminUsersRoutes(fastify) {
       },
     },
     updateUserRoleController,
+  );
+}
+
+export function myAccountRoutes(fastify) {
+  fastify.addHook('onRequest', checkUserIsLoggedInHook);
+
+  fastify.patch(
+    '/profile',
+    { schema: { body: updateMyProfileBodySchema } },
+    updateMyProfileController,
+  );
+
+  fastify.post(
+    '/password',
+    {
+      schema: { body: changeMyPasswordBodySchema },
+      config: { rateLimit: { max: 10, timeWindow: '15 minutes' } },
+    },
+    changeMyPasswordController,
   );
 }

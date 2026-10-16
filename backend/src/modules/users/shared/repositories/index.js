@@ -5,3 +5,4 @@ export * from '#src/modules/users/shared/repositories/find-logged-in-user.reposi
 export * from '#src/modules/users/shared/repositories/list-users.repository.js';
 export * from '#src/modules/users/shared/repositories/find-user-by-id.repository.js';
 export * from '#src/modules/users/shared/repositories/update-user.repository.js';
+export * from '#src/modules/users/shared/repositories/find-user-password-hash-by-id.repository.js';

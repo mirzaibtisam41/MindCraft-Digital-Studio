@@ -15,7 +15,10 @@ import { platformSettingsRoutes } from '#src/modules/platform-settings/platform-
 import { projectsRoutes } from '#src/modules/projects/projects.routes.js';
 import { visionRoutes } from '#src/modules/image-analyses/vision.routes.js';
 import { promptsRoutes } from '#src/modules/prompts/prompts.routes.js';
-import { adminUsersRoutes } from '#src/modules/users/users.routes.js';
+import {
+  adminUsersRoutes,
+  myAccountRoutes,
+} from '#src/modules/users/users.routes.js';
 import { usageRoutes } from '#src/modules/usage/usage.routes.js';
 
 export async function registerRoutes(fastify) {
@@ -28,6 +31,7 @@ export async function registerRoutes(fastify) {
   await fastify.register(visionRoutes, { prefix: '/api/vision' });
   await fastify.register(promptsRoutes, { prefix: '/api/prompts' });
   await fastify.register(usageRoutes, { prefix: '/api/usage' });
+  await fastify.register(myAccountRoutes, { prefix: '/api/me' });
   await fastify.register(aiProvidersRoutes, { prefix: '/api/admin/providers' });
   await fastify.register(aiModelsRoutes, { prefix: '/api/admin/models' });
   await fastify.register(modelWorkflowsRoutes, {
