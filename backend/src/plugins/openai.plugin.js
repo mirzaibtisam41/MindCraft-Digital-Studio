@@ -1,6 +1,7 @@
 import fp from 'fastify-plugin';
 import {
   buildOpenAiClientIntegration,
+  editOpenAiImagesIntegration,
   generateOpenAiImagesIntegration,
 } from '#src/integrations/index.js';
 
@@ -10,6 +11,8 @@ function buildOpenAi({ appConfig }) {
   return {
     generateImages: (request) =>
       generateOpenAiImagesIntegration({ client, ...request }),
+    editImages: (request) =>
+      editOpenAiImagesIntegration({ client, ...request }),
   };
 }
 

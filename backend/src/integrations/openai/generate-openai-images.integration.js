@@ -1,8 +1,6 @@
-import { PROVIDER_ERROR_CATEGORY } from '#src/constants/index.js';
-import { ProviderError } from '#src/utils/index.js';
-import { mapOpenAiErrorIntegration } from '#src/integrations/openai/map-openai-error.integration.js';
+import { requestOpenAiImagesIntegration } from '#src/integrations/openai/request-openai-images.integration.js';
 
-export async function generateOpenAiImagesIntegration({
+export function generateOpenAiImagesIntegration({
   client,
   model,
   prompt,
@@ -11,32 +9,15 @@ export async function generateOpenAiImagesIntegration({
   outputFormat,
   n,
 }) {
-  let response;
-
-  try {
-    response = await client.images.generate({
-      model,
-      prompt,
-      size,
-      quality,
-      output_format: outputFormat,
-      n,
-    });
-  } catch (error) {
-    throw new ProviderError({
-      category: mapOpenAiErrorIntegration({ error }),
-      cause: error,
-    });
-  }
-
-  const encodedImages = (response.data ?? []).map((item) => item.b64_json);
-
-  if (encodedImages.length === 0 || encodedImages.some((image) => !image)) {
-    throw new ProviderError({ category: PROVIDER_ERROR_CATEGORY.UNKNOWN });
-  }
-
-  return {
-    imageBuffers: encodedImages.map((image) => Buffer.from(image, 'base64')),
-    usage: response.usage ?? null,
-  };
+  return requestOpenAiImagesIntegration({
+    send: () =>
+      client.images.generate({
+        model,
+        prompt,
+        size,
+        quality,
+        output_format: outputFormat,
+        n,
+      }),
+  });
 }

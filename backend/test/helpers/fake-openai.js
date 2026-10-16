@@ -7,6 +7,10 @@ export function createFakeOpenAi() {
     nextImageBuffers: null,
     duringGenerate: null,
 
+    async editImages(request) {
+      return this.generateImages({ ...request, isEdit: true });
+    },
+
     async generateImages(request) {
       calls.push(request);
 

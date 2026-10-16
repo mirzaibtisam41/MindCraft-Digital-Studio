@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import OpenAI, { APIConnectionError, APIConnectionTimeoutError } from 'openai';
 import {
+  editOpenAiImagesIntegration,
   generateOpenAiImagesIntegration,
   mapOpenAiErrorIntegration,
 } from '#src/integrations/index.js';
@@ -121,6 +122,116 @@ describe('OpenAI integration', () => {
         generateOpenAiImagesIntegration({ client, prompt: 'x', n: 1 }),
         (error) =>
           error instanceof ProviderError && error.category === 'unknown',
+      );
+    });
+  });
+
+  describe('editOpenAiImagesIntegration', () => {
+    function editClient(onEdit) {
+      return {
+        images: {
+          edit: async (request) => {
+            await onEdit(request);
+
+            return {
+              data: [{ b64_json: Buffer.from('edited').toString('base64') }],
+            };
+          },
+        },
+      };
+    }
+
+    it('sends the source image and the mask as files', async () => {
+      let sent;
+      const client = editClient(async (request) => {
+        sent = {
+          ...request,
+          imageName: request.image.name,
+          imageType: request.image.type,
+          imageText: Buffer.from(await request.image.arrayBuffer()).toString(),
+          maskName: request.mask.name,
+          maskText: Buffer.from(await request.mask.arrayBuffer()).toString(),
+        };
+      });
+
+      const result = await editOpenAiImagesIntegration({
+        client,
+        model: 'gpt-image-1-mini',
+        prompt: 'add a hat',
+        sourceImage: {
+          buffer: Buffer.from('source'),
+          extension: 'png',
+          contentType: 'image/png',
+        },
+        maskImage: Buffer.from('mask'),
+        size: '1024x1024',
+        quality: 'low',
+        outputFormat: 'png',
+        n: 1,
+      });
+
+      assert.equal(sent.model, 'gpt-image-1-mini');
+      assert.equal(sent.prompt, 'add a hat');
+      assert.equal(sent.output_format, 'png');
+      assert.equal(sent.imageName, 'source.png');
+      assert.equal(sent.imageType, 'image/png');
+      assert.equal(sent.imageText, 'source');
+      assert.equal(sent.maskName, 'mask.png');
+      assert.equal(sent.maskText, 'mask');
+      assert.deepEqual(
+        result.imageBuffers.map((buffer) => buffer.toString()),
+        ['edited'],
+      );
+    });
+
+    it('leaves the mask out when there is none', async () => {
+      let sent;
+      const client = editClient(async (request) => {
+        sent = request;
+      });
+
+      await editOpenAiImagesIntegration({
+        client,
+        model: 'gpt-image-1-mini',
+        prompt: 'make it a watercolor',
+        sourceImage: {
+          buffer: Buffer.from('source'),
+          extension: 'jpg',
+          contentType: 'image/jpeg',
+        },
+        size: '1024x1024',
+        quality: 'low',
+        outputFormat: 'jpeg',
+        n: 2,
+      });
+
+      assert.equal('mask' in sent, false);
+      assert.equal(sent.n, 2);
+    });
+
+    it('maps edit errors to categories', async () => {
+      const client = {
+        images: {
+          edit: async () => {
+            throw apiError(400, 'moderation_blocked');
+          },
+        },
+      };
+
+      await assert.rejects(
+        editOpenAiImagesIntegration({
+          client,
+          prompt: 'x',
+          sourceImage: {
+            buffer: Buffer.from('s'),
+            extension: 'png',
+            contentType: 'image/png',
+          },
+          n: 1,
+        }),
+        (error) =>
+          error instanceof ProviderError &&
+          error.category === 'safety_rejected',
       );
     });
   });
