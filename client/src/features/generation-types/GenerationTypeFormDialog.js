@@ -13,6 +13,7 @@ import {
 import { Field } from '@/components/ui/Field';
 import { FormAlert } from '@/components/ui/FormAlert';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/Spinner';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -22,9 +23,6 @@ import {
 import { getErrorMessage } from '@/lib/apiError';
 
 const CODE_PATTERN = /^[a-z0-9_]+$/;
-
-const TEXTAREA_CLASSES =
-  'min-h-20 w-full rounded-md border bg-background px-3 py-2 text-sm shadow-xs outline-none placeholder:text-ink-3 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:border-input dark:bg-input/30';
 
 function validate({ name, code }, isEditing) {
   const errors = {};
@@ -135,11 +133,10 @@ function GenerationTypeForm({ generationType, onDone }) {
       </Field>
 
       <Field id="type-description" label="Description">
-        <textarea
+        <Textarea
           id="type-description"
           name="description"
           placeholder="What this workflow does"
-          className={TEXTAREA_CLASSES}
           value={values.description}
           onChange={handleChange}
         />

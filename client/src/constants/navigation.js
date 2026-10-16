@@ -28,7 +28,12 @@ const WORKSPACE_GROUP = {
       ready: true,
       exact: true,
     },
-    { label: 'Image Generator', icon: ImagePlus },
+    {
+      label: 'Image Generator',
+      href: '/app/generate',
+      icon: ImagePlus,
+      ready: true,
+    },
     { label: 'Image Editor', icon: Wand2 },
     { label: 'Image to Image', icon: ImageIcon },
     { label: 'AI Vision', icon: ScanEye },

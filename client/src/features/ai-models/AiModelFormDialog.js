@@ -13,6 +13,7 @@ import {
 import { Field } from '@/components/ui/Field';
 import { FormAlert } from '@/components/ui/FormAlert';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -29,9 +30,6 @@ import { getErrorMessage } from '@/lib/apiError';
 
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const PROVIDER_MODEL_ID_PATTERN = /^[A-Za-z0-9._:/-]+$/;
-
-const TEXTAREA_CLASSES =
-  'min-h-20 w-full rounded-md border bg-background px-3 py-2 text-sm shadow-xs outline-none placeholder:text-ink-3 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:border-input dark:bg-input/30';
 
 function toSlug(text) {
   return text
@@ -219,11 +217,10 @@ function ModelForm({ model, providers, onDone }) {
       </div>
 
       <Field id="model-description" label="Description">
-        <textarea
+        <Textarea
           id="model-description"
           name="description"
           placeholder="What this model is good at"
-          className={TEXTAREA_CLASSES}
           value={values.description}
           onChange={handleChange}
         />

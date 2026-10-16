@@ -22,7 +22,7 @@ export const imagesApi = baseApi.injectEndpoints({
     }),
     deleteImage: builder.mutation({
       query: (id) => ({ url: `/api/images/${id}`, method: 'DELETE' }),
-      invalidatesTags: ['Images'],
+      invalidatesTags: ['Images', 'Generations'],
     }),
   }),
 });

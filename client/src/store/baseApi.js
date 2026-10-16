@@ -104,6 +104,7 @@ export const baseApi = createApi({
     'Users',
     'UserWallet',
     'Images',
+    'Generations',
   ],
   endpoints: () => ({}),
 });
