@@ -1,5 +1,6 @@
 import { generations } from '#src/modules/generations/generation.table.js';
 import { aiModels } from '#src/modules/ai-models/ai-model.table.js';
+import { generationTypes } from '#src/modules/generation-types/generation-type.table.js';
 
 export const GENERATION_COLUMNS = {
   id: generations.id,
@@ -19,6 +20,7 @@ export const GENERATION_COLUMNS = {
 
 export const GENERATION_WITH_MODEL_COLUMNS = {
   id: generations.id,
+  type: generationTypes.code,
   sourceImageId: generations.sourceImageId,
   prompt: generations.prompt,
   options: generations.options,

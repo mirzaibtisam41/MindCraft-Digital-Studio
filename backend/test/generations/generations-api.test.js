@@ -631,6 +631,63 @@ describe('generations API', () => {
       assert.equal(await readBalance(user.user.id), balance);
     });
 
+    it('returns the edit history from the original to the latest edit', async () => {
+      const user = await registerUserWithCredits();
+      const other = await registerUserWithCredits();
+      const original = await makeSourceImage(user);
+
+      async function editImage(sourceImageId, prompt) {
+        testApp.openai.nextImageBuffers = [PNG_1X1];
+        const response = await generate(user, {
+          type: 'image_edit',
+          sourceImageId,
+          mask: MASK,
+          prompt,
+          options: { ...OPTIONS, n: 1 },
+        });
+
+        return response.body.data.generation.images[0];
+      }
+
+      const firstEdit = await editImage(original.id, 'add a hat');
+      const secondEdit = await editImage(firstEdit.id, 'make the hat blue');
+
+      const response = await send(
+        'GET',
+        `/api/images/${secondEdit.id}/history`,
+        user.accessToken,
+      );
+      const hidden = await send(
+        'GET',
+        `/api/images/${secondEdit.id}/history`,
+        other.accessToken,
+      );
+      const list = await send(
+        'GET',
+        '/api/generations?search=hat',
+        user.accessToken,
+      );
+
+      assert.equal(response.statusCode, 200);
+      assert.deepEqual(
+        response.body.data.steps.map((step) => [
+          step.image.id,
+          step.generation.type,
+          step.generation.prompt,
+        ]),
+        [
+          [original.id, 'text_to_image', 'a red fox in the snow'],
+          [firstEdit.id, 'image_edit', 'add a hat'],
+          [secondEdit.id, 'image_edit', 'make the hat blue'],
+        ],
+      );
+      assert.equal(hidden.statusCode, 404);
+      assert.deepEqual(
+        list.body.data.generations.map((item) => item.type),
+        ['image_edit', 'image_edit'],
+      );
+    });
+
     it('refunds a failed edit', async () => {
       const user = await registerUserWithCredits();
       const source = await makeSourceImage(user);

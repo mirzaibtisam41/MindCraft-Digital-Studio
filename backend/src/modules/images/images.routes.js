@@ -9,6 +9,7 @@ import { bulkFavoriteMyImagesBodySchema } from '#src/modules/images/features/bul
 import { deleteMyImageController } from '#src/modules/images/features/delete-my-image/delete-my-image.controller.js';
 import { getMyImageController } from '#src/modules/images/features/get-my-image/get-my-image.controller.js';
 import { getMyImageDownloadController } from '#src/modules/images/features/get-my-image-download/get-my-image-download.controller.js';
+import { getImageHistoryController } from '#src/modules/images/features/get-image-history/get-image-history.controller.js';
 import { listMyImagesController } from '#src/modules/images/features/list-my-images/list-my-images.controller.js';
 import { listMyImagesQuerySchema } from '#src/modules/images/features/list-my-images/list-my-images.schema.js';
 import { updateMyImageController } from '#src/modules/images/features/update-my-image/update-my-image.controller.js';
@@ -60,6 +61,12 @@ export async function imagesRoutes(fastify) {
     '/:id/download',
     { schema: { params: uuidParamsSchema('id') } },
     getMyImageDownloadController,
+  );
+
+  fastify.get(
+    '/:id/history',
+    { schema: { params: uuidParamsSchema('id') } },
+    getImageHistoryController,
   );
 
   fastify.delete(
