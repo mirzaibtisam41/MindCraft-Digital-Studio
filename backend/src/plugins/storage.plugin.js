@@ -16,8 +16,8 @@ function buildR2Storage({ appConfig }) {
     deleteFile: ({ key }) => deleteR2FileIntegration({ client, bucket, key }),
     downloadFile: ({ key }) =>
       downloadR2FileIntegration({ client, bucket, key }),
-    createSignedUrl: ({ key }) =>
-      createR2SignedUrlIntegration({ client, bucket, key }),
+    createSignedUrl: ({ key, downloadFileName }) =>
+      createR2SignedUrlIntegration({ client, bucket, key, downloadFileName }),
     close: () => client.destroy(),
   };
 }

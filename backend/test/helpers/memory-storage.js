@@ -16,8 +16,12 @@ export function createMemoryStorage() {
       files.delete(key);
     },
 
-    async createSignedUrl({ key }) {
-      return `https://storage.test/${key}?signature=test`;
+    async createSignedUrl({ key, downloadFileName }) {
+      const download = downloadFileName
+        ? `&download=${encodeURIComponent(downloadFileName)}`
+        : '';
+
+      return `https://storage.test/${key}?signature=test${download}`;
     },
 
     close() {

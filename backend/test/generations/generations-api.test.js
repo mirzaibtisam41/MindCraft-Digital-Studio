@@ -241,6 +241,15 @@ describe('generations API', () => {
         ),
       );
       assert.equal(await readBalance(user.user.id), 50);
+
+      const library = await send(
+        'GET',
+        `/api/images?modelId=${activeModel.id}&search=red%20fox`,
+        user.accessToken,
+      );
+      assert.equal(library.body.data.images.length, 2);
+      assert.equal(library.body.data.images[0].prompt, 'a red fox in the snow');
+      assert.equal(library.body.data.images[0].model.id, activeModel.id);
     });
 
     it('refunds the credits when the safety filter blocks the prompt', async () => {
