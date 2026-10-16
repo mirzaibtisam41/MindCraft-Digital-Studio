@@ -14,6 +14,7 @@ import {
   SlidersHorizontal,
   Workflow,
   ShieldCheck,
+  UserRound,
   Users,
   Wand2,
 } from 'lucide-react';
@@ -149,6 +150,48 @@ export function getNavGroups({ isAdmin }) {
   const groups = [WORKSPACE_GROUP, LIBRARY_GROUP, ACCOUNT_GROUP];
 
   return isAdmin ? [...groups, ADMIN_GROUP] : groups;
+}
+
+function pickItems(groups, hrefs) {
+  const items = groups.flatMap((group) => group.items);
+
+  return hrefs
+    .map((href) => items.find((item) => item.href === href))
+    .filter(Boolean);
+}
+
+export function getMobileTabs({ isAdmin }) {
+  const groups = getNavGroups({ isAdmin });
+
+  return [
+    { label: 'Home', icon: LayoutDashboard, href: '/app', exact: true },
+    {
+      label: 'Create',
+      icon: ImagePlus,
+      items: pickItems(groups, [
+        '/app/generate',
+        '/app/image-to-image',
+        '/app/editor',
+        '/app/vision',
+        '/app/prompts',
+      ]),
+    },
+    {
+      label: 'Library',
+      icon: Images,
+      items: pickItems(groups, [
+        '/app/creations',
+        '/app/projects',
+        '/app/history',
+      ]),
+    },
+    {
+      label: 'Account',
+      icon: UserRound,
+      items: ACCOUNT_GROUP.items,
+      adminItems: isAdmin ? ADMIN_GROUP.items : [],
+    },
+  ];
 }
 
 export function isNavItemActive(item, pathname) {

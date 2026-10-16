@@ -1,24 +1,19 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { LogOut } from 'lucide-react';
 import { BrandMark } from '@/components/layout/BrandMark';
 import { UserAvatar } from '@/components/layout/UserAvatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { selectCurrentUser } from '@/features/auth/authSlice';
 import { CreditBalancePill } from '@/features/credits/CreditBalancePill';
 import { NotificationBell } from '@/features/notifications/NotificationBell';
-import { LogoutConfirmDialog } from '@/features/auth/LogoutConfirmDialog';
 import { findActiveNavItem, getNavGroups } from '@/constants/navigation';
 
 export function Topbar() {
   const pathname = usePathname();
   const user = useSelector(selectCurrentUser);
-  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const isAdmin = user.role === 'admin';
   const active = findActiveNavItem(getNavGroups({ isAdmin }), pathname);
 
@@ -39,23 +34,16 @@ export function Topbar() {
       <div className="flex items-center gap-2.5">
         <NotificationBell />
         <CreditBalancePill />
-        {isAdmin ? <Badge tone="brand">Admin</Badge> : null}
+        {isAdmin ? (
+          <Badge tone="brand" className="hidden sm:inline-flex">
+            Admin
+          </Badge>
+        ) : null}
         <span className="hidden max-w-40 truncate text-[13px] font-medium sm:block">
           {user.name}
         </span>
         <UserAvatar name={user.name} />
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="md:hidden"
-          aria-label="Log out"
-          onClick={() => setIsLogoutOpen(true)}
-        >
-          <LogOut />
-        </Button>
       </div>
-
-      <LogoutConfirmDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen} />
     </header>
   );
 }
