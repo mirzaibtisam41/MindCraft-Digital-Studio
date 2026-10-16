@@ -1,0 +1,23 @@
+meta {
+  name: Ask about image
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/vision/analyses
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "imageId": "{{imageId}}",
+    "task": "question",
+    "question": "What is the mood of this image?"
+  }
+}

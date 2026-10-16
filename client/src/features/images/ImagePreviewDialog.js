@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Brush, Copy, Download, Heart, Trash2, Wand2 } from 'lucide-react';
+import {
+  Brush,
+  Copy,
+  Download,
+  Heart,
+  ScanEye,
+  Trash2,
+  Wand2,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -99,7 +107,7 @@ export function ImagePreviewDialog({ image, onOpenChange }) {
                 <Trash2 />
                 Delete
               </Button>
-              <div className="flex flex-col-reverse gap-2 sm:flex-row">
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
                 <Button
                   variant="outline"
                   onClick={() => actions.toggleFavorite(image)}
@@ -110,6 +118,13 @@ export function ImagePreviewDialog({ image, onOpenChange }) {
                     )}
                   />
                   {image.isFavorite ? 'Favorited' : 'Favorite'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => actions.analyzeImage(image)}
+                >
+                  <ScanEye />
+                  Analyze
                 </Button>
                 <Button
                   variant="outline"

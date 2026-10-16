@@ -49,5 +49,16 @@ export function useImageActions() {
     router.push(`/app/image-to-image?imageId=${image.id}`);
   }
 
-  return { toggleFavorite, download, reusePrompt, editImage, makeVariations };
+  function analyzeImage(image) {
+    router.push(`/app/vision?imageId=${image.id}`);
+  }
+
+  return {
+    toggleFavorite,
+    download,
+    reusePrompt,
+    editImage,
+    makeVariations,
+    analyzeImage,
+  };
 }

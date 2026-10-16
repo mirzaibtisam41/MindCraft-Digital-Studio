@@ -40,7 +40,8 @@ backend/
     ├── integrations/        third-party services the app talks to (no routes, no tables): <service>.integration.js,
     │                        e.g. resend-mail.integration.js, r2/ (build-r2-client, upload-r2-file, delete-r2-file,
     │                        create-r2-signed-url, download-r2-file), openai/ (build-openai-client,
-    │                        request-openai-images, generate-openai-images, edit-openai-images, map-openai-error); one file per action; provider errors become a ProviderError
+    │                        request-openai-images, generate-openai-images, edit-openai-images, map-openai-error),
+    │                        langchain/ (vision-tasks, build-vision-model, analyze-image, map-langchain-error); one file per action; provider errors become a ProviderError
     │                        with a PROVIDER_ERROR_CATEGORY, the raw provider message never reaches the client,
     │                        upstash-redis.integration.js; a <service>/ folder only at 3+ files; index.js re-exports
     ├── plugins/             *.plugin.js wrapped with fastify-plugin (reply-success.plugin.js adds reply.success); index.js re-exports
@@ -78,6 +79,7 @@ Prefixes are set in `src/modules/index.js`. Three modules share `/api/admin/mode
 | `GET /api/wallet` | `credit-wallets` (`myWalletRoutes`) | `get-my-wallet` | logged in |
 | `POST · GET /api/images` · `GET · PATCH · DELETE /api/images/:id` · `GET /api/images/:id/download` · `GET /api/images/:id/history` · `POST /api/images/bulk-favorite` · `POST /api/images/bulk-delete` | `images` | `upload-image` · `list-my-images` · `get-my-image` · `update-my-image` · `delete-my-image` · `get-my-image-download` · `get-image-history` · `bulk-favorite-my-images` · `bulk-delete-my-images` | logged in, own images only |
 | `GET /api/generations/options?type=` · `POST · GET /api/generations` (type text_to_image, image_to_image or image_edit) · `GET /api/generations/:id` | `generations` | `get-generation-options` · `create-generation` · `list-my-generations` · `get-my-generation` | logged in, own generations only |
+| `GET /api/vision/options` · `POST · GET /api/vision/analyses` | `image-analyses` (`visionRoutes`) | `get-vision-options` · `create-image-analysis` · `list-image-analyses` | logged in, own images only |
 | `POST · GET /api/projects` · `GET · PATCH · DELETE /api/projects/:projectId` · `GET · POST /api/projects/:projectId/images` · `POST /api/projects/:projectId/images/remove` · `PATCH /api/projects/:projectId/images/collection` · `POST /api/projects/:projectId/collections` · `PATCH · DELETE /api/projects/:projectId/collections/:collectionId` | `projects` | `create-project` · `list-my-projects` · `get-my-project` · `update-my-project` · `delete-my-project` · `list-project-images` · `add-project-images` · `remove-project-images` · `move-project-images` · `create-project-collection` · `rename-project-collection` · `delete-project-collection` | logged in, own projects only |
 | `POST · GET /api/admin/providers` · `GET · PATCH · DELETE /api/admin/providers/:id` · `PATCH /api/admin/providers/:id/status` | `ai-providers` | `create-ai-provider` · `list-ai-providers` · `get-ai-provider` · `update-ai-provider` · `delete-ai-provider` · `update-ai-provider-status` | admin |
 | `POST · GET /api/admin/models` · `GET · PATCH /api/admin/models/:id` · `PATCH /api/admin/models/:id/status` | `ai-models` | `create-ai-model` · `list-ai-models` · `get-ai-model` · `update-ai-model` · `update-ai-model-status` | admin |

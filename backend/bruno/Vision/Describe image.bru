@@ -1,0 +1,22 @@
+meta {
+  name: Describe image
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/vision/analyses
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "imageId": "{{imageId}}",
+    "task": "describe"
+  }
+}

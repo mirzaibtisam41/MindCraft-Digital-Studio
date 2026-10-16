@@ -1,0 +1,15 @@
+meta {
+  name: Vision options
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/vision/options
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
