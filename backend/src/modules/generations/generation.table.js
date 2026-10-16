@@ -15,6 +15,7 @@ import { PROVIDER_ERROR_CATEGORIES } from '#src/constants/index.js';
 import { users } from '#src/modules/users/user.table.js';
 import { aiModels } from '#src/modules/ai-models/ai-model.table.js';
 import { modelWorkflows } from '#src/modules/model-workflows/model-workflow.table.js';
+import { images } from '#src/modules/images/image.table.js';
 import { GENERATION_STATUSES } from '#src/modules/generations/generation.constants.js';
 
 export const generationStatusEnum = pgEnum(
@@ -36,6 +37,9 @@ export const generations = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     modelId: uuid().notNull(),
     modelWorkflowId: uuid().notNull(),
+    sourceImageId: uuid().references(() => images.id, {
+      onDelete: 'set null',
+    }),
     prompt: text().notNull(),
     options: jsonb().notNull(),
     status: generationStatusEnum().notNull(),
@@ -60,6 +64,7 @@ export const generations = pgTable(
       columns: [table.modelWorkflowId],
       foreignColumns: [modelWorkflows.id],
     }).onDelete('restrict'),
+    index('generations_source_image_id_idx').on(table.sourceImageId),
     index('generations_user_id_created_at_idx').on(
       table.userId,
       table.createdAt,

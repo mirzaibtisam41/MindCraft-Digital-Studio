@@ -6,6 +6,7 @@ export const GENERATION_COLUMNS = {
   userId: generations.userId,
   modelId: generations.modelId,
   modelWorkflowId: generations.modelWorkflowId,
+  sourceImageId: generations.sourceImageId,
   prompt: generations.prompt,
   options: generations.options,
   status: generations.status,
@@ -18,6 +19,7 @@ export const GENERATION_COLUMNS = {
 
 export const GENERATION_WITH_MODEL_COLUMNS = {
   id: generations.id,
+  sourceImageId: generations.sourceImageId,
   prompt: generations.prompt,
   options: generations.options,
   status: generations.status,
