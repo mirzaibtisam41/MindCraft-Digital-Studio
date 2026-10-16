@@ -4,7 +4,13 @@ import { buildAppConfig, buildPinoConfig } from '#src/config/index.js';
 import { registerPlugins } from '#src/plugins/index.js';
 import { registerRoutes } from '#src/modules/index.js';
 
-export function buildApp({ storage, openai, vision, promptEnhancer } = {}) {
+export function buildApp({
+  storage,
+  openai,
+  vision,
+  promptEnhancer,
+  mailer,
+} = {}) {
   const appConfig = buildAppConfig();
 
   const fastify = Fastify({
@@ -19,6 +25,7 @@ export function buildApp({ storage, openai, vision, promptEnhancer } = {}) {
     openai,
     vision,
     promptEnhancer,
+    mailer,
   });
   fastify.register(registerRoutes);
 

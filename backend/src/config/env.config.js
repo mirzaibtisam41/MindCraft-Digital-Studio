@@ -34,6 +34,9 @@ const envSchemaConfig = {
     STORAGE_R2_SECRET_ACCESS_KEY: { type: 'string', minLength: 1 },
     STORAGE_R2_BUCKET: { type: 'string', minLength: 1 },
     OPENAI_API_KEY: { type: 'string', minLength: 1 },
+    BREVO_API_KEY: { type: 'string', default: '' },
+    MAIL_FROM_EMAIL: { type: 'string', default: '' },
+    APP_URL: { type: 'string', default: 'http://localhost:3000' },
     COOKIE_SAME_SITE: {
       type: 'string',
       enum: ['lax', 'strict', 'none'],
