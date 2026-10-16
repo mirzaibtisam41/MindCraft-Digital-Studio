@@ -3,15 +3,12 @@
 import { ImageOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { describeFailure } from '@/features/generations/generationLabels';
+import {
+  STATUS_BADGES,
+  describeFailure,
+} from '@/features/generations/generationLabels';
 import { useGetMyGenerationsQuery } from '@/features/generations/generationsApi';
 import { cn } from '@/lib/utils';
-
-const STATUS_BADGES = {
-  succeeded: { label: 'Completed', tone: 'success' },
-  failed: { label: 'Failed', tone: 'danger' },
-  processing: { label: 'Processing', tone: 'warning' },
-};
 
 function formatDate(value) {
   return new Date(value).toLocaleString(undefined, {

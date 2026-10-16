@@ -16,6 +16,12 @@ export const FORMAT_LABELS = {
   webp: 'WebP',
 };
 
+export const STATUS_BADGES = {
+  succeeded: { label: 'Completed', tone: 'success' },
+  failed: { label: 'Failed', tone: 'danger' },
+  processing: { label: 'Processing', tone: 'warning' },
+};
+
 const FAILURE_LABELS = {
   safety_rejected: 'Blocked by the safety filter',
   invalid_request: 'The provider could not process it',
@@ -25,4 +31,17 @@ const FAILURE_LABELS = {
 
 export function describeFailure(errorCategory) {
   return FAILURE_LABELS[errorCategory] ?? 'Image generation was unavailable';
+}
+
+export function buildReuseUrl(generation) {
+  const params = new URLSearchParams({
+    prompt: generation.prompt,
+    modelId: generation.model.id,
+    size: generation.options.size,
+    quality: generation.options.quality,
+    outputFormat: generation.options.outputFormat,
+    n: String(generation.options.n),
+  });
+
+  return `/app/generate?${params}`;
 }

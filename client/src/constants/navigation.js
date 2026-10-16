@@ -50,7 +50,12 @@ const LIBRARY_GROUP = {
       ready: true,
     },
     { label: 'Projects', icon: FolderKanban },
-    { label: 'Generation History', icon: History },
+    {
+      label: 'Generation History',
+      href: '/app/history',
+      icon: History,
+      ready: true,
+    },
     { label: 'Prompt Studio', icon: NotebookPen },
   ],
 };
