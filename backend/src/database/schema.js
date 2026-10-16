@@ -11,3 +11,6 @@ export * from '#src/modules/credit-transactions/credit-transaction.table.js';
 export * from '#src/modules/platform-settings/platform-setting.table.js';
 export * from '#src/modules/generations/generation.table.js';
 export * from '#src/modules/images/image.table.js';
+export * from '#src/modules/projects/project.table.js';
+export * from '#src/modules/projects/project-collection.table.js';
+export * from '#src/modules/projects/project-image.table.js';

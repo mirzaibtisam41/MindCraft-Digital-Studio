@@ -5,3 +5,4 @@ export * from '#src/modules/images/shared/repositories/delete-user-image.reposit
 export * from '#src/modules/images/shared/repositories/list-generation-images.repository.js';
 export * from '#src/modules/images/shared/repositories/update-user-images-favorite.repository.js';
 export * from '#src/modules/images/shared/repositories/delete-user-images.repository.js';
+export * from '#src/modules/images/shared/repositories/list-user-image-ids.repository.js';
