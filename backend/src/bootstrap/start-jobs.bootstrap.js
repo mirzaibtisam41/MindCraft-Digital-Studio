@@ -1,4 +1,5 @@
 import { refundStuckGenerationsService } from '#src/modules/generations/shared/services/index.js';
+import { refundStuckImageAnalysesService } from '#src/modules/image-analyses/shared/services/index.js';
 
 export function startJobs({ fastify }) {
   let isRunning = false;
@@ -9,14 +10,14 @@ export function startJobs({ fastify }) {
     isRunning = true;
 
     try {
-      const refundedCount = await refundStuckGenerationsService({
-        db: fastify.db,
-      });
+      const refundedCount =
+        (await refundStuckGenerationsService({ db: fastify.db })) +
+        (await refundStuckImageAnalysesService({ db: fastify.db }));
 
       if (refundedCount > 0) {
         fastify.log.warn(
           { refundedCount },
-          'Refunded generations that were stuck in processing',
+          'Refunded generations and analyses that were stuck in processing',
         );
       }
     } catch (error) {

@@ -119,6 +119,27 @@ export async function buildTestApp({ env = {} } = {}) {
     return { email, ...(await loginUser({ email })) };
   }
 
+  async function uploadImage({ accessToken, fileName = 'photo.png', content }) {
+    const boundary = 'helper-boundary';
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/images',
+      payload: Buffer.concat([
+        Buffer.from(
+          `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\nContent-Type: image/png\r\n\r\n`,
+        ),
+        content,
+        Buffer.from(`\r\n--${boundary}--\r\n`),
+      ]),
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+        'content-type': `multipart/form-data; boundary=${boundary}`,
+      },
+    });
+
+    return response.json().data.image;
+  }
+
   async function runSql(text, values = []) {
     const result = await app.pg.query(text, values);
 
@@ -144,6 +165,7 @@ export async function buildTestApp({ env = {} } = {}) {
     loginUser,
     registerAndLogin,
     registerAndLoginAsAdmin,
+    uploadImage,
     runSql,
     close,
   };

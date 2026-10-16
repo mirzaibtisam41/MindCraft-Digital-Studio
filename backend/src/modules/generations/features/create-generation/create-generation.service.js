@@ -3,8 +3,9 @@ import { PROVIDER_ERROR_CATEGORY } from '#src/constants/index.js';
 import {
   BadRequestError,
   NotFoundError,
+  PROVIDER_CATEGORIES_THAT_NEED_AN_ADMIN,
   ProviderError,
-  ServiceUnavailableError,
+  buildProviderFailureErrorUtil,
 } from '#src/utils/index.js';
 import { IMAGE_SOURCE } from '#src/modules/images/image.constants.js';
 import {
@@ -26,49 +27,11 @@ import {
   startGenerationService,
 } from '#src/modules/generations/shared/services/index.js';
 
-const CATEGORIES_THAT_NEED_AN_ADMIN = [
-  PROVIDER_ERROR_CATEGORY.QUOTA_EXCEEDED,
-  PROVIDER_ERROR_CATEGORY.PROVIDER_AUTH_FAILED,
-  PROVIDER_ERROR_CATEGORY.UNKNOWN,
-];
-
 const EXTENSIONS = {
   'image/png': 'png',
   'image/jpeg': 'jpg',
   'image/webp': 'webp',
 };
-
-function buildFailureError({ category, refundedCredits }) {
-  const refund = `Your ${refundedCredits} credits were refunded.`;
-
-  if (category === PROVIDER_ERROR_CATEGORY.SAFETY_REJECTED) {
-    return new BadRequestError(
-      `The safety filter blocked this prompt. Try different wording. ${refund}`,
-    );
-  }
-
-  if (category === PROVIDER_ERROR_CATEGORY.INVALID_REQUEST) {
-    return new BadRequestError(
-      `The image provider could not process this request. ${refund}`,
-    );
-  }
-
-  if (category === PROVIDER_ERROR_CATEGORY.RATE_LIMITED) {
-    return new ServiceUnavailableError(
-      `The image provider is busy right now, please try again in a minute. ${refund}`,
-    );
-  }
-
-  if (category === PROVIDER_ERROR_CATEGORY.TIMEOUT) {
-    return new ServiceUnavailableError(
-      `The image provider took too long to answer. ${refund}`,
-    );
-  }
-
-  return new ServiceUnavailableError(
-    `Image generation is not available right now, please try again later. ${refund}`,
-  );
-}
 
 async function failAndThrow({ db, log, generation, error }) {
   const category =
@@ -84,13 +47,13 @@ async function failAndThrow({ db, log, generation, error }) {
 
   const logDetails = { err: error, generationId: generation.id, category };
 
-  if (CATEGORIES_THAT_NEED_AN_ADMIN.includes(category)) {
+  if (PROVIDER_CATEGORIES_THAT_NEED_AN_ADMIN.includes(category)) {
     log.error(logDetails, 'Image generation failed');
   } else {
     log.warn(logDetails, 'Image generation failed');
   }
 
-  throw buildFailureError({
+  throw buildProviderFailureErrorUtil({
     category,
     refundedCredits: generation.totalCredits,
   });
