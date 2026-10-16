@@ -1,0 +1,28 @@
+meta {
+  name: Create generation
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/generations
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "modelId": "{{modelId}}",
+    "prompt": "A red fox sitting in fresh snow, soft morning light",
+    "options": {
+      "size": "1024x1024",
+      "quality": "low",
+      "outputFormat": "png",
+      "n": 1
+    }
+  }
+}

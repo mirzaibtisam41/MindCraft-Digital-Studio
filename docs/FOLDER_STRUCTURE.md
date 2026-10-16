@@ -76,6 +76,7 @@ Prefixes are set in `src/modules/index.js`. Three modules share `/api/admin/mode
 | `GET /api/auth/sessions` · `DELETE /api/auth/sessions/:familyId` · `POST /api/auth/logout-others` | `auth` | `list-sessions` · `revoke-session` · `logout-other-sessions` | logged in |
 | `GET /api/wallet` | `credit-wallets` (`myWalletRoutes`) | `get-my-wallet` | logged in |
 | `POST · GET /api/images` · `GET · DELETE /api/images/:id` | `images` | `upload-image` · `list-my-images` · `get-my-image` · `delete-my-image` | logged in, own images only |
+| `GET /api/generations/options` · `POST · GET /api/generations` · `GET /api/generations/:id` | `generations` | `get-generation-options` · `create-generation` · `list-my-generations` · `get-my-generation` | logged in, own generations only |
 | `POST · GET /api/admin/providers` · `GET · PATCH · DELETE /api/admin/providers/:id` · `PATCH /api/admin/providers/:id/status` | `ai-providers` | `create-ai-provider` · `list-ai-providers` · `get-ai-provider` · `update-ai-provider` · `delete-ai-provider` · `update-ai-provider-status` | admin |
 | `POST · GET /api/admin/models` · `GET · PATCH /api/admin/models/:id` · `PATCH /api/admin/models/:id/status` | `ai-models` | `create-ai-model` · `list-ai-models` · `get-ai-model` · `update-ai-model` · `update-ai-model-status` | admin |
 | `GET /api/admin/models/:modelId/workflows` · `PUT /api/admin/models/:modelId/workflows/:typeId` | `model-workflows` | `list-model-workflows` · `save-model-workflow` | admin |

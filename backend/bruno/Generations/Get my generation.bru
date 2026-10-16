@@ -1,0 +1,15 @@
+meta {
+  name: Get my generation
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/generations/{{generationId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
