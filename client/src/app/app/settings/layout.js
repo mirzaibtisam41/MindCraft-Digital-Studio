@@ -9,7 +9,7 @@ export default function SettingsLayout({ children }) {
           Your account, defaults and how the app looks.
         </p>
       </div>
-      <div className="grid items-start gap-6 lg:grid-cols-[200px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[200px_minmax(0,1fr)]">
         <SettingsNav />
         <div className="flex max-w-3xl min-w-0 flex-col gap-6">{children}</div>
       </div>

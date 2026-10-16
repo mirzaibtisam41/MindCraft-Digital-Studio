@@ -239,7 +239,7 @@ export function AiModelsView() {
             <TableHeader>
               <TableRow>
                 <TableHead>Model</TableHead>
-                <TableHead>Provider</TableHead>
+                <TableHead className="hidden sm:table-cell">Provider</TableHead>
                 <TableHead className="hidden md:table-cell">
                   Provider model ID
                 </TableHead>
@@ -259,8 +259,11 @@ export function AiModelsView() {
                       {model.name}
                     </Link>
                     <p className="font-mono text-xs text-ink-3">{model.slug}</p>
+                    <p className="text-xs text-muted-foreground sm:hidden">
+                      {model.provider.name}
+                    </p>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <span className="flex items-center gap-2">
                       {model.provider.name}
                       {model.provider.isActive ? null : (

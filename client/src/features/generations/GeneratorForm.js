@@ -248,7 +248,7 @@ export function GeneratorForm({
         ) : null}
       </div>
 
-      <div className="sticky bottom-0 flex flex-col gap-3 rounded-lg border bg-background p-3">
+      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] flex flex-col gap-3 rounded-lg border bg-background p-3 md:bottom-0">
         <div className="flex items-baseline justify-between gap-3">
           <span className="text-sm text-muted-foreground">Estimated cost</span>
           <span className="font-mono text-lg font-semibold">

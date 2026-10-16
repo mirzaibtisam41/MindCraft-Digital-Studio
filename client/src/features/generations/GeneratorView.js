@@ -106,7 +106,7 @@ export function GeneratorView() {
       ) : null}
 
       {model && !isLoadingSettings ? (
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
           <GeneratorForm
             models={models}
             model={model}

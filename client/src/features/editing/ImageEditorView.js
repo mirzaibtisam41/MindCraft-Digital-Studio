@@ -240,7 +240,7 @@ export function ImageEditorView() {
       ) : null}
 
       {image && model ? (
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)]">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)]">
           <div className="flex min-w-0 flex-col gap-3">
             <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-2">
               <ToggleGroup

@@ -179,7 +179,7 @@ function PromptStudio() {
         </p>
       </div>
 
-      <div className="grid items-start gap-6 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
+      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
         <aside className="flex flex-col gap-4 rounded-xl border bg-card p-4">
           <div className="flex flex-col gap-1">
             <p className="text-xs font-medium text-ink-3">Categories</p>

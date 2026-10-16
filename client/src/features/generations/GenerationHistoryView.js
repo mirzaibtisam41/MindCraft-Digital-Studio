@@ -188,9 +188,13 @@ export function GenerationHistoryView() {
                 <TableHead className="hidden sm:table-cell">Type</TableHead>
                 <TableHead className="hidden md:table-cell">Model</TableHead>
                 <TableHead className="hidden lg:table-cell">Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Credits</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="hidden sm:table-cell">Status</TableHead>
+                <TableHead className="hidden text-right sm:table-cell">
+                  Credits
+                </TableHead>
+                <TableHead className="hidden text-right sm:table-cell">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -215,7 +219,7 @@ export function GenerationHistoryView() {
                         )}
                       </span>
                     </TableCell>
-                    <TableCell className="max-w-72">
+                    <TableCell className="max-w-[calc(100vw-8.5rem)] sm:max-w-72">
                       <p className="truncate font-medium">
                         {generation.prompt}
                       </p>
@@ -224,6 +228,31 @@ export function GenerationHistoryView() {
                           {describeFailure(generation.errorCategory)}
                         </p>
                       ) : null}
+                      <div className="mt-1.5 flex items-center gap-2 sm:hidden">
+                        <Badge tone={badge.tone}>{badge.label}</Badge>
+                        <span
+                          className={cn(
+                            'font-mono text-xs',
+                            isFailed ? 'text-success' : 'text-muted-foreground',
+                          )}
+                        >
+                          {isFailed
+                            ? `+${generation.totalCredits}`
+                            : `-${generation.totalCredits}`}
+                        </span>
+                        <span className="ml-auto flex gap-1">
+                          <Button asChild variant="ghost" size="sm">
+                            <Link href={buildReuseUrl(generation)}>Reuse</Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setOpenGenerationId(generation.id)}
+                          >
+                            View
+                          </Button>
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell className="hidden text-muted-foreground sm:table-cell">
                       {TYPE_LABELS[generation.type] ?? generation.type}
@@ -234,12 +263,12 @@ export function GenerationHistoryView() {
                     <TableCell className="hidden font-mono text-xs text-muted-foreground lg:table-cell">
                       {formatDate(generation.createdAt)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <Badge tone={badge.tone}>{badge.label}</Badge>
                     </TableCell>
                     <TableCell
                       className={cn(
-                        'text-right font-mono',
+                        'hidden text-right font-mono sm:table-cell',
                         isFailed ? 'text-success' : 'text-muted-foreground',
                       )}
                     >
@@ -247,7 +276,7 @@ export function GenerationHistoryView() {
                         ? `+${generation.totalCredits}`
                         : `-${generation.totalCredits}`}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <div className="flex justify-end gap-1">
                         <Button asChild variant="ghost" size="sm">
                           <Link href={buildReuseUrl(generation)}>Reuse</Link>

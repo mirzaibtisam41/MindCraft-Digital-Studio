@@ -120,7 +120,7 @@ export function VisionView() {
       {imageId && isLoadingImage ? <Skeleton className="h-96 w-full" /> : null}
 
       {image ? (
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]">
           <div className="flex flex-col gap-4 rounded-xl border bg-card p-4">
             <img
               src={image.url}

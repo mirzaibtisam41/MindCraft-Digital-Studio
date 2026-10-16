@@ -81,7 +81,7 @@ export function ImagePreviewDialog({ image, onOpenChange }) {
   return (
     <>
       <Dialog open={Boolean(image)} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-3xl overflow-y-auto max-sm:inset-0 max-sm:h-dvh max-sm:max-h-dvh max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:border-0">
           <DialogTitle className="truncate pr-8">{title}</DialogTitle>
           <DialogDescription>
             {image ? describeImage(image) : null}
