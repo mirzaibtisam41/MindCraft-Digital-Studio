@@ -14,3 +14,4 @@ export * from '#src/modules/images/image.table.js';
 export * from '#src/modules/projects/project.table.js';
 export * from '#src/modules/projects/project-collection.table.js';
 export * from '#src/modules/projects/project-image.table.js';
+export * from '#src/modules/image-analyses/image-analysis.table.js';
