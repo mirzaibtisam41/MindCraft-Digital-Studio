@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import {
   VISION_TASKS,
   analyzeImageIntegration,
+  enhancePromptIntegration,
   mapLangChainErrorIntegration,
 } from '#src/integrations/index.js';
 import { ProviderError } from '#src/utils/index.js';
@@ -118,5 +119,29 @@ describe('LangChain vision integration', () => {
         task,
       );
     }
+  });
+
+  it('enhances a prompt with the style and returns the added phrases', async () => {
+    const chatModel = fakeChatModel(() => ({
+      enhancedPrompt: 'a red fox in snow, golden hour light',
+      addedDescriptors: ['golden hour light'],
+    }));
+
+    const result = await enhancePromptIntegration({
+      chatModel,
+      prompt: 'a red fox in snow',
+      style: 'Cinematic',
+    });
+
+    assert.deepEqual(result.addedDescriptors, ['golden hour light']);
+    assert.equal(chatModel.seen.options.name, 'enhanced_prompt');
+    assert.match(
+      chatModel.seen.messages[0].content,
+      /never add a new main subject/,
+    );
+    assert.equal(
+      chatModel.seen.messages[1].content,
+      'Prompt: a red fox in snow\nStyle: Cinematic',
+    );
   });
 });

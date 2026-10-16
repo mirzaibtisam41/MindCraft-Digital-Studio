@@ -4,7 +4,7 @@ import { buildAppConfig, buildPinoConfig } from '#src/config/index.js';
 import { registerPlugins } from '#src/plugins/index.js';
 import { registerRoutes } from '#src/modules/index.js';
 
-export function buildApp({ storage, openai, vision } = {}) {
+export function buildApp({ storage, openai, vision, promptEnhancer } = {}) {
   const appConfig = buildAppConfig();
 
   const fastify = Fastify({
@@ -12,7 +12,14 @@ export function buildApp({ storage, openai, vision } = {}) {
     genReqId: () => randomUUID(),
   });
 
-  registerPlugins({ fastify, appConfig, storage, openai, vision });
+  registerPlugins({
+    fastify,
+    appConfig,
+    storage,
+    openai,
+    vision,
+    promptEnhancer,
+  });
   fastify.register(registerRoutes);
 
   return fastify;

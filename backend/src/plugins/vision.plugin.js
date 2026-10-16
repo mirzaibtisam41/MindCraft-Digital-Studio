@@ -1,14 +1,14 @@
 import fp from 'fastify-plugin';
 import {
   analyzeImageIntegration,
-  buildVisionModelIntegration,
+  buildChatModelIntegration,
 } from '#src/integrations/index.js';
 
 function buildVision({ appConfig }) {
   return {
     analyzeImage: ({ model, ...request }) =>
       analyzeImageIntegration({
-        chatModel: buildVisionModelIntegration({ appConfig, model }),
+        chatModel: buildChatModelIntegration({ appConfig, model }),
         ...request,
       }),
   };

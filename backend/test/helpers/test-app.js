@@ -8,6 +8,7 @@ import {
 import { createMemoryStorage } from './memory-storage.js';
 import { createFakeOpenAi } from './fake-openai.js';
 import { createFakeVision } from './fake-vision.js';
+import { createFakePromptEnhancer } from './fake-prompt-enhancer.js';
 
 export const TEST_PASSWORD = 'secret123';
 
@@ -29,7 +30,8 @@ export async function buildTestApp({ env = {} } = {}) {
   const storage = createMemoryStorage();
   const openai = createFakeOpenAi();
   const vision = createFakeVision();
-  const app = buildApp({ storage, openai, vision });
+  const promptEnhancer = createFakePromptEnhancer();
+  const app = buildApp({ storage, openai, vision, promptEnhancer });
   const createdEmails = [];
 
   app.register(
@@ -159,6 +161,7 @@ export async function buildTestApp({ env = {} } = {}) {
     storage,
     openai,
     vision,
+    promptEnhancer,
     sendRequest,
     makeEmail,
     registerUser,
