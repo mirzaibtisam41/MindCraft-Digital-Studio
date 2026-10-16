@@ -18,6 +18,7 @@ import {
   QUALITY_LABELS,
   SIZE_LABELS,
 } from '@/features/generations/generationLabels';
+import { PromptTools } from '@/features/prompts/PromptTools';
 import { cn } from '@/lib/utils';
 
 const PROMPT_MAX_LENGTH = 2000;
@@ -101,6 +102,11 @@ export function GeneratorForm({
               {prompt.length.toLocaleString()}/
               {PROMPT_MAX_LENGTH.toLocaleString()}
             </span>
+            <PromptTools
+              prompt={prompt}
+              onPromptChange={onPromptChange}
+              disabled={isGenerating}
+            />
             {prompt ? (
               <button
                 type="button"

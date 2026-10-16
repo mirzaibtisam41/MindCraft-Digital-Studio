@@ -1,0 +1,22 @@
+meta {
+  name: Enhance prompt another angle
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/prompts/enhance
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "prompt": "a cat sleeping on a bookshelf",
+    "anotherAngle": true
+  }
+}

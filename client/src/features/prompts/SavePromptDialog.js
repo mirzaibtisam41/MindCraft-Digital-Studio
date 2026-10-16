@@ -38,6 +38,7 @@ function SaveForm({ text, style, prompt, categories, onDone }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    event.stopPropagation();
 
     if (!title.trim()) {
       setErrorMessage('Give the prompt a title.');

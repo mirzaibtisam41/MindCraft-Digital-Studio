@@ -1,0 +1,15 @@
+meta {
+  name: Prompt options
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/prompts/options
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

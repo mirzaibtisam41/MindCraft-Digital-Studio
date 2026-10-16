@@ -1,0 +1,24 @@
+meta {
+  name: Create prompt
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/prompts
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "title": "Sleepy cat",
+    "text": "a cat sleeping on a bookshelf, warm lamp light",
+    "category": "other",
+    "style": "Cinematic"
+  }
+}

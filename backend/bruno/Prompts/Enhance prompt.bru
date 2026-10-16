@@ -1,0 +1,22 @@
+meta {
+  name: Enhance prompt
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/prompts/enhance
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "prompt": "a cat sleeping on a bookshelf",
+    "style": "Cinematic"
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Mark prompt used
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/prompts/{{promptId}}/use
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

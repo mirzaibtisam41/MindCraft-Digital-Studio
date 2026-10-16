@@ -1,0 +1,15 @@
+meta {
+  name: List my prompts
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/prompts?category=portrait
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

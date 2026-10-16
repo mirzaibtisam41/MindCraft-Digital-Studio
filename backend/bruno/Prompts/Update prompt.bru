@@ -1,0 +1,22 @@
+meta {
+  name: Update prompt
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/prompts/{{promptId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "title": "Sleepy cat v2",
+    "category": "illustration"
+  }
+}

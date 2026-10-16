@@ -1,0 +1,15 @@
+meta {
+  name: Delete prompt
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{baseUrl}}/api/prompts/{{promptId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
