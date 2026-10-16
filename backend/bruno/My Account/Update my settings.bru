@@ -1,0 +1,26 @@
+meta {
+  name: Update my settings
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/me/settings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "defaultModelId": "{{modelId}}",
+    "defaultSize": "1536x1024",
+    "defaultQuality": "medium",
+    "defaultImageCount": 2,
+    "notifyLowCredits": true,
+    "lowCreditThreshold": 20
+  }
+}
