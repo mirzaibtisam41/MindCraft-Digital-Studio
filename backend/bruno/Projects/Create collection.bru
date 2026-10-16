@@ -1,0 +1,21 @@
+meta {
+  name: Create collection
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/projects/{{projectId}}/collections
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Hero shots"
+  }
+}

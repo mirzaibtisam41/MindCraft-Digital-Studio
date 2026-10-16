@@ -1,0 +1,23 @@
+meta {
+  name: Remove project images
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/projects/{{projectId}}/images/remove
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "imageIds": [
+      "{{imageId}}"
+    ]
+  }
+}

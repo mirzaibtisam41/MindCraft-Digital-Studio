@@ -1,0 +1,15 @@
+meta {
+  name: List project images
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/projects/{{projectId}}/images?page=1&limit=24
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

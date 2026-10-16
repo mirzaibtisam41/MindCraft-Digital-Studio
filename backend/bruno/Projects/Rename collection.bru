@@ -1,0 +1,21 @@
+meta {
+  name: Rename collection
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{baseUrl}}/api/projects/{{projectId}}/collections/{{collectionId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Finals"
+  }
+}

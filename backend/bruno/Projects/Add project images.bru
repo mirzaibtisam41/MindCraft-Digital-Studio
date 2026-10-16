@@ -1,0 +1,23 @@
+meta {
+  name: Add project images
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/projects/{{projectId}}/images
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "imageIds": [
+      "{{imageId}}"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Favorite image
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/images/{{imageId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "isFavorite": true
+  }
+}

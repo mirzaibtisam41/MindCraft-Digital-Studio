@@ -78,7 +78,11 @@ function AddToProjectForm({ imageIds, onDone }) {
       <Field id="add-to-project" label="Project">
         <Select value={projectId} onValueChange={setChosenProjectId}>
           <SelectTrigger id="add-to-project" aria-label="Project">
-            <SelectValue />
+            <SelectValue>
+              {isNew
+                ? '+ New project'
+                : projects.find((project) => project.id === projectId)?.name}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {projects.map((project) => (

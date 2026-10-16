@@ -1,0 +1,15 @@
+meta {
+  name: Search my images
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/images?page=1&limit=24&search=fox&source=generated&since=30d
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
