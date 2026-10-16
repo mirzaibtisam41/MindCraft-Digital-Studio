@@ -6,6 +6,7 @@ import {
   checkUserIsLoggedInHook,
 } from '#src/hooks/index.js';
 import { createMemoryStorage } from './memory-storage.js';
+import { createFakeOpenAi } from './fake-openai.js';
 
 export const TEST_PASSWORD = 'secret123';
 
@@ -25,7 +26,8 @@ export async function buildTestApp({ env = {} } = {}) {
   Object.assign(process.env, env);
 
   const storage = createMemoryStorage();
-  const app = buildApp({ storage });
+  const openai = createFakeOpenAi();
+  const app = buildApp({ storage, openai });
   const createdEmails = [];
 
   app.register(
@@ -132,6 +134,7 @@ export async function buildTestApp({ env = {} } = {}) {
   return {
     app,
     storage,
+    openai,
     sendRequest,
     makeEmail,
     registerUser,

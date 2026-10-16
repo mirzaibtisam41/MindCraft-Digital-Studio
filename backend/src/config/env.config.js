@@ -12,6 +12,7 @@ const envSchemaConfig = {
     'STORAGE_R2_ACCESS_KEY_ID',
     'STORAGE_R2_SECRET_ACCESS_KEY',
     'STORAGE_R2_BUCKET',
+    'OPENAI_API_KEY',
   ],
   properties: {
     NODE_ENV: {
@@ -32,6 +33,7 @@ const envSchemaConfig = {
     STORAGE_R2_ACCESS_KEY_ID: { type: 'string', minLength: 1 },
     STORAGE_R2_SECRET_ACCESS_KEY: { type: 'string', minLength: 1 },
     STORAGE_R2_BUCKET: { type: 'string', minLength: 1 },
+    OPENAI_API_KEY: { type: 'string', minLength: 1 },
     COOKIE_SAME_SITE: {
       type: 'string',
       enum: ['lax', 'strict', 'none'],
